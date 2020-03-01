@@ -6,7 +6,7 @@ Contains DateField and DateFormField!
 
 Just to let you know, this is how it looks like without any customization:
 
-<img src=''></img>
+<img src='https://raw.githubusercontent.com/GaspardMerten/date_field/master/example/example.png' height='150px'></img>
 
 The best way to discover this package is simply to check the example page!
 
