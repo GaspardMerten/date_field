@@ -8,3 +8,6 @@
 * Updating package description
 * Formatting with DartFM
 
+## 0.1.0
+
+* Updating documentation!

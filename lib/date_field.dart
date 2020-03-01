@@ -2,8 +2,19 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 import 'package:intl/intl.dart';
 
+
+/// A [FormField] that contains a [DateField].
+///
+/// This is a convenience widget that wraps a [DateField] widget in a
+/// [FormField].
+///
+/// A [Form] ancestor is not required. The [Form] simply makes it easier to
+/// save, reset, or validate multiple fields at once. To use without a [Form],
+/// pass a [GlobalKey] to the constructor and use [GlobalKey.currentState] to
+/// save or reset the form field.
 class DateFormField extends StatelessWidget {
   /// An optional method to call with the final value when the form is saved via
   /// [FormState.save].
@@ -49,17 +60,17 @@ class DateFormField extends StatelessWidget {
 
   const DateFormField(
       {Key key,
-      this.onSaved,
-      this.validator,
-      this.initialValue,
-      this.autovalidate = false,
-      this.enabled = true,
-      this.firstDate,
-      this.lastDate,
-      this.label = 'Select date',
-      this.dateFormat,
-      this.decoration,
-      this.initialDatePickerMode})
+        this.onSaved,
+        this.validator,
+        this.initialValue,
+        this.autovalidate = false,
+        this.enabled = true,
+        this.firstDate,
+        this.lastDate,
+        this.label = 'Select date',
+        this.dateFormat,
+        this.decoration,
+        this.initialDatePickerMode})
       : super(key: key);
 
   @override
@@ -92,7 +103,7 @@ class DateFormField extends StatelessWidget {
 /// [DateField]
 ///
 /// Shows an [_InputDropdown] that'll trigger [DateField._selectDate] whenever the user
-/// clicks on it !
+/// clicks on it ! The date picker is **platform responsive** (ios date picker style for ios, ...)
 class DateField extends StatelessWidget {
   /// Default constructor
   DateField({
@@ -136,6 +147,8 @@ class DateField extends StatelessWidget {
 
   /// Shows a dialog asking the user to pick a date !
   Future<void> _selectDate(BuildContext context) async {
+
+    TextFormField();
     if (!Platform.isIOS) {
       showModalBottomSheet(
         context: context,
@@ -195,12 +208,12 @@ class DateField extends StatelessWidget {
 class _InputDropdown extends StatelessWidget {
   const _InputDropdown(
       {Key key,
-      this.label,
-      this.text,
-      this.decoration,
-      this.textStyle,
-      this.onPressed,
-      this.errorText})
+        this.label,
+        this.text,
+        this.decoration,
+        this.textStyle,
+        this.onPressed,
+        this.errorText})
       : super(key: key);
 
   /// The label to display for the field (default is 'Select date')
@@ -223,6 +236,8 @@ class _InputDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    assert(text != null);
+
     BorderRadius inkwellBorderRadius;
 
     if (decoration?.border?.runtimeType == OutlineInputBorder) {
@@ -235,12 +250,11 @@ class _InputDropdown extends StatelessWidget {
         borderRadius: inkwellBorderRadius,
         onTap: onPressed,
         child: InputDecorator(
-          decoration: decoration ??
-              InputDecoration(
-                  labelText: label,
-                  errorText: errorText,
-                  border: UnderlineInputBorder(borderSide: BorderSide()),
-                  contentPadding: EdgeInsets.only(bottom: 2.0)),
+          decoration: decoration ??  InputDecoration(
+              labelText: label,
+              errorText: errorText,
+              border: UnderlineInputBorder(borderSide: BorderSide()),
+              contentPadding: EdgeInsets.only(bottom: 2.0)),
           baseStyle: textStyle,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
