@@ -8,17 +8,11 @@ void main() {
 }
 
 class ExampleApp extends StatelessWidget {
-
-
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Example app',
-      home: HomeWidget()
-    );
+    return MaterialApp(title: 'Example app', home: HomeWidget());
   }
 }
-
 
 class HomeWidget extends StatefulWidget {
   @override

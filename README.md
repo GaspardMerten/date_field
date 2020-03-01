@@ -1,6 +1,6 @@
 # date_field
 
-Contains DateField and DateFormField!
+Contains DateField and DateFormField which allows the user to pick a DateTime from an input field!
 
 ## Getting Started
 

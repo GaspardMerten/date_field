@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class DateFormField extends StatelessWidget {
-
   /// An optional method to call with the final value when the form is saved via
   /// [FormState.save].
   final FormFieldSetter<DateTime> onSaved;
@@ -13,7 +12,6 @@ class DateFormField extends StatelessWidget {
   /// An optional method that validates an input. Returns an error string to
   /// display if the input is invalid, or null otherwise.
   final FormFieldValidator<DateTime> validator;
-
 
   /// An optional value to initialize the form field to, or null otherwise.
   final DateTime initialValue;
@@ -50,7 +48,18 @@ class DateFormField extends StatelessWidget {
   final DatePickerMode initialDatePickerMode;
 
   const DateFormField(
-      {Key key, this.onSaved, this.validator, this.initialValue, this.autovalidate=false, this.enabled=true, this.firstDate, this.lastDate, this.label='Select date', this.dateFormat, this.decoration, this.initialDatePickerMode})
+      {Key key,
+      this.onSaved,
+      this.validator,
+      this.initialValue,
+      this.autovalidate = false,
+      this.enabled = true,
+      this.firstDate,
+      this.lastDate,
+      this.label = 'Select date',
+      this.dateFormat,
+      this.decoration,
+      this.initialDatePickerMode})
       : super(key: key);
 
   @override
@@ -75,8 +84,7 @@ class DateFormField extends StatelessWidget {
             },
             selectedDate: state.value,
           );
-        }
-    );
+        });
   }
 }
 
@@ -136,7 +144,8 @@ class DateField extends StatelessWidget {
             height: MediaQuery.of(context).size.height / 4,
             child: CupertinoDatePicker(
               mode: CupertinoDatePickerMode.date,
-              onDateTimeChanged:(DateTime dateTime) => onDateSelected(dateTime),
+              onDateTimeChanged: (DateTime dateTime) =>
+                  onDateSelected(dateTime),
               initialDateTime: selectedDate ?? lastDate ?? DateTime.now(),
               minimumDate: firstDate,
               maximumDate: lastDate,
@@ -144,8 +153,7 @@ class DateField extends StatelessWidget {
           );
         },
       );
-    }
-    else {
+    } else {
       DateTime _selectedDate = await showDatePicker(
           context: context,
           initialDatePickerMode: initialDatePickerMode,
@@ -153,13 +161,11 @@ class DateField extends StatelessWidget {
           firstDate: firstDate ?? DateTime(1900),
           lastDate: lastDate ?? DateTime(2100));
 
-
       if (_selectedDate != null) {
         onDateSelected(_selectedDate);
       }
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -188,7 +194,13 @@ class DateField extends StatelessWidget {
 /// user does click on it !
 class _InputDropdown extends StatelessWidget {
   const _InputDropdown(
-      {Key key, this.label, this.text, this.decoration, this.textStyle, this.onPressed, this.errorText})
+      {Key key,
+      this.label,
+      this.text,
+      this.decoration,
+      this.textStyle,
+      this.onPressed,
+      this.errorText})
       : super(key: key);
 
   /// The label to display for the field (default is 'Select date')
@@ -223,12 +235,12 @@ class _InputDropdown extends StatelessWidget {
         borderRadius: inkwellBorderRadius,
         onTap: onPressed,
         child: InputDecorator(
-          decoration: decoration ?? InputDecoration(
-              labelText: label,
-              errorText: errorText,
-              border: UnderlineInputBorder(borderSide: BorderSide()),
-              contentPadding: EdgeInsets.only(bottom: 2.0)
-          ),
+          decoration: decoration ??
+              InputDecoration(
+                  labelText: label,
+                  errorText: errorText,
+                  border: UnderlineInputBorder(borderSide: BorderSide()),
+                  contentPadding: EdgeInsets.only(bottom: 2.0)),
           baseStyle: textStyle,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
