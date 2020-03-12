@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
 
-
 /// A [FormField] that contains a [DateField].
 ///
 /// This is a convenience widget that wraps a [DateField] widget in a
@@ -60,17 +59,17 @@ class DateFormField extends StatelessWidget {
 
   const DateFormField(
       {Key key,
-        this.onSaved,
-        this.validator,
-        this.initialValue,
-        this.autovalidate = false,
-        this.enabled = true,
-        this.firstDate,
-        this.lastDate,
-        this.label = 'Select date',
-        this.dateFormat,
-        this.decoration,
-        this.initialDatePickerMode})
+      this.onSaved,
+      this.validator,
+      this.initialValue,
+      this.autovalidate = false,
+      this.enabled = true,
+      this.firstDate,
+      this.lastDate,
+      this.label = 'Select date',
+      this.dateFormat,
+      this.decoration,
+      this.initialDatePickerMode})
       : super(key: key);
 
   @override
@@ -147,9 +146,8 @@ class DateField extends StatelessWidget {
 
   /// Shows a dialog asking the user to pick a date !
   Future<void> _selectDate(BuildContext context) async {
-
     TextFormField();
-    if (!Platform.isIOS) {
+    if (Platform.isIOS) {
       showModalBottomSheet(
         context: context,
         builder: (BuildContext builder) {
@@ -208,12 +206,12 @@ class DateField extends StatelessWidget {
 class _InputDropdown extends StatelessWidget {
   const _InputDropdown(
       {Key key,
-        this.label,
-        this.text,
-        this.decoration,
-        this.textStyle,
-        this.onPressed,
-        this.errorText})
+      this.label,
+      this.text,
+      this.decoration,
+      this.textStyle,
+      this.onPressed,
+      this.errorText})
       : super(key: key);
 
   /// The label to display for the field (default is 'Select date')
@@ -250,11 +248,12 @@ class _InputDropdown extends StatelessWidget {
         borderRadius: inkwellBorderRadius,
         onTap: onPressed,
         child: InputDecorator(
-          decoration: decoration ??  InputDecoration(
-              labelText: label,
-              errorText: errorText,
-              border: UnderlineInputBorder(borderSide: BorderSide()),
-              contentPadding: EdgeInsets.only(bottom: 2.0)),
+          decoration: decoration ??
+              InputDecoration(
+                  labelText: label,
+                  errorText: errorText,
+                  border: UnderlineInputBorder(borderSide: BorderSide()),
+                  contentPadding: EdgeInsets.only(bottom: 2.0)),
           baseStyle: textStyle,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -11,3 +11,11 @@
 ## 0.1.0
 
 * Updating documentation!
+
+## 0.1.1
+
+* Formatting with DartFM!
+
+## 0.1.2
+
+* Fixing an incorrect boolean (iOS picker was inverted with the Android one)
