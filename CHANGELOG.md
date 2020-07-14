@@ -20,7 +20,11 @@
 
 * Fixing an incorrect boolean (iOS picker was inverted with the Android one)
 
-## 2.0.0
+## 0.2.0
 
 * DateFormField now extends FormField. All issues related to this are now fiex
 * The style of the DateField (and by extension the one of DateFormField) is now rigorously applying the theme or any customization. 
+
+## 0.2.1
+
+* Adding support for Flutter web
