@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -141,7 +139,7 @@ class DateField extends StatelessWidget {
 
   /// Shows a dialog asking the user to pick a date !
   Future<void> _selectDate(BuildContext context) async {
-    if (Platform.isIOS) {
+    if (Theme.of(context).platform == TargetPlatform.iOS) {
       showModalBottomSheet<void>(
         context: context,
         builder: (BuildContext builder) {
