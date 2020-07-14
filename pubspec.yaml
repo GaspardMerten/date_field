@@ -1,6 +1,6 @@
 name: date_field
 description: Contains DateField and DateFormField which allows the user to pick a DateTime from an input field!
-version: 0.1.2
+version: 0.2.0
 homepage: 'https://github.com/GaspardMerten/date_field'
 
 environment:
