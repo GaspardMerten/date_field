@@ -253,13 +253,7 @@ class _InputDropdown extends StatelessWidget {
         child: InputDecorator(
           decoration: effectiveDecoration,
           baseStyle: textStyle,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Text(text, style: textStyle),
-            ],
-          ),
+          child: Text(text, style: textStyle),
         ),
       ),
     );
