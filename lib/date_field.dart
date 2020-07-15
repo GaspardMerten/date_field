@@ -12,51 +12,51 @@ import 'package:intl/intl.dart';
 /// pass a [GlobalKey] to the constructor and use [GlobalKey.currentState] to
 /// save or reset the form field.
 class DateFormField extends FormField<DateTime> {
+  DateFormField(
+      {Key key,
+      FormFieldSetter<DateTime> onSaved,
+      FormFieldValidator<DateTime> validator,
+      DateTime initialValue,
+      bool autovalidate = false,
+      bool enabled = true,
+      this.onDateSelected,
+      this.firstDate,
+      this.lastDate,
+      this.label = 'Select date',
+      this.dateFormat,
+      this.decoration,
+      this.initialDatePickerMode = DatePickerMode.day})
+      : super(
+          key: key,
+          initialValue: initialValue,
+          onSaved: onSaved,
+          validator: validator,
+          autovalidate: autovalidate,
+          enabled: enabled,
+          builder: (FormFieldState<DateTime> field) {
+            final _DateFormFieldState state = field;
 
-  DateFormField({
-    Key key,
-    FormFieldSetter<DateTime> onSaved,
-    FormFieldValidator<DateTime> validator,
-    DateTime initialValue,
-    bool autovalidate = false,
-    bool enabled = true,
-    this.onDateSelected,
-    this.firstDate,
-    this.lastDate,
-    this.label = 'Select date',
-    this.dateFormat,
-    this.decoration,
-    this.initialDatePickerMode = DatePickerMode.day
-  }) : super(
-    key: key,
-    initialValue: initialValue,
-    onSaved: onSaved,
-    validator: validator,
-    autovalidate: autovalidate,
-    enabled: enabled,
-    builder: (FormFieldState<DateTime> field) {
-      final _DateFormFieldState state = field;
+            void onChangedHandler(DateTime value) {
+              if (onDateSelected != null) {
+                onDateSelected(value);
+              }
+              field.didChange(value);
+            }
 
-      void onChangedHandler(DateTime value) {
-        if (onDateSelected != null) {
-          onDateSelected(value);
-        }
-        field.didChange(value);
-      }
-      return DateField(
-        label: label,
-        firstDate: firstDate,
-        lastDate: lastDate,
-        decoration: decoration,
-        initialDatePickerMode: initialDatePickerMode,
-        dateFormat: dateFormat,
-        errorText: state.errorText,
-        onDateSelected: onChangedHandler,
-        selectedDate: state.value,
-        enabled: enabled,
-      );
-    },
-  );
+            return DateField(
+              label: label,
+              firstDate: firstDate,
+              lastDate: lastDate,
+              decoration: decoration,
+              initialDatePickerMode: initialDatePickerMode,
+              dateFormat: dateFormat,
+              errorText: state.errorText,
+              onDateSelected: onChangedHandler,
+              selectedDate: state.value,
+              enabled: enabled,
+            );
+          },
+        );
 
   /// (optional) A callback that will be triggered whenever a new
   /// DateTime is selected
@@ -80,7 +80,6 @@ class DateFormField extends FormField<DateTime> {
   /// (optional) Let you choose the [DatePickerMode] for the date picker! (default is [DatePickerMode.day]
   final DatePickerMode initialDatePickerMode;
 
-
   @override
   _DateFormFieldState createState() => _DateFormFieldState();
 }
@@ -92,7 +91,6 @@ class _DateFormFieldState extends FormFieldState<DateTime> {}
 /// Shows an [_InputDropdown] that'll trigger [DateField._selectDate] whenever the user
 /// clicks on it ! The date picker is **platform responsive** (ios date picker style for ios, ...)
 class DateField extends StatelessWidget {
-
   /// Default constructor
   const DateField({
     @required this.onDateSelected,
@@ -155,9 +153,7 @@ class DateField extends StatelessWidget {
           );
         },
       );
-    }
-    else {
-
+    } else {
       final DateTime _selectedDate = await showDatePicker(
           context: context,
           initialDatePickerMode: initialDatePickerMode,
@@ -183,9 +179,11 @@ class DateField extends StatelessWidget {
       label: text == null ? null : label,
       errorText: errorText,
       decoration: decoration,
-      onPressed: enabled ? () {
-        _selectDate(context);
-      } : null,
+      onPressed: enabled
+          ? () {
+              _selectDate(context);
+            }
+          : null,
     );
   }
 }
@@ -197,16 +195,15 @@ class DateField extends StatelessWidget {
 /// It does not show any popup menu, it'll just trigger onPressed whenever the
 /// user does click on it !
 class _InputDropdown extends StatelessWidget {
-  const _InputDropdown(
-      {Key key,
-        @required this.text,
-        this.label,
-        this.decoration,
-        this.textStyle,
-        this.onPressed,
-        this.errorText,
-      }) :
-        assert(text != null),
+  const _InputDropdown({
+    Key key,
+    @required this.text,
+    this.label,
+    this.decoration,
+    this.textStyle,
+    this.onPressed,
+    this.errorText,
+  })  : assert(text != null),
         super(key: key);
 
   /// The label to display for the field (default is 'Select date')
@@ -235,13 +232,13 @@ class _InputDropdown extends StatelessWidget {
       inkwellBorderRadius = BorderRadius.circular(8);
     }
 
-    final InputDecoration effectiveDecoration = decoration?.copyWith(
-        errorText: errorText
-    ) ?? InputDecoration(
-      labelText: label,
-      errorText: errorText,
-      suffixIcon: Icon(Icons.arrow_drop_down),
-    ).applyDefaults(Theme.of(context).inputDecorationTheme);
+    final InputDecoration effectiveDecoration =
+        decoration?.copyWith(errorText: errorText) ??
+            InputDecoration(
+              labelText: label,
+              errorText: errorText,
+              suffixIcon: Icon(Icons.arrow_drop_down),
+            ).applyDefaults(Theme.of(context).inputDecorationTheme);
 
     return Material(
       color: Colors.transparent,

@@ -28,3 +28,7 @@
 ## 0.2.1
 
 * Adding support for Flutter web
+
+## 0.2.2
+
+* Auto-formatting with dart-fm to meet pub.dev requirements
