@@ -29,7 +29,7 @@ class _HomeWidgetState extends State<HomeWidget> {
         children: <Widget>[
           Column(
             children: <Widget>[
-              DateField(
+              DateTimeField(
 
                 selectedDate: selectedDate,
                 onDateSelected: (DateTime date) {
