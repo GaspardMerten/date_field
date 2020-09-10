@@ -46,3 +46,7 @@ Improvements:
 * Adding support for time. Now you can ask the user for a time, a date or both.
 * Improving performances by setting default value in the constructor. 
 * Adding .time constructor for the DateField widget only.
+
+##0.3.1
+
+* Adding the possibility to style the text with TextStyle

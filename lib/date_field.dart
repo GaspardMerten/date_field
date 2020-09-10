@@ -19,6 +19,7 @@ class DateTimeFormField extends FormField<DateTime> {
     DateTime initialValue,
     bool autovalidate = false,
     bool enabled = true,
+    TextStyle textStyle,
     this.onDateSelected,
     this.firstDate,
     this.lastDate,
@@ -28,36 +29,38 @@ class DateTimeFormField extends FormField<DateTime> {
     this.initialDatePickerMode = DatePickerMode.day,
     this.mode = DateFieldPickerMode.date,
   }) : super(
-          key: key,
-          initialValue: initialValue,
-          onSaved: onSaved,
-          validator: validator,
-          autovalidate: autovalidate,
-          enabled: enabled,
-          builder: (FormFieldState<DateTime> field) {
-            final _DateFormFieldState state = field;
+    key: key,
+    initialValue: initialValue,
+    onSaved: onSaved,
+    validator: validator,
+    autovalidate: autovalidate,
+    enabled: enabled,
+    builder: (FormFieldState<DateTime> field) {
+      final _DateFormFieldState state = field;
 
-            void onChangedHandler(DateTime value) {
-              if (onDateSelected != null) {
-                onDateSelected(value);
-              }
-              field.didChange(value);
-            }
+      void onChangedHandler(DateTime value) {
+        if (onDateSelected != null) {
+          onDateSelected(value);
+        }
+        field.didChange(value);
+      }
 
-            return DateTimeField(
-                label: label,
-                firstDate: firstDate,
-                lastDate: lastDate,
-                decoration: decoration,
-                initialDatePickerMode: initialDatePickerMode,
-                dateFormat: dateFormat,
-                errorText: state.errorText,
-                onDateSelected: onChangedHandler,
-                selectedDate: state.value,
-                enabled: enabled,
-                mode: mode);
-          },
-        );
+      return DateTimeField(
+        label: label,
+        firstDate: firstDate,
+        lastDate: lastDate,
+        decoration: decoration,
+        initialDatePickerMode: initialDatePickerMode,
+        dateFormat: dateFormat,
+        errorText: state.errorText,
+        onDateSelected: onChangedHandler,
+        selectedDate: state.value,
+        enabled: enabled,
+        mode: mode,
+        textStyle: textStyle,
+      );
+    },
+  );
 
   /// (optional) A callback that will be triggered whenever a new
   /// DateTime is selected
@@ -106,6 +109,7 @@ class DateTimeField extends StatelessWidget {
     this.label = 'Select date',
     this.enabled = true,
     this.mode = DateFieldPickerMode.dateAndTime,
+    this.textStyle,
     DateTime firstDate,
     DateTime lastDate,
     DateFormat dateFormat,
@@ -122,6 +126,7 @@ class DateTimeField extends StatelessWidget {
     this.errorText,
     this.decoration,
     this.enabled,
+    this.textStyle,
     DateTime firstDate,
     DateTime lastDate,
   })  : initialDatePickerMode = null,
@@ -163,6 +168,9 @@ class DateTimeField extends StatelessWidget {
 
   /// Whether to ask the user to pick only the date, the time or both.
   final DateFieldPickerMode mode;
+
+  /// TextStyle of the text inside the button.
+  final TextStyle textStyle;
 
   /// Shows a dialog asking the user to pick a date !
   Future<void> _selectDate(BuildContext context) async {
@@ -232,6 +240,7 @@ class DateTimeField extends StatelessWidget {
       text: text ?? label,
       label: text == null ? null : label,
       errorText: errorText,
+      textStyle: textStyle,
       decoration: decoration,
       onPressed: enabled ? () => _selectDate(context) : null,
     );
@@ -274,7 +283,7 @@ DateFormat getDateFormatFromDateFieldPickerMode(DateFieldPickerMode mode) {
 /// Shows a field with a dropdown arrow !
 /// It does not show any popup menu, it'll just trigger onPressed whenever the
 /// user does click on it !
-  class _InputDropdown extends StatelessWidget {
+class _InputDropdown extends StatelessWidget {
   const _InputDropdown({
     Key key,
     @required this.text,
@@ -317,7 +326,7 @@ DateFormat getDateFormatFromDateFieldPickerMode(DateFieldPickerMode mode) {
             InputDecoration(
               labelText: label,
               errorText: errorText,
-              suffixIcon: Icon(Icons.arrow_drop_down),
+              suffixIcon: const Icon(Icons.arrow_drop_down),
             ).applyDefaults(Theme.of(context).inputDecorationTheme);
 
     return Material(
@@ -331,233 +340,6 @@ DateFormat getDateFormatFromDateFieldPickerMode(DateFieldPickerMode mode) {
           child: Text(text, style: textStyle),
         ),
       ),
-    );
-  }
-}
-
-
-
-/// Deprecated! Use [DateTimeFormField] instead
-@Deprecated('This widget will be removed in the next version of the date_field package, consider switching to DateTimeFormField')
-class DateFormField extends FormField<DateTime> {
-  DateFormField({
-    Key key,
-    FormFieldSetter<DateTime> onSaved,
-    FormFieldValidator<DateTime> validator,
-    DateTime initialValue,
-    bool autovalidate = false,
-    bool enabled = true,
-    this.onDateSelected,
-    this.firstDate,
-    this.lastDate,
-    this.label = 'Select date',
-    this.dateFormat,
-    this.decoration,
-    this.initialDatePickerMode = DatePickerMode.day,
-    this.mode = DateFieldPickerMode.date,
-  }) : super(
-    key: key,
-    initialValue: initialValue,
-    onSaved: onSaved,
-    validator: validator,
-    autovalidate: autovalidate,
-    enabled: enabled,
-    builder: (FormFieldState<DateTime> field) {
-      final _DateFormFieldState state = field;
-
-      void onChangedHandler(DateTime value) {
-        if (onDateSelected != null) {
-          onDateSelected(value);
-        }
-        field.didChange(value);
-      }
-
-      return DateTimeField(
-          label: label,
-          firstDate: firstDate,
-          lastDate: lastDate,
-          decoration: decoration,
-          initialDatePickerMode: initialDatePickerMode,
-          dateFormat: dateFormat,
-          errorText: state.errorText,
-          onDateSelected: onChangedHandler,
-          selectedDate: state.value,
-          enabled: enabled,
-          mode: mode);
-    },
-  );
-
-  /// (optional) A callback that will be triggered whenever a new
-  /// DateTime is selected
-  final ValueChanged<DateTime> onDateSelected;
-
-  /// (optional) The first date that the user can select (default is 1900)
-  final DateTime firstDate;
-
-  /// (optional) The last date that the user can select (default is 2100)
-  final DateTime lastDate;
-
-  /// (optional) The label to display for the field (default is 'Select date')
-  final String label;
-
-  /// (optional) Custom [InputDecoration] for the [InputDecorator] widget
-  final InputDecoration decoration;
-
-  /// (optional) How to display the [DateTime] for the user (default is [DateFormat.yMMMD])
-  final DateFormat dateFormat;
-
-  /// (optional) Let you choose the [DatePickerMode] for the date picker! (default is [DatePickerMode.day]
-  final DatePickerMode initialDatePickerMode;
-
-  /// Whether to ask the user to pick only the date, the time or both.
-  final DateFieldPickerMode mode;
-
-  @override
-  _DateFormFieldState createState() => _DateFormFieldState();
-}
-
-/// Deprecated! Use [DateField] instead
-@Deprecated('This widget will be removed in the next version of the date_field package, consider switching to DateTimeField')
-class DateField extends StatelessWidget {
-  /// Default constructor
-  DateField({
-    Key key,
-    @required this.onDateSelected,
-    @required this.selectedDate,
-    this.initialDatePickerMode = DatePickerMode.day,
-    this.decoration,
-    this.errorText,
-    this.label = 'Select date',
-    this.enabled = true,
-    this.mode = DateFieldPickerMode.dateAndTime,
-    DateTime firstDate,
-    DateTime lastDate,
-    DateFormat dateFormat,
-  })  : dateFormat = dateFormat ?? getDateFormatFromDateFieldPickerMode(mode),
-        firstDate = firstDate ?? DateTime(1900),
-        lastDate = lastDate ?? DateTime(2100),
-        super(key: key);
-
-  DateField.time({
-    Key key,
-    this.onDateSelected,
-    this.selectedDate,
-    this.label,
-    this.errorText,
-    this.decoration,
-    this.enabled,
-    DateTime firstDate,
-    DateTime lastDate,
-  })  : initialDatePickerMode = null,
-        mode = DateFieldPickerMode.time,
-        dateFormat = DateFormat.jm(),
-        firstDate = firstDate ?? DateTime(2000),
-        lastDate = lastDate ?? DateTime(2001),
-        super(key: key);
-
-  /// Callback for whenever the user selects a [DateTime]
-  final ValueChanged<DateTime> onDateSelected;
-
-  /// The current selected date to display inside the field
-  final DateTime selectedDate;
-
-  /// (optional) The first date that the user can select (default is 1900)
-  final DateTime firstDate;
-
-  /// (optional) The last date that the user can select (default is 2100)
-  final DateTime lastDate;
-
-  /// Let you choose the [DatePickerMode] for the date picker! (default is [DatePickerMode.day]
-  final DatePickerMode initialDatePickerMode;
-
-  /// The label to display for the field (default is 'Select date')
-  final String label;
-
-  /// (optional) The error text that should be displayed under the field
-  final String errorText;
-
-  /// (optional) Custom [InputDecoration] for the [InputDecorator] widget
-  final InputDecoration decoration;
-
-  /// (optional) How to display the [DateTime] for the user (default is [DateFormat.yMMMD])
-  final DateFormat dateFormat;
-
-  /// (optional) Whether the field is usable. If false the user won't be able to select any date
-  final bool enabled;
-
-  /// Whether to ask the user to pick only the date, the time or both.
-  final DateFieldPickerMode mode;
-
-  /// Shows a dialog asking the user to pick a date !
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime initialDateTime = selectedDate ?? lastDate ?? DateTime.now();
-
-    if (Theme.of(context).platform == TargetPlatform.iOS) {
-      showModalBottomSheet<void>(
-        context: context,
-        builder: (BuildContext builder) {
-          return Container(
-            height: 216,
-            child: CupertinoDatePicker(
-              mode: _cupertinoModeFromPickerMode(mode),
-              onDateTimeChanged: onDateSelected,
-              initialDateTime: initialDateTime,
-              minimumDate: firstDate,
-              maximumDate: lastDate,
-            ),
-          );
-        },
-      );
-    } else {
-      DateTime _selectedDateTime = initialDateTime;
-
-      if ([DateFieldPickerMode.dateAndTime, DateFieldPickerMode.date]
-          .contains(mode)) {
-        final DateTime _selectedDate = await showDatePicker(
-            context: context,
-            initialDatePickerMode: initialDatePickerMode,
-            initialDate: initialDateTime,
-            firstDate: firstDate,
-            lastDate: lastDate);
-
-        if (_selectedDate != null) {
-          _selectedDateTime = _selectedDate;
-        }
-      }
-
-      if ([DateFieldPickerMode.dateAndTime, DateFieldPickerMode.time]
-          .contains(mode)) {
-        final TimeOfDay _selectedTime = await showTimePicker(
-          initialTime: TimeOfDay.fromDateTime(initialDateTime),
-          context: context,
-        );
-
-        if (_selectedTime != null) {
-          _selectedDateTime = DateTime(
-              _selectedDateTime.year,
-              _selectedDateTime.month,
-              _selectedDateTime.day,
-              _selectedTime.hour,
-              _selectedTime.minute);
-        }
-      }
-
-      onDateSelected(_selectedDateTime);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    String text;
-
-    if (selectedDate != null) text = dateFormat.format(selectedDate);
-
-    return _InputDropdown(
-      text: text ?? label,
-      label: text == null ? null : label,
-      errorText: errorText,
-      decoration: decoration,
-      onPressed: enabled ? () => _selectDate(context) : null,
     );
   }
 }
