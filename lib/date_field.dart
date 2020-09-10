@@ -29,38 +29,38 @@ class DateTimeFormField extends FormField<DateTime> {
     this.initialDatePickerMode = DatePickerMode.day,
     this.mode = DateFieldPickerMode.date,
   }) : super(
-    key: key,
-    initialValue: initialValue,
-    onSaved: onSaved,
-    validator: validator,
-    autovalidate: autovalidate,
-    enabled: enabled,
-    builder: (FormFieldState<DateTime> field) {
-      final _DateFormFieldState state = field;
+          key: key,
+          initialValue: initialValue,
+          onSaved: onSaved,
+          validator: validator,
+          autovalidate: autovalidate,
+          enabled: enabled,
+          builder: (FormFieldState<DateTime> field) {
+            final _DateFormFieldState state = field;
 
-      void onChangedHandler(DateTime value) {
-        if (onDateSelected != null) {
-          onDateSelected(value);
-        }
-        field.didChange(value);
-      }
+            void onChangedHandler(DateTime value) {
+              if (onDateSelected != null) {
+                onDateSelected(value);
+              }
+              field.didChange(value);
+            }
 
-      return DateTimeField(
-        label: label,
-        firstDate: firstDate,
-        lastDate: lastDate,
-        decoration: decoration,
-        initialDatePickerMode: initialDatePickerMode,
-        dateFormat: dateFormat,
-        errorText: state.errorText,
-        onDateSelected: onChangedHandler,
-        selectedDate: state.value,
-        enabled: enabled,
-        mode: mode,
-        textStyle: textStyle,
-      );
-    },
-  );
+            return DateTimeField(
+              label: label,
+              firstDate: firstDate,
+              lastDate: lastDate,
+              decoration: decoration,
+              initialDatePickerMode: initialDatePickerMode,
+              dateFormat: dateFormat,
+              errorText: state.errorText,
+              onDateSelected: onChangedHandler,
+              selectedDate: state.value,
+              enabled: enabled,
+              mode: mode,
+              textStyle: textStyle,
+            );
+          },
+        );
 
   /// (optional) A callback that will be triggered whenever a new
   /// DateTime is selected
