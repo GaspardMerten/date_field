@@ -50,3 +50,7 @@ Improvements:
 ##0.3.1
 
 * Adding the possibility to style the text with TextStyle
+
+##0.3.2
+
+* Formating with dartfm
