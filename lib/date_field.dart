@@ -238,7 +238,6 @@ class DateTimeField extends StatelessWidget {
 
     return _InputDropdown(
       text: text ?? label,
-      label: text == null ? null : label,
       errorText: errorText,
       textStyle: textStyle,
       decoration: decoration,
@@ -287,16 +286,12 @@ class _InputDropdown extends StatelessWidget {
   const _InputDropdown({
     Key key,
     @required this.text,
-    this.label,
     this.decoration,
     this.textStyle,
     this.onPressed,
     this.errorText,
   })  : assert(text != null),
         super(key: key);
-
-  /// The label to display for the field (default is 'Select date')
-  final String label;
 
   /// The text that should be displayed inside the field
   final String text;
@@ -324,7 +319,6 @@ class _InputDropdown extends StatelessWidget {
     final InputDecoration effectiveDecoration =
         decoration?.copyWith(errorText: errorText) ??
             InputDecoration(
-              labelText: label,
               errorText: errorText,
               suffixIcon: const Icon(Icons.arrow_drop_down),
             ).applyDefaults(Theme.of(context).inputDecorationTheme);

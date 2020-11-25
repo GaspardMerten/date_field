@@ -54,3 +54,10 @@ Improvements:
 ##0.3.2
 
 * Formating with dartfm
+
+##0.3.3
+
+* Intl => any support
+
+Breaking change:
+* Removing the label property, please consider using the InputDecoration to customize the label.

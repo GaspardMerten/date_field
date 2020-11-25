@@ -1,12 +1,14 @@
 name: date_field
 description: Contains DateField and DateFormField which allows the user to pick a DateTime from an input field!
-version: 0.3.2
+version: 0.3.3
 homepage: 'https://github.com/GaspardMerten/date_field'
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
 
 dependencies:
-  intl: ^0.16.1
   flutter:
     sdk: flutter
+
+  intl: ">=0.2.7 <2.0.0"
+
