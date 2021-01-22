@@ -66,3 +66,7 @@ Breaking change:
 
 * Full support for input decoration
 * New standardized usage, many deprecations
+
+##1.0.1
+
+* Removing the ripple effect
