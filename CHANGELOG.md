@@ -61,3 +61,8 @@ Improvements:
 
 Breaking change:
 * Removing the label property, please consider using the InputDecoration to customize the label.
+
+##1.0.0
+
+* Full support for input decoration
+* New standardized usage, many deprecations

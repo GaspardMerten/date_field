@@ -1,6 +1,6 @@
 name: date_field
-description: Contains DateField and DateFormField which allows the user to pick a DateTime from an input field!
-version: 0.3.3
+description: A widget in the form of a field that lets people enter choose a date/time/date and time via a date/time picker dialog.
+version: 1.0.0
 homepage: 'https://github.com/GaspardMerten/date_field'
 
 environment:
