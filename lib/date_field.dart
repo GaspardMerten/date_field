@@ -301,15 +301,9 @@ class _InputDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    BorderRadius inkwellBorderRadius;
-
-    if (decoration?.border?.runtimeType == OutlineInputBorder) {
-      inkwellBorderRadius = BorderRadius.circular(8);
-    }
-
     final InputDecoration effectiveDecoration = decoration ??
         const InputDecoration(
-          suffixIcon: const Icon(Icons.arrow_drop_down),
+          suffixIcon: Icon(Icons.arrow_drop_down),
         ).applyDefaults(Theme.of(context).inputDecorationTheme);
 
     return GestureDetector(

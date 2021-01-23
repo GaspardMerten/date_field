@@ -82,3 +82,8 @@ Breaking change:
 ##1.0.4
 
 * Fixing critical issue
+
+##1.0.5
+
+* Removing unused variables
+* Improving description
