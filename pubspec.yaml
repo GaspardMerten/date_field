@@ -1,6 +1,6 @@
 name: date_field
-description: A widget in the form of a field that lets people enter choose a date/time/date and time via a date/time picker dialog.
-version: 1.0.1
+description: A widget in the form of a field that lets people enter choose a date/time/date and time via a date/time picker dialog. You can specify a custom input decoration, a custom date display. Uses DateTime.
+version: 1.0.4
 homepage: 'https://github.com/GaspardMerten/date_field'
 
 environment:
@@ -10,5 +10,5 @@ dependencies:
   flutter:
     sdk: flutter
 
-  intl: ">=0.2.7 <2.0.0"
+  intl: ">=0.2.7 <5.0.0"
 

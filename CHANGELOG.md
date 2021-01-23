@@ -70,3 +70,15 @@ Breaking change:
 ##1.0.1
 
 * Removing the ripple effect
+
+##1.0.2
+
+* Improving package description
+
+##1.0.3
+
+* Improving package description
+
+##1.0.4
+
+* Fixing critical issue

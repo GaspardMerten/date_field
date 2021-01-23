@@ -312,9 +312,12 @@ class _InputDropdown extends StatelessWidget {
           suffixIcon: const Icon(Icons.arrow_drop_down),
         ).applyDefaults(Theme.of(context).inputDecorationTheme);
 
-    return InputDecorator(
-      decoration: effectiveDecoration,
-      child: Text(text, style: textStyle),
+    return GestureDetector(
+      onTap: onPressed,
+      child: InputDecorator(
+        decoration: effectiveDecoration,
+        child: Text(text, style: textStyle),
+      ),
     );
   }
 }

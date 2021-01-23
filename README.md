@@ -15,7 +15,7 @@ In the `pubspec.yaml` of your flutter project, add the following dependency:
 ```yaml
 dependencies:
   ...
-  date_field: ^1.0.1
+  date_field: ^1.0.4
 ```
 
 In your library add the following import:
