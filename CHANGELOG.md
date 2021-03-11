@@ -87,3 +87,7 @@ Breaking change:
 
 * Removing unused variables
 * Improving description
+
+##2.0.0
+
+* Migrating to null-safety
