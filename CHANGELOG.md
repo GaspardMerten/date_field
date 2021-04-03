@@ -1,59 +1,38 @@
-## 0.0.1
+##2.0.1
 
-* Initial version
+* Adding the ability to specify the entry mode for the material date picker.
 
-## 0.0.2
+##2.0.0
 
-* Fixing README.md
-* Updating package description
-* Formatting with DartFM
+* Migrating to null-safety
 
-## 0.1.0
 
-* Updating documentation!
+##1.0.5
 
-## 0.1.1
+* Removing unused variables
+* Improving description
 
-* Formatting with DartFM!
 
-## 0.1.2
+##1.0.4
 
-* Fixing an incorrect boolean (iOS picker was inverted with the Android one)
+* Fixing critical issue
 
-## 0.2.0
+##1.0.3
 
-* DateFormField now extends FormField. All issues related to this are now fiex
-* The style of the DateField (and by extension the one of DateFormField) is now rigorously applying the theme or any customization. 
+* Improving package description
 
-## 0.2.1
+##1.0.2
 
-* Adding support for Flutter web
+* Improving package description
 
-## 0.2.2
+##1.0.1
 
-* Auto-formatting with dart-fm to meet pub.dev requirements
+* Removing the ripple effect
 
-## 0.3.0
+##1.0.0
 
-Breaking changes: 
-* No more const constructor.
-
-Deprecated:
-* DateField and DateFormField are now deprecated and will be removed in the next version, please consider switching to 
-DateTimeField and DateTimeFormField.
-
-Improvements:
-* Adding support for time. Now you can ask the user for a time, a date or both.
-* Improving performances by setting default value in the constructor. 
-* Adding .time constructor for the DateField widget only.
-
-##0.3.1
-
-* Adding the possibility to style the text with TextStyle
-
-##0.3.2
-
-* Formating with dartfm
+* Full support for input decoration
+* New standardized usage, many deprecations
 
 ##0.3.3
 
@@ -62,32 +41,59 @@ Improvements:
 Breaking change:
 * Removing the label property, please consider using the InputDecoration to customize the label.
 
-##1.0.0
+##0.3.2
 
-* Full support for input decoration
-* New standardized usage, many deprecations
+* Formating with dartfm
 
-##1.0.1
+##0.3.1
 
-* Removing the ripple effect
+* Adding the possibility to style the text with TextStyle
 
-##1.0.2
+## 0.3.0
 
-* Improving package description
+Breaking changes:
+* No more const constructor.
 
-##1.0.3
+Deprecated:
+* DateField and DateFormField are now deprecated and will be removed in the next version, please consider switching to
+  DateTimeField and DateTimeFormField.
 
-* Improving package description
+Improvements:
+* Adding support for time. Now you can ask the user for a time, a date or both.
+* Improving performances by setting default value in the constructor.
+* Adding .time constructor for the DateField widget only.
 
-##1.0.4
+## 0.2.2
 
-* Fixing critical issue
+* Auto-formatting with dart-fm to meet pub.dev requirements
 
-##1.0.5
+## 0.2.1
 
-* Removing unused variables
-* Improving description
+* Adding support for Flutter web
 
-##2.0.0
+## 0.2.0
 
-* Migrating to null-safety
+* DateFormField now extends FormField. All issues related to this are now fiex
+* The style of the DateField (and by extension the one of DateFormField) is now rigorously applying the theme or any customization.
+
+## 0.1.2
+
+* Fixing an incorrect boolean (iOS picker was inverted with the Android one)
+
+## 0.1.1
+
+* Formatting with DartFM!
+
+## 0.1.0
+
+* Updating documentation!
+
+## 0.0.2
+
+* Fixing README.md
+* Updating package description
+* Formatting with DartFM
+
+## 0.0.1
+
+* Initial version

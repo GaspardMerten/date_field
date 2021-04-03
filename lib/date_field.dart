@@ -30,6 +30,7 @@ class DateTimeFormField extends FormField<DateTime> {
     DateTime? lastDate,
     ValueChanged<DateTime>? onDateSelected,
     InputDecoration? decoration,
+    DatePickerEntryMode initialEntryMode = DatePickerEntryMode.calendar,
     DatePickerMode initialDatePickerMode = DatePickerMode.day,
     DateTimeFieldPickerMode mode = DateTimeFieldPickerMode.dateAndTime,
   }) : super(
@@ -65,6 +66,7 @@ class DateTimeFormField extends FormField<DateTime> {
               selectedDate: field.value,
               enabled: enabled,
               mode: mode,
+              initialEntryMode: initialEntryMode,
               dateTextStyle: dateTextStyle,
             );
           },
@@ -89,6 +91,7 @@ class DateTimeField extends StatelessWidget {
     this.decoration,
     this.enabled = true,
     this.mode = DateTimeFieldPickerMode.dateAndTime,
+    this.initialEntryMode = DatePickerEntryMode.calendar,
     this.dateTextStyle,
     DateTime? firstDate,
     DateTime? lastDate,
@@ -105,6 +108,7 @@ class DateTimeField extends StatelessWidget {
     this.decoration,
     this.enabled,
     this.dateTextStyle,
+    this.initialEntryMode = DatePickerEntryMode.calendar,
     DateTime? firstDate,
     DateTime? lastDate,
   })  : initialDatePickerMode = null,
@@ -144,6 +148,9 @@ class DateTimeField extends StatelessWidget {
   /// [TextStyle] of the selected date inside the field.
   final TextStyle? dateTextStyle;
 
+  /// The initial entry mode for the material date picker dialog
+  final DatePickerEntryMode initialEntryMode;
+
   /// Shows a dialog asking the user to pick a date !
   Future<void> _selectDate(BuildContext context) async {
     final DateTime initialDateTime = selectedDate ?? DateTime.now();
@@ -173,6 +180,7 @@ class DateTimeField extends StatelessWidget {
           context: context,
           initialDatePickerMode: initialDatePickerMode!,
           initialDate: initialDateTime,
+          initialEntryMode: initialEntryMode,
           firstDate: firstDate,
           lastDate: lastDate,
         );
@@ -193,11 +201,12 @@ class DateTimeField extends StatelessWidget {
 
         if (_selectedTime != null) {
           _selectedDateTime = DateTime(
-              _selectedDateTime.year,
-              _selectedDateTime.month,
-              _selectedDateTime.day,
-              _selectedTime.hour,
-              _selectedTime.minute);
+            _selectedDateTime.year,
+            _selectedDateTime.month,
+            _selectedDateTime.day,
+            _selectedTime.hour,
+            _selectedTime.minute,
+          );
         }
       }
 

@@ -6,7 +6,7 @@
 Contains DateTimeField and DateTimeFormField which allows the user to pick a DateTime from an input field! Depending on
 the mode, it can ask the user the time, the date or both at the same time ;) !
 
-<img src='https://raw.githubusercontent.com/GaspardMerten/date_field/master/example/example.PNG' height='250px'></img>
+<img src='https://raw.githubusercontent.com/GaspardMerten/date_field/master/example/demo.gif' height='250px'></img>
 
 ## Usage
 
@@ -15,7 +15,7 @@ In the `pubspec.yaml` of your flutter project, add the following dependency:
 ```yaml
 dependencies:
   ...
-  date_field: ^1.0.4
+  date_field: ^2.0.1
 ```
 
 In your library add the following import:
@@ -40,7 +40,7 @@ You can also specify whether you would like to ask the user for a date, a time o
 
 ## Example
 
-The following picture illustrates some of the things you can do with this package.
+The following picture illustrates some things you can do with this package.
 
 <img src='https://raw.githubusercontent.com/GaspardMerten/date_field/master/example/demo.gif' height='250px'></img>
 
