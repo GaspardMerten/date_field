@@ -15,7 +15,7 @@ In the `pubspec.yaml` of your flutter project, add the following dependency:
 ```yaml
 dependencies:
   ...
-  date_field: ^2.0.1
+  date_field: ^2.1.0
 ```
 
 In your library add the following import:
@@ -63,4 +63,4 @@ DateTimeFormField(
 ),
 ```
 
-You can check the Github repo for a complete example. 
+You can check the GitHub repo for a complete example. 

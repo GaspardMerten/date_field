@@ -1,3 +1,9 @@
+##2.1.0
+
+* Fixing label & hint style issues
+* Moving to a more generic architecture
+* Updating the analysis_options.yaml file
+
 ##2.0.1
 
 * Adding the ability to specify the entry mode for the material date picker.

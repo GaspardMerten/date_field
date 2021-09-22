@@ -1,33 +1,38 @@
-import 'package:flutter/material.dart';
 import 'package:date_field/date_field.dart';
+import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        inputDecorationTheme:
-            const InputDecorationTheme(border: OutlineInputBorder()),
+        inputDecorationTheme: const InputDecorationTheme(
+          border: OutlineInputBorder(),
+        ),
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(),
+      home: const MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
+  const MyHomePage({Key? key}) : super(key: key);
+
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  DateTime selectedDate;
+  DateTime? selectedDate;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
       padding: const EdgeInsets.all(20.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [
+        children: <Widget>[
           const FlutterLogo(size: 100),
           const SizedBox(height: 20),
           const Text('DateField package showcase'),
@@ -59,7 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           Form(
             child: Column(
-              children: [
+              children: <Widget>[
                 DateTimeFormField(
                   decoration: const InputDecoration(
                     hintStyle: TextStyle(color: Colors.black45),
@@ -69,7 +74,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     labelText: 'My Super Date Time Field',
                   ),
                   autovalidateMode: AutovalidateMode.always,
-                  validator: (e) =>
+                  validator: (DateTime? e) =>
                       (e?.day ?? 0) == 1 ? 'Please not the first day' : null,
                   onDateSelected: (DateTime value) {
                     print(value);
@@ -86,8 +91,11 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   mode: DateTimeFieldPickerMode.time,
                   autovalidateMode: AutovalidateMode.always,
-                  validator: (e) =>
-                      (e?.day ?? 0) == 1 ? 'Please not the first day' : null,
+                  validator: (DateTime? e) {
+                    return (e?.day ?? 0) == 1
+                        ? 'Please not the first day'
+                        : null;
+                  },
                   onDateSelected: (DateTime value) {
                     print(value);
                   },
