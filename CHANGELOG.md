@@ -1,3 +1,7 @@
+##2.1.2
+
+* Adding the possibility to specify the initial date selected in the date picker dialog.
+
 ##2.1.1
 
 * Formatting with Dart FM

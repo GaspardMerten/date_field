@@ -22,6 +22,7 @@ class DateTimeField extends StatelessWidget {
     this.mode = DateTimeFieldPickerMode.dateAndTime,
     this.initialEntryMode = DatePickerEntryMode.calendar,
     this.dateTextStyle,
+    this.initialDate,
     DateTime? firstDate,
     DateTime? lastDate,
     DateFormat? dateFormat,
@@ -36,6 +37,7 @@ class DateTimeField extends StatelessWidget {
     this.selectedDate,
     this.decoration,
     this.enabled,
+    this.initialDate,
     this.dateTextStyle,
     this.initialEntryMode = DatePickerEntryMode.calendar,
     DateTime? firstDate,
@@ -58,6 +60,9 @@ class DateTimeField extends StatelessWidget {
 
   /// The last date that the user can select (default is 2100)
   final DateTime lastDate;
+
+  /// The date that will be selected by default in the calendar view.
+  final DateTime? initialDate;
 
   /// Let you choose the [DatePickerMode] for the date picker! (default is [DatePickerMode.day]
   final DatePickerMode? initialDatePickerMode;
@@ -82,7 +87,18 @@ class DateTimeField extends StatelessWidget {
 
   /// Shows a dialog asking the user to pick a date !
   Future<void> _selectDate(BuildContext context) async {
-    final DateTime initialDateTime = selectedDate ?? DateTime.now();
+    final DateTime initialDateTime;
+
+    if (selectedDate != null) {
+      initialDateTime = selectedDate!;
+    } else {
+      final DateTime now = DateTime.now();
+      if (firstDate.isAfter(now) || lastDate.isBefore(now)) {
+        initialDateTime = initialDate ?? lastDate;
+      } else {
+        initialDateTime = now;
+      }
+    }
 
     if (Theme.of(context).platform == TargetPlatform.iOS) {
       showModalBottomSheet<void>(

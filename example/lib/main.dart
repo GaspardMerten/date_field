@@ -73,6 +73,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     suffixIcon: Icon(Icons.event_note),
                     labelText: 'My Super Date Time Field',
                   ),
+                  firstDate: DateTime.now().add(const Duration(days: 10)),
+                  initialDate: DateTime.now().add(const Duration(days: 10)),
                   autovalidateMode: AutovalidateMode.always,
                   validator: (DateTime? e) =>
                       (e?.day ?? 0) == 1 ? 'Please not the first day' : null,

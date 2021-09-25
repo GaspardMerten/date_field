@@ -24,6 +24,7 @@ class DateTimeFormField extends FormField<DateTime> {
     DateFormat? dateFormat,
     DateTime? firstDate,
     DateTime? lastDate,
+    DateTime? initialDate,
     ValueChanged<DateTime>? onDateSelected,
     InputDecoration? decoration,
     DatePickerEntryMode initialEntryMode = DatePickerEntryMode.calendar,
@@ -54,6 +55,7 @@ class DateTimeFormField extends FormField<DateTime> {
 
             return DateTimeField(
               firstDate: firstDate,
+              initialDate: initialDate,
               lastDate: lastDate,
               decoration: effectiveDecoration,
               initialDatePickerMode: initialDatePickerMode,
