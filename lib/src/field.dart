@@ -23,6 +23,7 @@ class DateTimeField extends StatelessWidget {
     this.initialEntryMode = DatePickerEntryMode.calendar,
     this.dateTextStyle,
     this.initialDate,
+    this.use24hFormat = false,
     DateTime? firstDate,
     DateTime? lastDate,
     DateFormat? dateFormat,
@@ -39,6 +40,7 @@ class DateTimeField extends StatelessWidget {
     this.enabled,
     this.initialDate,
     this.dateTextStyle,
+    this.use24hFormat = false,
     this.initialEntryMode = DatePickerEntryMode.calendar,
     DateTime? firstDate,
     DateTime? lastDate,
@@ -76,6 +78,9 @@ class DateTimeField extends StatelessWidget {
   /// Whether the field is usable. If false the user won't be able to select any date
   final bool? enabled;
 
+  /// Whether to use the 24Hr Format
+  final bool use24hFormat;
+
   /// Whether to ask the user to pick only the date, the time or both.
   final DateTimeFieldPickerMode mode;
 
@@ -112,6 +117,7 @@ class DateTimeField extends StatelessWidget {
               initialDateTime: initialDateTime,
               minimumDate: firstDate,
               maximumDate: lastDate,
+              use24hFormat: use24hFormat,
             ),
           );
         },
