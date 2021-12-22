@@ -1,3 +1,7 @@
+##2.1.3
+
+* [TheGlorySaint](https://github.com/TheGlorySaint) added the possibility to use the 24Hour Format at the Timepicker. Default it is set to false
+
 ##2.1.2
 
 * Adding the possibility to specify the initial date selected in the date picker dialog.
