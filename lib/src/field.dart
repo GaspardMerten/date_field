@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 final DateTime _kDefaultFirstSelectableDate = DateTime(1900);
 final DateTime _kDefaultLastSelectableDate = DateTime(2100);
 
-const double _kCupertinoDatePickerHeight = 216;
+const double kCupertinoDatePickerHeight = 216;
 
 /// [DateTimeField]
 ///
@@ -106,22 +106,11 @@ class DateTimeField extends StatelessWidget {
     }
 
     if (Theme.of(context).platform == TargetPlatform.iOS) {
-      showModalBottomSheet<void>(
-        context: context,
-        builder: (BuildContext builder) {
-          return SizedBox(
-            height: _kCupertinoDatePickerHeight,
-            child: CupertinoDatePicker(
-              mode: _cupertinoModeFromPickerMode(mode),
-              onDateTimeChanged: onDateSelected!,
-              initialDateTime: initialDateTime,
-              minimumDate: firstDate,
-              maximumDate: lastDate,
-              use24hFormat: use24hFormat,
-            ),
-          );
-        },
-      );
+      final DateTime? _selectedDateTime =
+          await showCupertinoPicker(context, initialDateTime);
+      if (_selectedDateTime != null) {
+        onDateSelected!(_selectedDateTime);
+      }
     } else {
       DateTime _selectedDateTime = initialDateTime;
 
@@ -195,6 +184,32 @@ class DateTimeField extends StatelessWidget {
     );
   }
 
+  /// Launches the [CupertinoDatePicker] within a [showModalBottomSheet].
+  /// Can be @[override]n to allow further customization of the picker options
+  Future<DateTime?> showCupertinoPicker(
+    BuildContext context,
+    DateTime initialDateTime,
+  ) async {
+    DateTime? pickedDate;
+    await showModalBottomSheet<DateTime?>(
+      context: context,
+      builder: (BuildContext builder) {
+        return SizedBox(
+          height: kCupertinoDatePickerHeight,
+          child: CupertinoDatePicker(
+            mode: cupertinoModeFromPickerMode(mode),
+            onDateTimeChanged: (DateTime dt) => pickedDate = dt,
+            initialDateTime: initialDateTime,
+            minimumDate: firstDate,
+            maximumDate: lastDate,
+            use24hFormat: use24hFormat,
+          ),
+        );
+      },
+    );
+    return pickedDate;
+  }
+
   @override
   Widget build(BuildContext context) {
     String? text;
@@ -223,7 +238,7 @@ enum DateTimeFieldPickerMode { time, date, dateAndTime }
 /// Returns the [CupertinoDatePickerMode] corresponding to the selected
 /// [DateTimeFieldPickerMode]. This exists to prevent redundancy in the [DateTimeField]
 /// widget parameters.
-CupertinoDatePickerMode _cupertinoModeFromPickerMode(
+CupertinoDatePickerMode cupertinoModeFromPickerMode(
     DateTimeFieldPickerMode mode) {
   switch (mode) {
     case DateTimeFieldPickerMode.time:
