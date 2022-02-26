@@ -1,3 +1,10 @@
+##3.0.0
+
+* Breaking Upgraded minimum Dart version to 2.15 for Constructor Tearoff support
+* Added optional `DateTimeFieldCreator` argument to `DateTimeFormField` to allow specifying custom implementations of `DateTimeField`
+* Refactored `DateTimeField` to expose `showMaterialTimePicker`, `showMaterialDatePicker`, and `showMaterialTimePicker` as separate overrideable methods
+* Made `kCupertinoDatePickerHeight` and `cupertinoModeFromPickerMode` public for convenience
+
 ##2.1.3
 
 * [TheGlorySaint](https://github.com/TheGlorySaint) added the possibility to use the 24Hour Format at the Timepicker. Default it is set to false
