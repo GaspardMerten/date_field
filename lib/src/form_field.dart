@@ -30,6 +30,7 @@ class DateTimeFormField extends FormField<DateTime> {
     DatePickerEntryMode initialEntryMode = DatePickerEntryMode.calendar,
     DatePickerMode initialDatePickerMode = DatePickerMode.day,
     DateTimeFieldPickerMode mode = DateTimeFieldPickerMode.dateAndTime,
+    DateTimeFieldCreator fieldCreator = DateTimeField.new,
   }) : super(
           key: key,
           initialValue: initialValue,
@@ -53,7 +54,7 @@ class DateTimeFormField extends FormField<DateTime> {
               field.didChange(value);
             }
 
-            return DateTimeField(
+            return fieldCreator(
               firstDate: firstDate,
               initialDate: initialDate,
               lastDate: lastDate,

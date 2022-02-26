@@ -7,11 +7,31 @@ final DateTime _kDefaultLastSelectableDate = DateTime(2100);
 
 const double kCupertinoDatePickerHeight = 216;
 
+/// Constructor tearoff definition that matches [DateTimeField.new]
+// Note: This should match the definition of the [DateTimeField] constructor
+typedef DateTimeFieldCreator = DateTimeField Function({
+  Key? key,
+  required ValueChanged<DateTime>? onDateSelected,
+  required DateTime? selectedDate,
+  DateFormat? dateFormat,
+  TextStyle? dateTextStyle,
+  InputDecoration? decoration,
+  bool? enabled,
+  DateTime? firstDate,
+  DateTime? initialDate,
+  DatePickerMode? initialDatePickerMode,
+  DatePickerEntryMode initialEntryMode,
+  DateTime? lastDate,
+  DateTimeFieldPickerMode mode,
+  bool use24hFormat,
+});
+
 /// [DateTimeField]
 ///
 /// Shows an [_InputDropdown] that'll trigger [DateTimeField._selectDate] whenever the user
 /// clicks on it ! The date picker is **platform responsive** (ios date picker style for ios, ...)
 class DateTimeField extends StatelessWidget {
+  // Note: This should match the definition of the [DateTimeFieldCreator]
   DateTimeField({
     Key? key,
     required this.onDateSelected,
