@@ -132,14 +132,8 @@ class DateTimeField extends StatelessWidget {
       ];
 
       if (modesWithDate.contains(mode)) {
-        final DateTime? _selectedDate = await showDatePicker(
-          context: context,
-          initialDatePickerMode: initialDatePickerMode!,
-          initialDate: initialDateTime,
-          initialEntryMode: initialEntryMode,
-          firstDate: firstDate,
-          lastDate: lastDate,
-        );
+        final DateTime? _selectedDate =
+            await showMaterialDatePicker(context, initialDateTime);
 
         if (_selectedDate != null) {
           _selectedDateTime = _selectedDate;
@@ -155,10 +149,8 @@ class DateTimeField extends StatelessWidget {
       ];
 
       if (modesWithTime.contains(mode)) {
-        final TimeOfDay? _selectedTime = await showTimePicker(
-          initialTime: TimeOfDay.fromDateTime(initialDateTime),
-          context: context,
-        );
+        final TimeOfDay? _selectedTime =
+            await showMaterialTimePicker(context, initialDateTime);
 
         if (_selectedTime != null) {
           _selectedDateTime = DateTime(
@@ -173,6 +165,34 @@ class DateTimeField extends StatelessWidget {
 
       onDateSelected!(_selectedDateTime);
     }
+  }
+
+  /// Launches the Material time picker by invoking [showTimePicker].
+  /// Can be @[override]n to allow further customization of the picker options
+  Future<TimeOfDay?> showMaterialTimePicker(
+    BuildContext context,
+    DateTime initialDateTime,
+  ) async {
+    return showTimePicker(
+      initialTime: TimeOfDay.fromDateTime(initialDateTime),
+      context: context,
+    );
+  }
+
+  /// Launches the Material time picker by invoking [showDatePicker].
+  /// Can be @[override]n to allow further customization of the picker options
+  Future<DateTime?> showMaterialDatePicker(
+    BuildContext context,
+    DateTime initialDateTime,
+  ) {
+    return showDatePicker(
+      context: context,
+      initialDatePickerMode: initialDatePickerMode!,
+      initialDate: initialDateTime,
+      initialEntryMode: initialEntryMode,
+      firstDate: firstDate,
+      lastDate: lastDate,
+    );
   }
 
   @override
