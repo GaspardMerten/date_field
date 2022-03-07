@@ -4,6 +4,8 @@
 * Added optional `DateTimeFieldCreator` argument to `DateTimeFormField` to allow specifying custom implementations of `DateTimeField`
 * Refactored `DateTimeField` to expose `showMaterialTimePicker`, `showMaterialDatePicker`, and `showMaterialTimePicker` as separate overrideable methods
 * Made `kCupertinoDatePickerHeight` and `cupertinoModeFromPickerMode` public for convenience
+* Removed `DateTimeFormFieldState`, replaced by an instance of `FormFieldState<DateTime>`
+* Fixed the behaviour of the `initialDate' parameter.
 
 ##2.1.3
 
