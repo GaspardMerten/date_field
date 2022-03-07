@@ -73,7 +73,5 @@ class DateTimeFormField extends FormField<DateTime> {
         );
 
   @override
-  _DateFormFieldState createState() => _DateFormFieldState();
+  FormFieldState<DateTime> createState() => FormFieldState<DateTime>();
 }
-
-class _DateFormFieldState extends FormFieldState<DateTime> {}
