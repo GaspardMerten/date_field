@@ -5,13 +5,33 @@ import 'package:intl/intl.dart';
 final DateTime _kDefaultFirstSelectableDate = DateTime(1900);
 final DateTime _kDefaultLastSelectableDate = DateTime(2100);
 
-const double _kCupertinoDatePickerHeight = 216;
+const double kCupertinoDatePickerHeight = 216;
+
+/// Constructor tearoff definition that matches [DateTimeField.new]
+// Note: This should match the definition of the [DateTimeField] constructor
+typedef DateTimeFieldCreator = DateTimeField Function({
+  Key? key,
+  required ValueChanged<DateTime>? onDateSelected,
+  required DateTime? selectedDate,
+  DateFormat? dateFormat,
+  TextStyle? dateTextStyle,
+  InputDecoration? decoration,
+  bool? enabled,
+  DateTime? firstDate,
+  DateTime? initialDate,
+  DatePickerMode? initialDatePickerMode,
+  DatePickerEntryMode initialEntryMode,
+  DateTime? lastDate,
+  DateTimeFieldPickerMode mode,
+  bool use24hFormat,
+});
 
 /// [DateTimeField]
 ///
 /// Shows an [_InputDropdown] that'll trigger [DateTimeField._selectDate] whenever the user
 /// clicks on it ! The date picker is **platform responsive** (ios date picker style for ios, ...)
 class DateTimeField extends StatelessWidget {
+  // Note: This should match the definition of the [DateTimeFieldCreator]
   DateTimeField({
     Key? key,
     required this.onDateSelected,
@@ -106,22 +126,11 @@ class DateTimeField extends StatelessWidget {
     }
 
     if (Theme.of(context).platform == TargetPlatform.iOS) {
-      showModalBottomSheet<void>(
-        context: context,
-        builder: (BuildContext builder) {
-          return SizedBox(
-            height: _kCupertinoDatePickerHeight,
-            child: CupertinoDatePicker(
-              mode: _cupertinoModeFromPickerMode(mode),
-              onDateTimeChanged: onDateSelected!,
-              initialDateTime: initialDateTime,
-              minimumDate: firstDate,
-              maximumDate: lastDate,
-              use24hFormat: use24hFormat,
-            ),
-          );
-        },
-      );
+      final DateTime? _selectedDateTime =
+          await showCupertinoPicker(context, initialDateTime);
+      if (_selectedDateTime != null) {
+        onDateSelected!(_selectedDateTime);
+      }
     } else {
       DateTime _selectedDateTime = initialDateTime;
 
@@ -132,14 +141,8 @@ class DateTimeField extends StatelessWidget {
       ];
 
       if (modesWithDate.contains(mode)) {
-        final DateTime? _selectedDate = await showDatePicker(
-          context: context,
-          initialDatePickerMode: initialDatePickerMode!,
-          initialDate: initialDateTime,
-          initialEntryMode: initialEntryMode,
-          firstDate: firstDate,
-          lastDate: lastDate,
-        );
+        final DateTime? _selectedDate =
+            await showMaterialDatePicker(context, initialDateTime);
 
         if (_selectedDate != null) {
           _selectedDateTime = _selectedDate;
@@ -155,10 +158,8 @@ class DateTimeField extends StatelessWidget {
       ];
 
       if (modesWithTime.contains(mode)) {
-        final TimeOfDay? _selectedTime = await showTimePicker(
-          initialTime: TimeOfDay.fromDateTime(initialDateTime),
-          context: context,
-        );
+        final TimeOfDay? _selectedTime =
+            await showMaterialTimePicker(context, initialDateTime);
 
         if (_selectedTime != null) {
           _selectedDateTime = DateTime(
@@ -173,6 +174,60 @@ class DateTimeField extends StatelessWidget {
 
       onDateSelected!(_selectedDateTime);
     }
+  }
+
+  /// Launches the Material time picker by invoking [showTimePicker].
+  /// Can be @[override]n to allow further customization of the picker options
+  Future<TimeOfDay?> showMaterialTimePicker(
+    BuildContext context,
+    DateTime initialDateTime,
+  ) async {
+    return showTimePicker(
+      initialTime: TimeOfDay.fromDateTime(initialDateTime),
+      context: context,
+    );
+  }
+
+  /// Launches the Material time picker by invoking [showDatePicker].
+  /// Can be @[override]n to allow further customization of the picker options
+  Future<DateTime?> showMaterialDatePicker(
+    BuildContext context,
+    DateTime initialDateTime,
+  ) {
+    return showDatePicker(
+      context: context,
+      initialDatePickerMode: initialDatePickerMode!,
+      initialDate: initialDateTime,
+      initialEntryMode: initialEntryMode,
+      firstDate: firstDate,
+      lastDate: lastDate,
+    );
+  }
+
+  /// Launches the [CupertinoDatePicker] within a [showModalBottomSheet].
+  /// Can be @[override]n to allow further customization of the picker options
+  Future<DateTime?> showCupertinoPicker(
+    BuildContext context,
+    DateTime initialDateTime,
+  ) async {
+    DateTime? pickedDate;
+    await showModalBottomSheet<DateTime?>(
+      context: context,
+      builder: (BuildContext builder) {
+        return SizedBox(
+          height: kCupertinoDatePickerHeight,
+          child: CupertinoDatePicker(
+            mode: cupertinoModeFromPickerMode(mode),
+            onDateTimeChanged: (DateTime dt) => pickedDate = dt,
+            initialDateTime: initialDateTime,
+            minimumDate: firstDate,
+            maximumDate: lastDate,
+            use24hFormat: use24hFormat,
+          ),
+        );
+      },
+    );
+    return pickedDate;
   }
 
   @override
@@ -203,7 +258,7 @@ enum DateTimeFieldPickerMode { time, date, dateAndTime }
 /// Returns the [CupertinoDatePickerMode] corresponding to the selected
 /// [DateTimeFieldPickerMode]. This exists to prevent redundancy in the [DateTimeField]
 /// widget parameters.
-CupertinoDatePickerMode _cupertinoModeFromPickerMode(
+CupertinoDatePickerMode cupertinoModeFromPickerMode(
     DateTimeFieldPickerMode mode) {
   switch (mode) {
     case DateTimeFieldPickerMode.time:
