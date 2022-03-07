@@ -121,7 +121,7 @@ class DateTimeField extends StatelessWidget {
       if (firstDate.isAfter(now) || lastDate.isBefore(now)) {
         initialDateTime = initialDate ?? lastDate;
       } else {
-        initialDateTime = now;
+        initialDateTime = initialDate ?? now;
       }
     }
 
