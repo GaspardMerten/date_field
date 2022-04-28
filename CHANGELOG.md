@@ -1,3 +1,7 @@
+##3.0.1
+
+* Fixing [issue #29](https://github.com/GaspardMerten/date_field/issues/29) -> adding 24h format support for material time picker dialog
+
 ##3.0.0
 
 * Breaking Upgraded minimum Dart version to 2.15 for Constructor Tearoff support

@@ -185,6 +185,14 @@ class DateTimeField extends StatelessWidget {
     return showTimePicker(
       initialTime: TimeOfDay.fromDateTime(initialDateTime),
       context: context,
+      builder: (BuildContext context, Widget? child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(
+            alwaysUse24HourFormat: use24hFormat,
+          ),
+          child: child!,
+        );
+      },
     );
   }
 
