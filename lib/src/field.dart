@@ -244,6 +244,8 @@ class DateTimeField extends StatelessWidget {
 
     if (selectedDate != null) {
       text = dateFormat.format(selectedDate!);
+    } else if (initialDate != null) {
+      text = dateFormat.format(initialDate!);
     }
     TextStyle? textStyle;
 
