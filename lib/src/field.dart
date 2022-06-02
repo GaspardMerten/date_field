@@ -255,7 +255,11 @@ class DateTimeField extends StatelessWidget {
       text: text,
       textStyle: textStyle,
       isEmpty: selectedDate == null,
-      decoration: decoration,
+      decoration: text == null
+          ? decoration
+          : decoration != null
+              ? decoration!.copyWith(label: null)
+              : null,
       onPressed: enabled! ? () => _selectDate(context) : null,
     );
   }
