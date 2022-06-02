@@ -244,8 +244,6 @@ class DateTimeField extends StatelessWidget {
 
     if (selectedDate != null) {
       text = dateFormat.format(selectedDate!);
-    } else if (initialDate != null) {
-      text = dateFormat.format(initialDate!);
     }
     TextStyle? textStyle;
 
@@ -255,11 +253,7 @@ class DateTimeField extends StatelessWidget {
       text: text,
       textStyle: textStyle,
       isEmpty: selectedDate == null,
-      decoration: text == null
-          ? decoration
-          : decoration != null
-              ? decoration!.copyWith(label: null)
-              : null,
+      decoration: text == null ? decoration : null,
       onPressed: enabled! ? () => _selectDate(context) : null,
     );
   }
