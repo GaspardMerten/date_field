@@ -1,3 +1,7 @@
+##3.0.2
+
+* Adding click pointer for desktop and web
+
 ##3.0.1
 
 * Fixing [issue #29](https://github.com/GaspardMerten/date_field/issues/29) -> adding 24h format support for material time picker dialog

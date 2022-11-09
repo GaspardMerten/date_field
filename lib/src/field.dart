@@ -333,14 +333,17 @@ class _InputDropdown extends StatelessWidget {
           suffixIcon: Icon(Icons.arrow_drop_down),
         );
 
-    return GestureDetector(
-      onTap: onPressed,
-      child: InputDecorator(
-        decoration: effectiveDecoration.applyDefaults(
-          Theme.of(context).inputDecorationTheme,
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: onPressed,
+        child: InputDecorator(
+          decoration: effectiveDecoration.applyDefaults(
+            Theme.of(context).inputDecorationTheme,
+          ),
+          isEmpty: isEmpty,
+          child: text == null ? null : Text(text!, style: textStyle),
         ),
-        isEmpty: isEmpty,
-        child: text == null ? null : Text(text!, style: textStyle),
       ),
     );
   }
