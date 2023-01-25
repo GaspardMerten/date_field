@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 final DateTime _kDefaultFirstSelectableDate = DateTime(1900);
@@ -296,7 +297,7 @@ DateFormat getDateFormatFromDateFieldPickerMode(DateTimeFieldPickerMode mode) {
 /// Shows a field with a dropdown arrow !
 /// It does not show any popup menu, it'll just trigger onPressed whenever the
 /// user does click on it !
-class _InputDropdown extends StatelessWidget {
+class _InputDropdown extends StatefulWidget {
   const _InputDropdown({
     Key? key,
     required this.text,
@@ -327,8 +328,15 @@ class _InputDropdown extends StatelessWidget {
   final bool isEmpty;
 
   @override
+  State<_InputDropdown> createState() => _InputDropdownState();
+}
+
+class _InputDropdownState extends State<_InputDropdown> {
+  bool focused = false;
+
+  @override
   Widget build(BuildContext context) {
-    final InputDecoration effectiveDecoration = decoration ??
+    final InputDecoration effectiveDecoration = widget.decoration ??
         const InputDecoration(
           suffixIcon: Icon(Icons.arrow_drop_down),
         );
@@ -336,13 +344,28 @@ class _InputDropdown extends StatelessWidget {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
-        onTap: onPressed,
-        child: InputDecorator(
-          decoration: effectiveDecoration.applyDefaults(
-            Theme.of(context).inputDecorationTheme,
+        onTap: widget.onPressed,
+        child: Focus(
+          onFocusChange: (bool newFocus) => setState(() {
+            focused = newFocus;
+          }),
+          onKey: (_, RawKeyEvent key) {
+            if (key.isKeyPressed(LogicalKeyboardKey.space)) {
+              widget.onPressed?.call();
+              return KeyEventResult.handled;
+            }
+            return KeyEventResult.ignored;
+          },
+          child: InputDecorator(
+            isHovering: focused,
+            decoration: effectiveDecoration.applyDefaults(
+              Theme.of(context).inputDecorationTheme,
+            ),
+            isEmpty: widget.isEmpty,
+            child: widget.text == null
+                ? null
+                : Text(widget.text!, style: widget.textStyle),
           ),
-          isEmpty: isEmpty,
-          child: text == null ? null : Text(text!, style: textStyle),
         ),
       ),
     );
