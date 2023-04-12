@@ -11,7 +11,7 @@ Add the date_field package to your project's dependencies in pubspec.yaml.
 ```yaml
 dependencies:
   ...
-  date_field: ^3.0.0
+  date_field: ^3.0.5
 ```
 
 

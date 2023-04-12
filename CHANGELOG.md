@@ -1,3 +1,7 @@
+# 3.0.5
+
+- Bumping intl to 0.18.0
+
 # 3.0.4
 
 - Updating Changelog.md
