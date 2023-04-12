@@ -65,6 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
           Form(
             child: Column(
               children: <Widget>[
+                DateTimeFormField(),
                 DateTimeFormField(
                   decoration: const InputDecoration(
                     hintStyle: TextStyle(color: Colors.black45),
