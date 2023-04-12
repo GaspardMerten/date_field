@@ -25,6 +25,7 @@ typedef DateTimeFieldCreator = DateTimeField Function({
   DateTime? lastDate,
   DateTimeFieldPickerMode mode,
   bool use24hFormat,
+  TimePickerEntryMode initialTimePickerEntryMode,
 });
 
 /// [DateTimeField]
@@ -48,6 +49,7 @@ class DateTimeField extends StatelessWidget {
     DateTime? firstDate,
     DateTime? lastDate,
     DateFormat? dateFormat,
+    this.initialTimePickerEntryMode = TimePickerEntryMode.dial,
   })  : dateFormat = dateFormat ?? getDateFormatFromDateFieldPickerMode(mode),
         firstDate = firstDate ?? _kDefaultFirstSelectableDate,
         lastDate = lastDate ?? _kDefaultLastSelectableDate,
@@ -63,6 +65,7 @@ class DateTimeField extends StatelessWidget {
     this.dateTextStyle,
     this.use24hFormat = false,
     this.initialEntryMode = DatePickerEntryMode.calendar,
+    this.initialTimePickerEntryMode = TimePickerEntryMode.dial,
     DateTime? firstDate,
     DateTime? lastDate,
   })  : initialDatePickerMode = null,
@@ -110,6 +113,9 @@ class DateTimeField extends StatelessWidget {
 
   /// The initial entry mode for the material date picker dialog
   final DatePickerEntryMode initialEntryMode;
+
+  // the initial entry mode for the material time picker dialog
+  final TimePickerEntryMode initialTimePickerEntryMode;
 
   /// Shows a dialog asking the user to pick a date !
   Future<void> _selectDate(BuildContext context) async {
@@ -159,8 +165,9 @@ class DateTimeField extends StatelessWidget {
       ];
 
       if (modesWithTime.contains(mode)) {
-        final TimeOfDay? _selectedTime =
-            await showMaterialTimePicker(context, initialDateTime);
+        final TimeOfDay? _selectedTime = await showMaterialTimePicker(
+            context, initialDateTime,
+            initialEntryMode: initialTimePickerEntryMode);
 
         if (_selectedTime != null) {
           _selectedDateTime = DateTime(
@@ -180,12 +187,12 @@ class DateTimeField extends StatelessWidget {
   /// Launches the Material time picker by invoking [showTimePicker].
   /// Can be @[override]n to allow further customization of the picker options
   Future<TimeOfDay?> showMaterialTimePicker(
-    BuildContext context,
-    DateTime initialDateTime,
-  ) async {
+      BuildContext context, DateTime initialDateTime,
+      {TimePickerEntryMode initialEntryMode = TimePickerEntryMode.dial}) async {
     return showTimePicker(
       initialTime: TimeOfDay.fromDateTime(initialDateTime),
       context: context,
+      initialEntryMode: initialEntryMode,
       builder: (BuildContext context, Widget? child) {
         return MediaQuery(
           data: MediaQuery.of(context).copyWith(
