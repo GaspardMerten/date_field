@@ -1,3 +1,7 @@
+# 3.0.6
+
+- Fixing issue #42 dense empty form field
+
 # 3.0.5
 
 - Bumping intl to 0.18.0

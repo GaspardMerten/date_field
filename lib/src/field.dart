@@ -370,7 +370,7 @@ class _InputDropdownState extends State<_InputDropdown> {
             ),
             isEmpty: widget.isEmpty,
             child: widget.text == null
-                ? null
+                ? Text('', style: widget.textStyle)
                 : Text(widget.text!, style: widget.textStyle),
           ),
         ),
