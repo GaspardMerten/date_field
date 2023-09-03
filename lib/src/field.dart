@@ -25,6 +25,7 @@ typedef DateTimeFieldCreator = DateTimeField Function({
   DateTime? lastDate,
   DateTimeFieldPickerMode mode,
   bool use24hFormat,
+  Locale? locale,
   TimePickerEntryMode initialTimePickerEntryMode,
 });
 
@@ -46,6 +47,7 @@ class DateTimeField extends StatelessWidget {
     this.dateTextStyle,
     this.initialDate,
     this.use24hFormat = false,
+    this.locale,
     DateTime? firstDate,
     DateTime? lastDate,
     DateFormat? dateFormat,
@@ -64,6 +66,7 @@ class DateTimeField extends StatelessWidget {
     this.initialDate,
     this.dateTextStyle,
     this.use24hFormat = false,
+    this.locale,
     this.initialEntryMode = DatePickerEntryMode.calendar,
     this.initialTimePickerEntryMode = TimePickerEntryMode.dial,
     DateTime? firstDate,
@@ -104,6 +107,9 @@ class DateTimeField extends StatelessWidget {
 
   /// Whether to use the 24Hr Format
   final bool use24hFormat;
+
+  /// Define the layout & language of the date picker
+  final Locale? locale;
 
   /// Whether to ask the user to pick only the date, the time or both.
   final DateTimeFieldPickerMode mode;
@@ -198,7 +204,11 @@ class DateTimeField extends StatelessWidget {
           data: MediaQuery.of(context).copyWith(
             alwaysUse24HourFormat: use24hFormat,
           ),
-          child: child!,
+          child: locale == null ?  child! : Localizations.override(
+            context: context,
+            locale: locale,
+            child: child,
+          ),
         );
       },
     );
@@ -213,6 +223,7 @@ class DateTimeField extends StatelessWidget {
     return showDatePicker(
       context: context,
       initialDatePickerMode: initialDatePickerMode!,
+      locale: locale,
       initialDate: initialDateTime,
       initialEntryMode: initialEntryMode,
       firstDate: firstDate,
