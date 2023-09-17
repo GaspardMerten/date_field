@@ -4,7 +4,7 @@ version: 3.0.6
 homepage: 'https://github.com/GaspardMerten/date_field'
 
 environment:
-  sdk: '>=2.15.0 <3.0.0'
+  sdk: '>=3.1.0 <4.0.0'
 
 dependencies:
   flutter:
