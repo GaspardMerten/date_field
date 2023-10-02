@@ -1,5 +1,6 @@
 import 'package:date_field/src/field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 /// A [FormField] that contains a [DateTimeField].
@@ -32,6 +33,10 @@ class DateTimeFormField extends FormField<DateTime> {
     DateTimeFieldPickerMode mode = DateTimeFieldPickerMode.dateAndTime,
     TimePickerEntryMode initialTimePickerEntryMode = TimePickerEntryMode.dial,
     DateTimeFieldCreator fieldCreator = DateTimeField.new,
+    List<LogicalKeyboardKey> logicalKeyboardKeyTriggers =
+        const <LogicalKeyboardKey>[
+      LogicalKeyboardKey.space,
+    ],
   }) : super(
           key: key,
           initialValue: initialValue,
@@ -70,6 +75,7 @@ class DateTimeFormField extends FormField<DateTime> {
               initialEntryMode: initialEntryMode,
               dateTextStyle: dateTextStyle,
               initialTimePickerEntryMode: initialTimePickerEntryMode,
+              logicalKeyboardKeyTriggers: logicalKeyboardKeyTriggers,
             );
           },
         );

@@ -11,9 +11,8 @@ Add the date_field package to your project's dependencies in pubspec.yaml.
 ```yaml
 dependencies:
   ...
-  date_field: ^3.0.5
+  date_field: ^3.1.0
 ```
-
 
 Import the package in your Dart code.
 
@@ -43,6 +42,7 @@ Use the DateTimeField or DateTimeFormField widget in your code, and customize it
 - <b>mode</b>: the mode of the date and time picker.
 - <b>initialTimePickerEntryMode</b>: the initial entry mode of the time picker.
 - <b>fieldCreator</b>: the creator of the DateTimeField.
+- <b>logicalKeyboardKeyTriggers</b>: list of logical keyboard keys that will open the date picker.
 
 ## Example Usage 📖
 

@@ -26,6 +26,7 @@ typedef DateTimeFieldCreator = DateTimeField Function({
   DateTimeFieldPickerMode mode,
   bool use24hFormat,
   TimePickerEntryMode initialTimePickerEntryMode,
+  List<LogicalKeyboardKey> logicalKeyboardKeyTriggers,
 });
 
 /// [DateTimeField]
@@ -50,6 +51,9 @@ class DateTimeField extends StatelessWidget {
     DateTime? lastDate,
     DateFormat? dateFormat,
     this.initialTimePickerEntryMode = TimePickerEntryMode.dial,
+    this.logicalKeyboardKeyTriggers = const <LogicalKeyboardKey>[
+      LogicalKeyboardKey.space,
+    ],
   })  : dateFormat = dateFormat ?? getDateFormatFromDateFieldPickerMode(mode),
         firstDate = firstDate ?? _kDefaultFirstSelectableDate,
         lastDate = lastDate ?? _kDefaultLastSelectableDate,
@@ -68,12 +72,18 @@ class DateTimeField extends StatelessWidget {
     this.initialTimePickerEntryMode = TimePickerEntryMode.dial,
     DateTime? firstDate,
     DateTime? lastDate,
+    this.logicalKeyboardKeyTriggers = const <LogicalKeyboardKey>[
+      LogicalKeyboardKey.space,
+    ],
   })  : initialDatePickerMode = null,
         mode = DateTimeFieldPickerMode.time,
         dateFormat = DateFormat.jm(),
         firstDate = firstDate ?? DateTime(2000),
         lastDate = lastDate ?? DateTime(2001),
         super(key: key);
+
+  /// list of logical keyboard keys that will open the date picker
+  final List<LogicalKeyboardKey> logicalKeyboardKeyTriggers;
 
   /// Callback for whenever the user selects a [DateTime]
   final ValueChanged<DateTime>? onDateSelected;
@@ -263,6 +273,7 @@ class DateTimeField extends StatelessWidget {
       isEmpty: selectedDate == null,
       decoration: decoration,
       onPressed: enabled! ? () => _selectDate(context) : null,
+      logicalKeyboardKeyTriggers: logicalKeyboardKeyTriggers,
     );
   }
 }
@@ -312,7 +323,11 @@ class _InputDropdown extends StatefulWidget {
     this.textStyle,
     this.onPressed,
     required this.isEmpty,
+    required this.logicalKeyboardKeyTriggers,
   }) : super(key: key);
+
+  /// list of logical keyboard keys that will open the date picker
+  final List<LogicalKeyboardKey> logicalKeyboardKeyTriggers;
 
   /// The text that should be displayed inside the field
   final String? text;
@@ -357,10 +372,15 @@ class _InputDropdownState extends State<_InputDropdown> {
             focused = newFocus;
           }),
           onKey: (_, RawKeyEvent key) {
-            if (key.isKeyPressed(LogicalKeyboardKey.space)) {
-              widget.onPressed?.call();
-              return KeyEventResult.handled;
+            for (int i = 0; i < widget.logicalKeyboardKeyTriggers.length; i++) {
+              if (key.isKeyPressed(
+                widget.logicalKeyboardKeyTriggers[i],
+              )) {
+                widget.onPressed?.call();
+                return KeyEventResult.handled;
+              }
             }
+
             return KeyEventResult.ignored;
           },
           child: InputDecorator(
