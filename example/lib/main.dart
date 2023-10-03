@@ -128,6 +128,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     ),
                     DateTimeFormField(
+                      showDatePickerOnFocus: true,
                       decoration: InputDecoration(
                         label: Text(
                           "Use space or enter key to open when focused",

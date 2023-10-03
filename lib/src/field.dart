@@ -27,6 +27,7 @@ typedef DateTimeFieldCreator = DateTimeField Function({
   bool use24hFormat,
   TimePickerEntryMode initialTimePickerEntryMode,
   List<LogicalKeyboardKey> logicalKeyboardKeyTriggers,
+  bool showDatePickerOnFocus,
 });
 
 /// [DateTimeField]
@@ -54,6 +55,7 @@ class DateTimeField extends StatelessWidget {
     this.logicalKeyboardKeyTriggers = const <LogicalKeyboardKey>[
       LogicalKeyboardKey.space,
     ],
+    this.showDatePickerOnFocus = false,
   })  : dateFormat = dateFormat ?? getDateFormatFromDateFieldPickerMode(mode),
         firstDate = firstDate ?? _kDefaultFirstSelectableDate,
         lastDate = lastDate ?? _kDefaultLastSelectableDate,
@@ -75,6 +77,7 @@ class DateTimeField extends StatelessWidget {
     this.logicalKeyboardKeyTriggers = const <LogicalKeyboardKey>[
       LogicalKeyboardKey.space,
     ],
+    this.showDatePickerOnFocus = false,
   })  : initialDatePickerMode = null,
         mode = DateTimeFieldPickerMode.time,
         dateFormat = DateFormat.jm(),
@@ -84,6 +87,9 @@ class DateTimeField extends StatelessWidget {
 
   /// list of logical keyboard keys that will open the date picker
   final List<LogicalKeyboardKey> logicalKeyboardKeyTriggers;
+
+  /// if true shows the date picker automatically when the form field is focused
+  final bool showDatePickerOnFocus;
 
   /// Callback for whenever the user selects a [DateTime]
   final ValueChanged<DateTime>? onDateSelected;
@@ -274,6 +280,7 @@ class DateTimeField extends StatelessWidget {
       decoration: decoration,
       onPressed: enabled! ? () => _selectDate(context) : null,
       logicalKeyboardKeyTriggers: logicalKeyboardKeyTriggers,
+      showDatePickerOnFocus: showDatePickerOnFocus,
     );
   }
 }
@@ -324,10 +331,14 @@ class _InputDropdown extends StatefulWidget {
     this.onPressed,
     required this.isEmpty,
     required this.logicalKeyboardKeyTriggers,
+    required this.showDatePickerOnFocus,
   }) : super(key: key);
 
   /// list of logical keyboard keys that will open the date picker
   final List<LogicalKeyboardKey> logicalKeyboardKeyTriggers;
+
+  /// if true shows the date picker automatically when the form field is focused
+  final bool showDatePickerOnFocus;
 
   /// The text that should be displayed inside the field
   final String? text;
@@ -356,6 +367,40 @@ class _InputDropdown extends StatefulWidget {
 class _InputDropdownState extends State<_InputDropdown> {
   bool focused = false;
 
+  /// count used to determine if focus is from closing date picker or another
+  /// source such as tab, or next.
+  int _focusCount = 0;
+
+  /// used to force focus when selecting using a non-focused selection
+  final FocusNode _focusNode = FocusNode();
+
+  /// selections of the form field which are not through a focus change only.
+  /// Tap (focused or unfocused), or key press (when already focused).
+  /// Focused selections are tab, or next.
+  /// if already has focus run onPressed, and decrement _focusCount, so when the
+  /// date picker closes another date picker doesn't open due to focus.
+  /// otherwise, set the focus, and run the same as if focus came from another
+  /// method.
+  /// If showDatePickerOnFocus is false just open date pricker when pressed
+  void _nonFocusSelection() {
+    if (widget.showDatePickerOnFocus) {
+      if (_focusNode.hasFocus) {
+        widget.onPressed?.call();
+        _focusCount--;
+      } else {
+        _focusNode.requestFocus();
+      }
+    } else {
+      widget.onPressed?.call();
+    }
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final InputDecoration effectiveDecoration = widget.decoration ??
@@ -366,17 +411,33 @@ class _InputDropdownState extends State<_InputDropdown> {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
-        onTap: widget.onPressed,
+        onTap: _nonFocusSelection,
         child: Focus(
-          onFocusChange: (bool newFocus) => setState(() {
-            focused = newFocus;
-          }),
+          focusNode: _focusNode,
+          onFocusChange: (bool newFocus) {
+            setState(() {
+              focused = newFocus;
+
+              // only run if showDatePickerOnFocus
+              if (widget.showDatePickerOnFocus) {
+                // pre-increment
+                if (newFocus) {
+                  _focusCount++;
+                }
+
+                // only if gaining focus, and _focusCount is odd
+                if (newFocus && _focusCount.isOdd) {
+                  widget.onPressed?.call();
+                }
+              }
+            });
+          },
           onKey: (_, RawKeyEvent key) {
             for (int i = 0; i < widget.logicalKeyboardKeyTriggers.length; i++) {
               if (key.isKeyPressed(
                 widget.logicalKeyboardKeyTriggers[i],
               )) {
-                widget.onPressed?.call();
+                _nonFocusSelection();
                 return KeyEventResult.handled;
               }
             }

@@ -5,6 +5,10 @@
     - these triggers are used to open the date picker if the user presses one of
       them
     - only works when a physical keyboard is present
+- added ```showDatePickerOnFocus```
+    - ```bool```
+    - when true the date picker is shown when the form field is focused
+        - by tab, or next
 
 # 3.0.6
 

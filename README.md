@@ -43,6 +43,7 @@ Use the DateTimeField or DateTimeFormField widget in your code, and customize it
 - <b>initialTimePickerEntryMode</b>: the initial entry mode of the time picker.
 - <b>fieldCreator</b>: the creator of the DateTimeField.
 - <b>logicalKeyboardKeyTriggers</b>: list of logical keyboard keys that will open the date picker.
+- <b>showDatePickerOnFocus</b>: if true shows the date picker automatically when the form field is focused
 
 ## Example Usage 📖
 

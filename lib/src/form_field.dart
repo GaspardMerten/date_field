@@ -37,6 +37,7 @@ class DateTimeFormField extends FormField<DateTime> {
         const <LogicalKeyboardKey>[
       LogicalKeyboardKey.space,
     ],
+    bool showDatePickerOnFocus = false,
   }) : super(
           key: key,
           initialValue: initialValue,
@@ -76,6 +77,7 @@ class DateTimeFormField extends FormField<DateTime> {
               dateTextStyle: dateTextStyle,
               initialTimePickerEntryMode: initialTimePickerEntryMode,
               logicalKeyboardKeyTriggers: logicalKeyboardKeyTriggers,
+              showDatePickerOnFocus: showDatePickerOnFocus,
             );
           },
         );
