@@ -35,21 +35,17 @@ parameter.
 5. Use the Widget. Example:
 
    ```dart
-   DateTimeField(
-    decoration: const InputDecoration(
-    hintStyle: TextStyle(color: Colors.black45),
-    errorStyle: TextStyle(color: Colors.redAccent),
-    border: OutlineInputBorder(),
-    suffixIcon: Icon(Icons.event_note),
-    labelText: 'Only time',
-    ),
-    mode: DateTimeFieldPickerMode.time,
-    autovalidateMode: AutovalidateMode.always,
-    validator: (e) => (e?.day ?? 0) == 1 ? 'Please not the first day' : null,
-    onDateSelected: (DateTime value) {
-    print(value);
-    },
-   )
+   DateTimeFormField(
+     decoration: const InputDecoration(
+       labelText: 'Enter Date',
+     ),
+     firstDate: DateTime.now().add(const Duration(days: 10)),
+     lastDate: DateTime.now().add(const Duration(days: 40)),
+     initialPickerDateTime: DateTime.now().add(const Duration(days: 20)),
+     onChanged: (DateTime? value) {
+       selectedDate = value;
+     },
+   ),
    ```
 
 Use the DateTimeField or DateTimeFormField widget in your code, and customize it using the available
