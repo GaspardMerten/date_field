@@ -34,7 +34,7 @@ parameter.
    ```
 5. Use the Widget. Example:
 
-```dart
+   ```dart
    DateTimeField(
     decoration: const InputDecoration(
     hintStyle: TextStyle(color: Colors.black45),
