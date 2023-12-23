@@ -1,134 +1,45 @@
+import 'dart:io';
 import 'dart:math' as math;
 
+import 'package:date_field/src/cupertino_date_picker_options.dart';
+import 'package:date_field/src/material_date_picker_options.dart';
+import 'package:date_field/src/material_time_picker_options.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
+part 'form_field.dart';
 
 final DateTime _kDefaultFirstSelectableDate = DateTime(1900);
 final DateTime _kDefaultLastSelectableDate = DateTime(2100);
 
-const double kCupertinoDatePickerHeight = 216;
-
+const double _kCupertinoDatePickerHeight = 216;
 const double _kDenseButtonHeight = 24.0;
 
-/// A [FormField] that contains a [DateTimeField].
+const Kept = 1;
+
+/// The mode of the [DateTimeField].
 ///
-/// This is a convenience widget that wraps a [DateTimeField] widget in a
-/// [FormField].
-///
-/// A [Form] ancestor is not required. The [Form] simply makes it easier to
-/// save, reset, or validate multiple fields at once. To use without a [Form],
-/// pass a [GlobalKey] to the constructor and use [GlobalKey.currentState] to
-/// save or reset the form field.
-class DateTimeFormField extends FormField<DateTime> {
-  DateTimeFormField({
-    super.key,
-    super.initialValue,
-    required this.onChanged,
-    VoidCallback? onTap,
-    TextStyle? style,
-    Color? focusColor,
-    FocusNode? focusNode,
-    bool autofocus = false,
-    InputDecoration? decoration,
-    super.onSaved,
-    super.validator,
-    AutovalidateMode? autovalidateMode,
-    bool? enableFeedback,
-    EdgeInsetsGeometry? padding,
-    bool use24hFormat = false,
-    TextStyle? dateTextStyle,
-    DateFormat? dateFormat,
-    DateTime? firstDate,
-    DateTime? lastDate,
-    DateTime? initialDate,
-    bool hideDefaultIcon = false,
-    bool canReset = true,
-    DatePickerEntryMode initialEntryMode = DatePickerEntryMode.calendar,
-    DatePickerMode initialDatePickerMode = DatePickerMode.day,
-    DateTimeFieldPickerMode mode = DateTimeFieldPickerMode.dateAndTime,
-    TimePickerEntryMode initialTimePickerEntryMode = TimePickerEntryMode.dial,
-  }) : super(
-          autovalidateMode: autovalidateMode ?? AutovalidateMode.disabled,
-          builder: (FormFieldState<DateTime> field) {
-            final _DateTimeFormFieldState state = field as _DateTimeFormFieldState;
+/// Depending on the mode, [DateTimeField] will show:
+/// On iOS & macOS: a CupertinoDatePicker with the according [CupertinoDatePickerMode].
+/// On all other platforms: a [MaterialDatePicker], a [MaterialTimePicker] or both.
+enum DateTimeFieldPickerMode {
+  time,
+  date,
+  dateAndTime;
 
-            final bool isEmpty = state.value == null;
+  DateFormat toDateFormat() => switch (this) {
+        DateTimeFieldPickerMode.time => DateFormat.jm(),
+        DateTimeFieldPickerMode.date => DateFormat.yMMMMd(),
+        DateTimeFieldPickerMode.dateAndTime => DateFormat.yMd().add_jm(),
+      };
 
-            InputDecoration decorationArg = (decoration ?? InputDecoration(focusColor: focusColor))
-                .copyWith(errorText: field.errorText);
-
-            if (canReset && !isEmpty && state.value != initialValue) {
-              decorationArg = decorationArg.copyWith(
-                suffixIcon: Focus(
-                  canRequestFocus: false,
-                  skipTraversal: true,
-                  child: IconButton(
-                    icon: const Icon(Icons.clear),
-                    onPressed: field.reset,
-                  ),
-                ),
-              );
-            }
-
-            // An unfocusable Focus widget so that this widget can detect if its
-            // descendants have focus or not.
-            return Focus(
-              canRequestFocus: false,
-              skipTraversal: true,
-              child: Builder(builder: (BuildContext context) {
-                return DateTimeField._formField(
-                  value: state.value,
-                  onChanged: onChanged == null ? null : state.didChange,
-                  onTap: onTap,
-                  style: style,
-                  focusColor: focusColor,
-                  focusNode: focusNode,
-                  autofocus: autofocus,
-                  enableFeedback: enableFeedback,
-                  decoration: decorationArg,
-                  isEmpty: isEmpty,
-                  isFocused: Focus.of(context).hasFocus,
-                  padding: padding,
-                  firstDate: firstDate,
-                  initialDate: initialDate,
-                  lastDate: lastDate,
-                  initialDatePickerMode: initialDatePickerMode,
-                  dateFormat: dateFormat,
-                  use24hFormat: use24hFormat,
-                  mode: mode,
-                  initialEntryMode: initialEntryMode,
-                  dateTextStyle: dateTextStyle,
-                  initialTimePickerEntryMode: initialTimePickerEntryMode,
-                  hideDefaultIcon: hideDefaultIcon,
-                );
-              }),
-            );
-          },
-        );
-
-  final ValueChanged<DateTime?>? onChanged;
-
-  @override
-  FormFieldState<DateTime> createState() => _DateTimeFormFieldState();
-}
-
-class _DateTimeFormFieldState extends FormFieldState<DateTime> {
-  @override
-  void didChange(DateTime? value) {
-    super.didChange(value);
-    final DateTimeFormField dropdownButtonFormField = widget as DateTimeFormField;
-    assert(dropdownButtonFormField.onChanged != null);
-    dropdownButtonFormField.onChanged!(value);
-  }
-
-  @override
-  void didUpdateWidget(DateTimeFormField oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.initialValue != widget.initialValue) {
-      setValue(widget.initialValue);
-    }
-  }
+  CupertinoDatePickerMode toCupertinoDatePickerMode() => switch (this) {
+        DateTimeFieldPickerMode.time => CupertinoDatePickerMode.time,
+        DateTimeFieldPickerMode.date => CupertinoDatePickerMode.date,
+        DateTimeFieldPickerMode.dateAndTime => CupertinoDatePickerMode.dateAndTime,
+      };
 }
 
 /// [DateTimeField]
@@ -137,161 +48,259 @@ class _DateTimeFormFieldState extends FormFieldState<DateTime> {
 /// clicks on it ! The date picker is **platform responsive** (ios date picker style for ios, ...)
 class DateTimeField extends StatefulWidget {
   DateTimeField({
-    super.key,
-    this.value,
     required this.onChanged,
+    super.key,
+    DateTime? value,
     this.onTap,
-    this.style,
-    this.focusColor,
+    TextStyle? style,
     this.focusNode,
     this.autofocus = false,
     this.enableFeedback,
     this.padding,
-    this.initialDatePickerMode = DatePickerMode.day,
+    this.hideDefaultSuffixIcon = false,
     this.decoration,
+    DateTime? initialPickerDateTime,
+    this.cupertinoDatePickerOptions = const CupertinoDatePickerOptions(),
+    MaterialDatePickerOptions? materialDatePickerOptions,
+    MaterialTimePickerOptions? materialTimePickerOptions,
     this.mode = DateTimeFieldPickerMode.dateAndTime,
-    this.initialEntryMode = DatePickerEntryMode.calendar,
-    this.dateTextStyle,
-    this.initialDate,
-    this.use24hFormat = false,
     DateTime? firstDate,
     DateTime? lastDate,
     DateFormat? dateFormat,
-    this.hideDefaultIcon = false,
-    this.initialTimePickerEntryMode = TimePickerEntryMode.dial,
-  })  : dateFormat = dateFormat ?? getDateFormatFromDateFieldPickerMode(mode),
+    this.use24hFormat,
+    @Deprecated('''
+    enabled has no effect anymore. It gets evaluated from onChanged != null.
+    Will be removed in v5.0.0.
+    ''') bool? enabled,
+    @Deprecated('''
+    Use value instead.
+    Will be removed in v5.0.0.
+    ''') DateTime? selectedDate,
+    @Deprecated('''
+    Use style instead.
+    Will be removed in v5.0.0.
+    ''') TextStyle? dateTextStyle,
+    @Deprecated('''
+    Use onChanged instead.
+    Will be removed in v5.0.0.
+    ''') ValueChanged<DateTime>? onDateSelected,
+    @Deprecated('''
+    Use materialDatePickerOptions.initialDatePickerMode instead.
+    Will be removed in v5.0.0
+    ''') DatePickerMode? initialDatePickerMode,
+    @Deprecated('''
+    Use materialDatePickerOptions.initialEntryMode instead.
+    Will be removed in v5.0.0
+    ''') DatePickerEntryMode? initialEntryMode,
+    @Deprecated('''
+    Use initialPickerDateTime instead.
+    Will be removed in v5.0.0
+    ''') DateTime? initialDate,
+    @Deprecated('''
+    Use materialTimePickerOptions.initialEntryMode instead.
+    Will be removed in v5.0.0
+    ''') TimePickerEntryMode? initialTimePickerEntryMode,
+  })  : assert(enabled == null || enabled == (onChanged != null),
+            'enabled got deprecated. The new behavior uses `onChanged != null`'),
+        dateFormat = dateFormat ?? mode.toDateFormat(),
+        style = style ?? dateTextStyle,
         firstDate = firstDate ?? _kDefaultFirstSelectableDate,
         lastDate = lastDate ?? _kDefaultLastSelectableDate,
-        // TODO(torbenkeller): isEmtpty & isFocused should disable the input
-        // decoration when the widget is not used as a form field. Then we need a hint and icon widget + styles
-        // and build the widget like the dropdown button from hand.
-        _isEmpty = false,
-        _isFocused = false;
+        initialPickerDateTime = initialPickerDateTime ?? initialDate,
+        value = value ?? selectedDate,
+        materialDatePickerOptions = materialDatePickerOptions ??
+            MaterialDatePickerOptions(
+              initialEntryMode: initialEntryMode ?? DatePickerEntryMode.calendar,
+              initialDatePickerMode: initialDatePickerMode ?? DatePickerMode.day,
+            ),
+        materialTimePickerOptions = materialTimePickerOptions ??
+            MaterialTimePickerOptions(
+              initialEntryMode: initialTimePickerEntryMode ?? TimePickerEntryMode.dial,
+            );
+
+  factory DateTimeField.time({
+    Key? key,
+    required ValueChanged<DateTime?>? onChanged,
+    DateTime? value,
+    InputDecoration? decoration,
+    DateTime? firstDate,
+    DateTime? lastDate,
+    DateTime? initialPickerDateTime,
+    TextStyle? style,
+    CupertinoDatePickerOptions cupertinoDatePickerOptions = const CupertinoDatePickerOptions(),
+    MaterialTimePickerOptions? materialTimePickerOptions,
+    bool autofocus = false,
+    DateFormat? dateFormat,
+    EdgeInsetsGeometry? padding,
+    VoidCallback? onTap,
+    FocusNode? focusNode,
+    bool hideDefaultSuffixIcon = false,
+    bool? enableFeedback,
+    @Deprecated('''
+    Use onChanged instead.
+    Will be removed in v5.0.0.
+    ''') ValueChanged<DateTime>? onDateSelected,
+    @Deprecated('''
+    Use value instead.
+    Will be removed in v5.0.0.
+    ''') DateTime? selectedDate,
+    @Deprecated('''
+    enabled has no effect anymore. It gets evaluated from onChanged != null.
+    Will be removed in v5.0.0.''') bool? enabled,
+    @Deprecated('''
+    Use initialPickerDateTime instead.
+    Will be removed in v5.0.0
+    ''') DateTime? initialDate,
+    @Deprecated('''
+    Uses now by default MediaQuery.of(context).alwaysUse24HourFormat.
+    Will be removed in v5.0.0.
+    ''') bool? use24hFormat,
+    @Deprecated('''
+    Use style instead.
+    Will be removed in v5.0.0.
+    ''') TextStyle? dateTextStyle,
+    @Deprecated('''
+    Has no effect anymore.
+    Will be removed in v5.0.0
+    ''') DatePickerEntryMode? initialEntryMode,
+    @Deprecated('''
+    Use materialTimePickerOptions.initialEntryMode instead.
+    Will be removed in v5.0.0
+    ''') TimePickerEntryMode? initialTimePickerEntryMode,
+  }) =>
+      DateTimeField(
+        key: key,
+        mode: DateTimeFieldPickerMode.time,
+        firstDate: firstDate ?? DateTime(2000),
+        lastDate: lastDate ?? DateTime(2001),
+        onChanged: onChanged,
+        value: value ?? selectedDate,
+        decoration: decoration,
+        initialPickerDateTime: initialPickerDateTime ?? initialDate,
+        use24hFormat: use24hFormat,
+        style: style ?? dateTextStyle,
+        autofocus: autofocus,
+        dateFormat: dateFormat,
+        padding: padding,
+        onTap: onTap,
+        focusNode: focusNode,
+        hideDefaultSuffixIcon: hideDefaultSuffixIcon,
+        enableFeedback: enableFeedback,
+        cupertinoDatePickerOptions: cupertinoDatePickerOptions,
+        materialTimePickerOptions: materialTimePickerOptions,
+        initialTimePickerEntryMode: initialTimePickerEntryMode,
+      );
 
   DateTimeField._formField({
-    super.key,
-    this.value,
     required this.onChanged,
+    this.value,
     this.onTap,
     this.style,
-    this.focusColor,
     this.focusNode,
     this.autofocus = false,
     this.enableFeedback,
     this.padding,
-    this.initialDatePickerMode = DatePickerMode.day,
     this.decoration,
     this.mode = DateTimeFieldPickerMode.dateAndTime,
-    this.initialEntryMode = DatePickerEntryMode.calendar,
-    this.dateTextStyle,
-    this.initialDate,
-    this.use24hFormat = false,
+    this.initialPickerDateTime,
     DateTime? firstDate,
     DateTime? lastDate,
     DateFormat? dateFormat,
-    this.hideDefaultIcon = false,
-    required bool isEmpty,
-    required bool isFocused,
-    this.initialTimePickerEntryMode = TimePickerEntryMode.dial,
-  })  : dateFormat = dateFormat ?? getDateFormatFromDateFieldPickerMode(mode),
+    this.hideDefaultSuffixIcon = false,
+    this.use24hFormat,
+    this.cupertinoDatePickerOptions = const CupertinoDatePickerOptions(),
+    this.materialDatePickerOptions = const MaterialDatePickerOptions(),
+    this.materialTimePickerOptions = const MaterialTimePickerOptions(),
+  })  : dateFormat = dateFormat ?? mode.toDateFormat(),
         firstDate = firstDate ?? _kDefaultFirstSelectableDate,
-        lastDate = lastDate ?? _kDefaultLastSelectableDate,
-        _isEmpty = isEmpty,
-        _isFocused = isFocused;
+        lastDate = lastDate ?? _kDefaultLastSelectableDate;
 
-  final bool hideDefaultIcon;
-
+  /// The [DateTime] that represents the currently selected date.
   final DateTime? value;
 
+  /// A callback that gets executed when the user changes the [DateTime] in the [DateTimeField].
   final ValueChanged<DateTime?>? onChanged;
 
+  /// A callback that gets executed when the user taps on the [DateTimeField] and before the
+  /// pickers are shown.
   final VoidCallback? onTap;
 
-  /// The text style to use for text in the dropdown button and the dropdown
-  /// menu that appears when you tap the button.
-  ///
-  /// To use a separate text style for selected item when it's displayed within
-  /// the dropdown button, consider using [selectedItemBuilder].
-  ///
-  /// {@tool dartpad}
-  /// This sample shows a `DropdownButton` with a dropdown button text style
-  /// that is different than its menu items.
-  ///
-  /// ** See code in examples/api/lib/material/dropdown/dropdown_button.style.0.dart **
-  /// {@end-tool}
+  /// Options to customize the [CupertinoDatePicker].
+  final CupertinoDatePickerOptions cupertinoDatePickerOptions;
+
+  /// Options to customize the [MaterialDatePicker].
+  final MaterialDatePickerOptions materialDatePickerOptions;
+
+  /// Options to customize the [MaterialTimePicker].
+  final MaterialTimePickerOptions materialTimePickerOptions;
+
+  /// The text style to use for text in the [DateTimeField].
   ///
   /// Defaults to the [TextTheme.titleMedium] value of the current
   /// [ThemeData.textTheme] of the current [Theme].
   final TextStyle? style;
 
-  /// The color for the button's [Material] when it has the input focus.
-  final Color? focusColor;
-
-  /// {@macro flutter.widgets.Focus.focusNode}
+  /// See [Focus.autofocus].
   final FocusNode? focusNode;
 
-  /// {@macro flutter.widgets.Focus.autofocus}
+  /// See [Focus.autofocus].
   final bool autofocus;
 
-  /// Padding around the visible portion of the dropdown widget.
+  /// Padding around the visible portion of the [DateTimeField] widget.
   ///
   /// As the padding increases, the size of the [DropdownButton] will also
   /// increase. The padding is included in the clickable area of the dropdown
   /// widget, so this can make the widget easier to click.
-  ///
-  /// Padding can be useful when used with a custom border. The clickable
-  /// area will stay flush with the border, as opposed to an external [Padding]
-  /// widget which will leave a non-clickable gap.
   final EdgeInsetsGeometry? padding;
 
-  /// Whether detected gestures should provide acoustic and/or haptic feedback.
-  ///
-  /// For example, on Android a tap will produce a clicking sound and a
-  /// long-press will produce a short vibration, when feedback is enabled.
-  ///
-  /// By default, platform-specific feedback is enabled.
-  ///
-  /// See also:
-  ///
-  ///  * [Feedback] for providing platform-specific feedback to certain actions.
+  /// See [InkWell.enableFeedback].
   final bool? enableFeedback;
 
-  final bool _isEmpty;
-
-  final bool _isFocused;
-
-  /// The first date that the user can select (default is 1900)
+  /// The first [DateTime] the user can select.
+  ///
+  /// Defaults to [_kDefaultFirstSelectableDate].
   final DateTime firstDate;
 
-  /// The last date that the user can select (default is 2100)
+  /// The last [DateTime] the user can select.
+  ///
+  /// Defaults to [_kDefaultLastSelectableDate].
   final DateTime lastDate;
 
-  /// The date that will be selected by default in the calendar view.
-  final DateTime? initialDate;
+  /// The initial [DateTime] in the pickers, when no [DateTime] is selected.
+  final DateTime? initialPickerDateTime;
 
-  /// Let you choose the [DatePickerMode] for the date picker! (default is [DatePickerMode.day]
-  final DatePickerMode? initialDatePickerMode;
-
-  /// Custom [InputDecoration] for the [InputDecorator] widget
+  /// The decoration to show around the formatted [DateTime].
+  ///
+  /// By default [InputDecoration.suffixIcon] will be [Icons.event_note] when not defined and
+  /// [hideDefaultSuffixIcon] equals false.
   final InputDecoration? decoration;
 
-  /// How to display the [DateTime] for the user (default is [DateFormat.yMMMD])
+  /// Hides the default suffix icon.
+  ///
+  /// Defaults to false.
+  final bool hideDefaultSuffixIcon;
+
+  /// The format of the shown [DateTime].
+  ///
+  /// Depending on the [mode] the [dateFormat] defaults to:
+  /// - [DateTimeFieldPickerMode.time] => [DateFormat.jm]
+  /// - [DateTimeFieldPickerMode.date] => [DateFormat.yMMMMd]
+  /// - [DateTimeFieldPickerMode.dateAndTime] => [DateFormat.yMd].add_jm()
   final DateFormat dateFormat;
 
-  /// Whether to use the 24Hr Format
-  final bool use24hFormat;
-
-  /// Whether to ask the user to pick only the date, the time or both.
+  /// The mode of the [DateTimeField].
+  ///
+  /// Depending on the mode, [DateTimeField] will show:
+  /// - [TargetPlatform.iOS] or [TargetPlatform.macOS] => a CupertinoDatePicker with the according
+  ///   [CupertinoDatePickerMode].
+  /// - Else => a [MaterialDatePicker], a [MaterialTimePicker] or both.
   final DateTimeFieldPickerMode mode;
 
-  /// [TextStyle] of the selected date inside the field.
-  final TextStyle? dateTextStyle;
-
-  /// The initial entry mode for the material date picker dialog
-  final DatePickerEntryMode initialEntryMode;
-
-  /// The initial entry mode for the material time picker dialog
-  final TimePickerEntryMode initialTimePickerEntryMode;
+  @Deprecated('''
+  Uses now by default MediaQuery.of(context).alwaysUse24HourFormat.
+  Will be removed in v5.0.0.
+  ''')
+  final bool? use24hFormat;
 
   @override
   State<DateTimeField> createState() => _DateTimeFieldState();
@@ -300,16 +309,9 @@ class DateTimeField extends StatefulWidget {
 class _DateTimeFieldState extends State<DateTimeField> {
   FocusNode? _internalNode;
 
-  FocusNode? get focusNode => widget.focusNode ?? _internalNode;
-
-  TextStyle? get _textStyle => widget.style ?? Theme.of(context).textTheme.titleMedium;
-
-  // Only used if needed to create _internalNode.
-  FocusNode _createFocusNode() {
-    return FocusNode(debugLabel: '${widget.runtimeType}');
-  }
-
   late Map<Type, Action<Intent>> _actionMap;
+
+  bool _isSelecting = false;
 
   @override
   void initState() {
@@ -341,43 +343,103 @@ class _DateTimeFieldState extends State<DateTimeField> {
     }
   }
 
-  DateTime get _initialDateTime {
-    if (widget.value != null) {
-      return widget.value!;
+  @override
+  Widget build(BuildContext context) {
+    assert(debugCheckHasMaterial(context));
+    assert(debugCheckHasMaterialLocalizations(context));
+    assert(debugCheckHasCupertinoLocalizations(context));
+
+    InputDecoration decoration = widget.decoration ?? const InputDecoration();
+
+    decoration = decoration.applyDefaults(
+      Theme.of(context).inputDecorationTheme,
+    );
+
+    if (!widget.hideDefaultSuffixIcon && decoration.suffixIcon == null) {
+      decoration = decoration.copyWith(
+        suffixIcon: const Icon(Icons.event_note),
+      );
     }
 
-    if (widget.initialDate != null) {
-      return widget.initialDate!;
+    if (!_enabled) {
+      decoration = decoration.copyWith(
+        prefixIconColor: Theme.of(context).disabledColor,
+        suffixIconColor: Theme.of(context).disabledColor,
+      );
     }
 
-    final DateTime now = DateTime.now();
+    final bool isDense = decoration.isDense ?? false;
 
-    // when now is not between `firstDate` and `lastDate` return the closest to now.
-    if (widget.firstDate.isAfter(now)) {
-      return widget.firstDate;
-    }
+    Widget result = MediaQuery(
+      data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: _use24HourFormat),
+      child: DefaultTextStyle(
+        style:
+            _enabled ? _textStyle! : _textStyle!.copyWith(color: Theme.of(context).disabledColor),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            minHeight: _denseButtonHeight,
+            maxHeight: isDense ? _denseButtonHeight : double.infinity,
+          ),
+          child: widget.value != null
+              ? Text(widget.dateFormat.format(widget.value!))
+              : const SizedBox.shrink(),
+        ),
+      ),
+    );
 
-    if (widget.lastDate.isBefore(now)) {
-      return widget.lastDate;
-    }
+    final MouseCursor effectiveMouseCursor = MaterialStateProperty.resolveAs<MouseCursor>(
+      MaterialStateMouseCursor.clickable,
+      <MaterialState>{
+        if (!_enabled) MaterialState.disabled,
+      },
+    );
 
-    return now;
+    final bool isFocused = Focus.maybeOf(context)?.hasFocus ?? false;
+
+    result = InputDecorator(
+      decoration: decoration,
+      isEmpty: widget.value == null,
+      isFocused: isFocused || _isSelecting,
+      child: result,
+    );
+
+    return Semantics(
+      button: true,
+      child: Actions(
+        actions: _actionMap,
+        child: InkWell(
+          mouseCursor: effectiveMouseCursor,
+          onTap: _enabled ? _handleTap : null,
+          canRequestFocus: _enabled,
+          focusNode: _focusNode,
+          autofocus: widget.autofocus,
+          focusColor: decoration.focusColor,
+          enableFeedback: widget.enableFeedback,
+          child: widget.padding == null
+              ? result
+              : Padding(
+                  padding: widget.padding!,
+                  child: result,
+                ),
+        ),
+      ),
+    );
   }
 
-  /// Shows a dialog asking the user to pick a date !
   Future<void> _handleTap() async {
     _isSelecting = true;
 
-    focusNode?.requestFocus();
+    _focusNode?.requestFocus();
 
     widget.onTap?.call();
 
     final TargetPlatform platform = Theme.of(context).platform;
 
     if (platform == TargetPlatform.iOS || platform == TargetPlatform.macOS) {
-      final DateTime? newDateTime = await showCupertinoPicker();
+      final DateTime? newDateTime = await _showCupertinoPicker();
+      _isSelecting = false;
+
       if (!mounted || newDateTime == null) {
-        _isSelecting = false;
         return;
       }
 
@@ -386,11 +448,11 @@ class _DateTimeFieldState extends State<DateTimeField> {
       return;
     }
 
-    DateTime? selectedDateTime = _initialDateTime;
+    DateTime? selectedDateTime = _initialPickerDateTime;
 
     if (widget.mode == DateTimeFieldPickerMode.dateAndTime ||
         widget.mode == DateTimeFieldPickerMode.date) {
-      final DateTime? newDate = await showMaterialDatePicker();
+      final DateTime? newDate = await _showMaterialDatePicker();
       if (!mounted || newDate == null) {
         _isSelecting = false;
         return;
@@ -401,7 +463,7 @@ class _DateTimeFieldState extends State<DateTimeField> {
 
     if (widget.mode == DateTimeFieldPickerMode.dateAndTime ||
         widget.mode == DateTimeFieldPickerMode.time) {
-      final TimeOfDay? selectedTime = await showMaterialTimePicker();
+      final TimeOfDay? selectedTime = await _showMaterialTimePicker();
 
       if (selectedTime != null) {
         selectedDateTime = DateTime(
@@ -421,238 +483,274 @@ class _DateTimeFieldState extends State<DateTimeField> {
     widget.onChanged?.call(selectedDateTime);
   }
 
-  /// Launches the Material time picker by invoking [showTimePicker].
-  /// Can be @[override]n to allow further customization of the picker options
-  Future<TimeOfDay?> showMaterialTimePicker() async {
+  Future<TimeOfDay?> _showMaterialTimePicker() async {
     return showTimePicker(
-      initialTime: TimeOfDay.fromDateTime(_initialDateTime),
       context: context,
-      initialEntryMode: widget.initialTimePickerEntryMode,
+      initialTime: TimeOfDay.fromDateTime(_initialPickerDateTime),
       builder: (BuildContext context, Widget? child) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(
-            alwaysUse24HourFormat: widget.use24hFormat,
-          ),
-          child: child!,
+          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: _use24HourFormat),
+          child: widget.materialTimePickerOptions.builder?.call(context, child) ?? child!,
         );
+      },
+      initialEntryMode: widget.materialTimePickerOptions.initialEntryMode,
+      useRootNavigator: widget.materialTimePickerOptions.useRootNavigator,
+      helpText: widget.materialTimePickerOptions.helpText,
+      errorInvalidText: widget.materialTimePickerOptions.errorInvalidText,
+      cancelText: widget.materialTimePickerOptions.cancelText,
+      confirmText: widget.materialTimePickerOptions.confirmText,
+      hourLabelText: widget.materialTimePickerOptions.hourLabelText,
+      minuteLabelText: widget.materialTimePickerOptions.minuteLabelText,
+      orientation: widget.materialTimePickerOptions.orientation,
+    );
+  }
+
+  Future<DateTime?> _showMaterialDatePicker() {
+    return showDatePicker(
+      context: context,
+      initialDate: _initialPickerDateTime,
+      firstDate: widget.firstDate,
+      lastDate: widget.lastDate,
+      builder: (BuildContext context, Widget? child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: _use24HourFormat),
+          child: widget.materialDatePickerOptions.builder?.call(context, child) ?? child!,
+        );
+      },
+      initialDatePickerMode: widget.materialDatePickerOptions.initialDatePickerMode,
+      initialEntryMode: widget.materialDatePickerOptions.initialEntryMode,
+      currentDate: widget.materialDatePickerOptions.currentDate,
+      locale: widget.materialDatePickerOptions.locale,
+      cancelText: widget.materialDatePickerOptions.cancelText,
+      confirmText: widget.materialDatePickerOptions.confirmText,
+      errorFormatText: widget.materialDatePickerOptions.errorFormatText,
+      errorInvalidText: widget.materialDatePickerOptions.errorInvalidText,
+      fieldHintText: widget.materialDatePickerOptions.fieldHintText,
+      fieldLabelText: widget.materialDatePickerOptions.fieldLabelText,
+      helpText: widget.materialDatePickerOptions.helpText,
+      keyboardType: widget.materialDatePickerOptions.keyboardType,
+      selectableDayPredicate: widget.materialDatePickerOptions.selectableDayPredicate,
+      switchToCalendarEntryModeIcon: widget.materialDatePickerOptions.switchToCalendarEntryModeIcon,
+      switchToInputEntryModeIcon: widget.materialDatePickerOptions.switchToInputEntryModeIcon,
+      textDirection: widget.materialDatePickerOptions.textDirection,
+      useRootNavigator: widget.materialDatePickerOptions.useRootNavigator,
+    );
+  }
+
+  Future<DateTime?> _showCupertinoPicker() async {
+    return showCupertinoModalPopup<DateTime?>(
+      useRootNavigator: widget.cupertinoDatePickerOptions.useRootNavigator,
+      context: context,
+      builder: (BuildContext context) {
+        final modal = _CupertinoDatePickerModalSheet(
+          initialPickerDateTime: _initialPickerDateTime,
+          options: widget.cupertinoDatePickerOptions,
+          use24hFormat: _use24HourFormat,
+          firstDate: widget.firstDate,
+          lastDate: widget.lastDate,
+          mode: widget.mode,
+        );
+
+        return widget.cupertinoDatePickerOptions.builder?.call(context, modal) ?? modal;
       },
     );
   }
 
-  /// Launches the Material time picker by invoking [showDatePicker].
-  /// Can be @[override]n to allow further customization of the picker options
-  Future<DateTime?> showMaterialDatePicker() {
-    return showDatePicker(
-      context: context,
-      initialDatePickerMode: widget.initialDatePickerMode!,
-      initialDate: _initialDateTime,
-      initialEntryMode: widget.initialEntryMode,
-      firstDate: widget.firstDate,
-      lastDate: widget.lastDate,
-    );
+  DateTime get _initialPickerDateTime {
+    if (widget.value != null) {
+      return widget.value!;
+    }
+
+    if (widget.initialPickerDateTime != null) {
+      return widget.initialPickerDateTime!;
+    }
+
+    final DateTime now = DateTime.now();
+
+    // when now is not between `firstDate` and `lastDate` return the closest to now.
+    if (widget.firstDate.isAfter(now)) {
+      return widget.firstDate;
+    }
+
+    if (widget.lastDate.isBefore(now)) {
+      return widget.lastDate;
+    }
+
+    return now;
   }
 
-  /// Launches the [CupertinoDatePicker] within a [showModalBottomSheet].
-  /// Can be @[override]n to allow further customization of the picker options
-  Future<DateTime?> showCupertinoPicker() async {
-    return showCupertinoModalPopup<DateTime?>(
-      context: context,
-      builder: (BuildContext context) {
-        DateTime? _pickedDate = _initialDateTime;
-        return Container(
-          padding: const EdgeInsets.only(top: 6.0),
-          margin: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-          ),
-          color: CupertinoColors.systemBackground.resolveFrom(context),
-          child: SafeArea(
-            top: false,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      CupertinoButton(
-                        child: Text(
-                          MaterialLocalizations.of(context).cancelButtonLabel,
-                          style: const TextStyle(
-                            color: CupertinoColors.destructiveRed,
-                          ),
-                        ),
-                        onPressed: () {
-                          Navigator.of(context).pop(null);
-                        },
-                      ),
-                      CupertinoButton(
-                        child: Text(
-                          MaterialLocalizations.of(context).saveButtonLabel,
-                        ),
-                        onPressed: () {
-                          Navigator.of(context).pop(_pickedDate);
-                        },
-                      ),
-                    ],
+  bool get _use24HourFormat {
+    if (widget.use24hFormat != null) {
+      return widget.use24hFormat!;
+    }
+
+    final formatter = DateFormat.jm(Localizations.localeOf(context).toString());
+    final now = DateTime.parse('2000-01-01 17:00:00');
+    final formattedTime = formatter.format(now);
+    final localeBasedUse24HourFormat = !formattedTime.contains('PM');
+
+    if (kIsWeb) {
+      return localeBasedUse24HourFormat;
+    }
+
+    if (Platform.isIOS || Platform.isAndroid) {
+      return MediaQuery.of(context).alwaysUse24HourFormat;
+    }
+
+    return localeBasedUse24HourFormat;
+  }
+
+  // When isDense is true, reduce the height of the content to _kDenseButtonHeight,
+  // but don't make it smaller than the text that it contains. Similarly, we don't
+  // reduce the height of the button so much that its icon would be clipped.
+  double get _denseButtonHeight {
+    final double fontSize =
+        _textStyle!.fontSize ?? Theme.of(context).textTheme.titleMedium!.fontSize!;
+    final double scaledFontSize = MediaQuery.textScalerOf(context).scale(fontSize);
+    return math.max(scaledFontSize, _kDenseButtonHeight);
+  }
+
+  bool get _enabled => widget.onChanged != null;
+
+  TextStyle? get _textStyle => widget.style ?? Theme.of(context).textTheme.titleMedium;
+
+  FocusNode? get _focusNode => widget.focusNode ?? _internalNode;
+
+  /// Only used if needed to create _internalNode.
+  FocusNode _createFocusNode() {
+    return FocusNode(debugLabel: '${widget.runtimeType}');
+  }
+}
+
+class _CupertinoDatePickerModalSheet extends StatefulWidget {
+  const _CupertinoDatePickerModalSheet({
+    super.key,
+    required this.initialPickerDateTime,
+    required this.options,
+    required this.mode,
+    required this.use24hFormat,
+    required this.firstDate,
+    required this.lastDate,
+  });
+
+  final DateTime initialPickerDateTime;
+
+  final CupertinoDatePickerOptions options;
+
+  final DateTimeFieldPickerMode mode;
+
+  final bool use24hFormat;
+
+  final DateTime firstDate;
+
+  final DateTime lastDate;
+
+  @override
+  State<_CupertinoDatePickerModalSheet> createState() => _CupertinoDatePickerModalSheetState();
+}
+
+class _CupertinoDatePickerModalSheetState extends State<_CupertinoDatePickerModalSheet> {
+  DateTime? _pickedDate;
+
+  late Map<Type, Action<Intent>> _cancelActionMap;
+  late Map<Type, Action<Intent>> _saveActionMap;
+
+  @override
+  void initState() {
+    super.initState();
+    _pickedDate = widget.initialPickerDateTime;
+
+    _cancelActionMap = <Type, Action<Intent>>{
+      ActivateIntent: CallbackAction<ActivateIntent>(
+        onInvoke: (ActivateIntent intent) => _cancel(),
+      ),
+      ButtonActivateIntent: CallbackAction<ButtonActivateIntent>(
+        onInvoke: (ButtonActivateIntent intent) => _cancel(),
+      ),
+    };
+    _saveActionMap = <Type, Action<Intent>>{
+      ActivateIntent: CallbackAction<ActivateIntent>(
+        onInvoke: (ActivateIntent intent) => _save(),
+      ),
+      ButtonActivateIntent: CallbackAction<ButtonActivateIntent>(
+        onInvoke: (ButtonActivateIntent intent) => _save(),
+      ),
+    };
+  }
+
+  @override
+  Widget build(BuildContext context) => SafeArea(
+        child: CupertinoPopupSurface(
+          isSurfacePainted: true,
+          child: CupertinoPageScaffold(
+            navigationBar: CupertinoNavigationBar(
+              backgroundColor: CupertinoDynamicColor.resolve(
+                CupertinoTheme.of(context).barBackgroundColor,
+                context,
+              ),
+              brightness: Theme.of(context).brightness,
+              middle: Text(
+                widget.options.modalTitleText ?? MaterialLocalizations.of(context).dateInputLabel,
+                style: TextStyle(
+                  color: CupertinoDynamicColor.resolve(
+                    CupertinoTheme.of(context).textTheme.navTitleTextStyle.color!,
+                    context,
                   ),
                 ),
+              ),
+              leading: FocusableActionDetector(
+                actions: _cancelActionMap,
+                child: CupertinoButton(
+                    padding: EdgeInsets.zero,
+                    child: Text(
+                      widget.options.cancelText ??
+                          CupertinoLocalizations.of(context).modalBarrierDismissLabel,
+                      style: const TextStyle(
+                        color: CupertinoColors.destructiveRed,
+                      ),
+                    ),
+                    onPressed: _cancel),
+              ),
+              trailing: FocusableActionDetector(
+                actions: _saveActionMap,
+                child: CupertinoButton(
+                  padding: EdgeInsets.zero,
+                  child: Text(
+                    widget.options.saveText ?? MaterialLocalizations.of(context).saveButtonLabel,
+                  ),
+                  onPressed: _save,
+                ),
+              ),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // _kNavBarPersistentHeight equals kMinInteractiveDimensionCupertino
+                const SizedBox(height: kMinInteractiveDimensionCupertino),
                 SizedBox(
-                  height: kCupertinoDatePickerHeight,
+                  height: _kCupertinoDatePickerHeight,
                   child: CupertinoDatePicker(
-                    mode: cupertinoModeFromPickerMode(widget.mode),
+                    mode: widget.mode.toCupertinoDatePickerMode(),
                     onDateTimeChanged: (DateTime dt) => _pickedDate = dt,
-                    initialDateTime: _initialDateTime,
+                    initialDateTime: widget.initialPickerDateTime,
                     minimumDate: widget.firstDate,
                     maximumDate: widget.lastDate,
                     use24hFormat: widget.use24hFormat,
+                    showDayOfWeek: widget.options.showDayOfWeek,
+                    minuteInterval: widget.options.minuteInterval,
                   ),
                 ),
               ],
             ),
           ),
-        );
-      },
-    );
-  }
-
-  // When isDense is true, reduce the height of this button from _kMenuItemHeight to
-  // _kDenseButtonHeight, but don't make it smaller than the text that it contains.
-  // Similarly, we don't reduce the height of the button so much that its icon
-  // would be clipped.
-  double get _denseButtonHeight {
-    final double textScaleFactor = MediaQuery.textScaleFactorOf(context);
-    final double fontSize =
-        _textStyle!.fontSize ?? Theme.of(context).textTheme.titleMedium!.fontSize!;
-    final double scaledFontSize = textScaleFactor * fontSize;
-    return math.max(scaledFontSize, _kDenseButtonHeight);
-  }
-
-  bool _isSelecting = false;
-
-  bool get _enabled => widget.onChanged != null;
-
-  @override
-  Widget build(BuildContext context) {
-    assert(debugCheckHasMaterial(context));
-    assert(debugCheckHasMaterialLocalizations(context));
-
-    InputDecoration decoration =
-        widget.decoration ?? InputDecoration(focusColor: widget.focusColor);
-
-    decoration = decoration.applyDefaults(
-      Theme.of(context).inputDecorationTheme,
-    );
-
-    if (!widget.hideDefaultIcon && decoration.suffixIcon == null) {
-      decoration = decoration.copyWith(
-        suffixIcon: const Icon(Icons.event_note),
-      );
-    }
-
-    if (!_enabled) {
-      decoration = decoration.copyWith(
-        prefixIconColor: Theme.of(context).disabledColor,
-        suffixIconColor: Theme.of(context).disabledColor,
-      );
-    }
-
-    final bool isDense = decoration.isDense ?? false;
-
-    Widget result = DefaultTextStyle(
-      style: _enabled ? _textStyle! : _textStyle!.copyWith(color: Theme.of(context).disabledColor),
-      child: SizedBox(
-        height: isDense ? _denseButtonHeight : null,
-        child: widget.value != null
-            ? Text(widget.dateFormat.format(widget.value!))
-            : const SizedBox.shrink(),
-      ),
-    );
-    //
-    // if (!DropdownButtonHideUnderline.at(context)) {
-    //   result = Stack(
-    //     children: <Widget>[
-    //       result,
-    //       Positioned(
-    //         left: 0.0,
-    //         right: 0.0,
-    //         bottom: 0.0,
-    //         child: widget.underline ??
-    //             Container(
-    //               height: 1.0,
-    //               decoration: const BoxDecoration(
-    //                 border: Border(
-    //                   bottom: BorderSide(
-    //                     color: Color(0xFFBDBDBD),
-    //                     width: 0.0,
-    //                   ),
-    //                 ),
-    //               ),
-    //             ),
-    //       ),
-    //     ],
-    //   );
-    // }
-
-    final MouseCursor effectiveMouseCursor = MaterialStateProperty.resolveAs<MouseCursor>(
-      MaterialStateMouseCursor.clickable,
-      <MaterialState>{
-        if (!_enabled) MaterialState.disabled,
-      },
-    );
-
-    result = InputDecorator(
-      decoration: decoration,
-      isEmpty: widget._isEmpty,
-      isFocused: widget._isFocused || _isSelecting,
-      child: result,
-    );
-
-    return Semantics(
-      button: true,
-      child: Actions(
-        actions: _actionMap,
-        child: InkWell(
-          mouseCursor: effectiveMouseCursor,
-          onTap: _enabled ? _handleTap : null,
-          canRequestFocus: _enabled,
-          focusNode: focusNode,
-          autofocus: widget.autofocus,
-          focusColor: widget.focusColor ?? Theme.of(context).focusColor,
-          enableFeedback: widget.enableFeedback,
-          child: widget.padding == null ? result : Padding(padding: widget.padding!, child: result),
         ),
-      ),
-    );
+      );
+
+  void _save() {
+    Navigator.of(context).pop(_pickedDate);
   }
-}
 
-/// Those values are used by the [DateTimeField] widget to determine whether to ask
-/// the user for the time, the date or both.
-enum DateTimeFieldPickerMode { time, date, dateAndTime }
-
-/// Returns the [CupertinoDatePickerMode] corresponding to the selected
-/// [DateTimeFieldPickerMode]. This exists to prevent redundancy in the [DateTimeField]
-/// widget parameters.
-CupertinoDatePickerMode cupertinoModeFromPickerMode(DateTimeFieldPickerMode mode) {
-  switch (mode) {
-    case DateTimeFieldPickerMode.time:
-      return CupertinoDatePickerMode.time;
-    case DateTimeFieldPickerMode.date:
-      return CupertinoDatePickerMode.date;
-    default:
-      return CupertinoDatePickerMode.dateAndTime;
-  }
-}
-
-/// Returns the corresponding default [DateFormat] for the selected [DateTimeFieldPickerMode]
-DateFormat getDateFormatFromDateFieldPickerMode(DateTimeFieldPickerMode mode) {
-  switch (mode) {
-    case DateTimeFieldPickerMode.time:
-      return DateFormat.jm();
-    case DateTimeFieldPickerMode.date:
-      return DateFormat.yMMMMd();
-    default:
-      return DateFormat.yMd().add_jm();
+  void _cancel() {
+    Navigator.of(context).pop(null);
   }
 }

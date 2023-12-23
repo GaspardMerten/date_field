@@ -1,0 +1,390 @@
+version: 1
+transforms:
+  ### DateTimeField
+
+  - title: Rename to onChanged
+    date: 2023-12-23
+    bulkApply: true
+    element:
+      uris: [ 'date_field.dart', 'package:date_field/date_field.dart' ]
+      constructor: ''
+      inClass: 'DateTimeField'
+    changes:
+      - kind: 'renameParameter'
+        oldName: 'onDateSelected'
+        newName: 'onChanged'
+
+  - title: Rename to value
+    date: 2023-12-23
+    bulkApply: true
+    element:
+      uris: [ 'date_field.dart', 'package:date_field/date_field.dart' ]
+      constructor: ''
+      inClass: 'DateTimeField'
+    changes:
+      - kind: 'renameParameter'
+        oldName: 'selectedDate'
+        newName: 'value'
+
+  - title: Rename to style
+    date: 2023-12-23
+    bulkApply: true
+    element:
+      uris: [ 'date_field.dart', 'package:date_field/date_field.dart' ]
+      constructor: ''
+      inClass: 'DateTimeField'
+    changes:
+      - kind: 'renameParameter'
+        oldName: 'dateTextStyle'
+        newName: 'style'
+
+  - title: Rename to initialPickerDateTime
+    date: 2023-12-23
+    bulkApply: true
+    element:
+      uris: [ 'date_field.dart', 'package:date_field/date_field.dart' ]
+      constructor: ''
+      inClass: 'DateTimeField'
+    changes:
+      - kind: 'renameParameter'
+        oldName: 'initialDate'
+        newName: 'initialPickerDateTime'
+
+  - title: Remove
+    date: 2023-12-23
+    bulkApply: true
+    element:
+      uris: [ 'date_field.dart', 'package:date_field/date_field.dart' ]
+      constructor: ''
+      inClass: 'DateTimeField'
+    changes:
+      - kind: 'removeParameter'
+        name: 'enabled'
+
+  - title: Remove
+    date: 2023-12-23
+    bulkApply: true
+    element:
+      uris: [ 'date_field.dart', 'package:date_field/date_field.dart' ]
+      constructor: ''
+      inClass: 'DateTimeField'
+    changes:
+      - kind: 'removeParameter'
+        name: 'use24hFormat'
+
+  - title: Migrate to materialDatePickerOptions
+    date: 2023-12-23
+    bulkApply: true
+    variables:
+      initialDatePickerMode:
+        kind: 'fragment'
+        value: 'arguments[initialDatePickerMode]'
+      initialEntryMode:
+        kind: 'fragment'
+        value: 'arguments[initialEntryMode]'
+    oneOf:
+      - if: "initialDatePickerMode != '' && initialEntryMode == ''"
+        changes:
+          - kind: 'addParameter'
+            index: 2
+            name: 'materialDatePickerOptions'
+            style: 'optional_named'
+            argumentValue:
+              expression: "const MaterialDatePickerOptions(initialDatePickerMode: {% initialDatePickerMode %},)"
+              requiredIf: "initialDatePickerMode != '' && initialEntryMode == ''"
+          - kind: 'removeParameter'
+            name: 'initialDatePickerMode'
+      - if: "initialDatePickerMode == '' && initialEntryMode != ''"
+        changes:
+          - kind: 'addParameter'
+            index: 2
+            name: 'materialDatePickerOptions'
+            style: 'optional_named'
+            argumentValue:
+              expression: "const MaterialDatePickerOptions(initialEntryMode: {% initialEntryMode %},)"
+              requiredIf: "initialDatePickerMode == '' && initialEntryMode != ''"
+          - kind: 'removeParameter'
+            name: 'initialEntryMode'
+      - if: "initialDatePickerMode != '' && initialEntryMode != ''"
+        changes:
+          - kind: 'addParameter'
+            index: 2
+            name: 'materialDatePickerOptions'
+            style: 'optional_named'
+            argumentValue:
+              expression: "const MaterialDatePickerOptions(initialDatePickerMode: {% initialDatePickerMode %},initialEntryMode: {% initialEntryMode %},)"
+              requiredIf: "initialDatePickerMode != '' && initialEntryMode != ''"
+          - kind: 'removeParameter'
+            name: 'initialEntryMode'
+          - kind: 'removeParameter'
+            name: 'initialDatePickerMode'
+    element:
+      uris: [ 'date_field.dart', 'package:date_field/date_field.dart' ]
+      constructor: ''
+      inClass: 'DateTimeField'
+
+  - title: Migrate to materialTimePickerOptions
+    date: 2023-12-23
+    bulkApply: true
+    variables:
+      initialTimePickerEntryMode:
+        kind: 'fragment'
+        value: 'arguments[initialTimePickerEntryMode]'
+    oneOf:
+      - if: "initialTimePickerEntryMode != ''"
+        changes:
+          - kind: 'addParameter'
+            index: 2
+            name: 'materialTimePickerOptions'
+            style: 'optional_named'
+            argumentValue:
+              expression: "const MaterialTimePickerOptions(initialEntryMode: {% initialTimePickerEntryMode %},)"
+              requiredIf: "initialTimePickerEntryMode != ''"
+          - kind: 'removeParameter'
+            name: 'initialTimePickerEntryMode'
+    element:
+      uris: [ 'date_field.dart', 'package:date_field/date_field.dart' ]
+      constructor: ''
+      inClass: 'DateTimeField'
+
+  ### DateTimeField.time
+
+  - title: Rename to onChanged
+    date: 2023-12-23
+    bulkApply: true
+    element:
+      uris: [ 'date_field.dart', 'package:date_field/date_field.dart' ]
+      constructor: 'time'
+      inClass: 'DateTimeField'
+    changes:
+      - kind: 'renameParameter'
+        oldName: 'onDateSelected'
+        newName: 'onChanged'
+
+  - title: Rename to value
+    date: 2023-12-23
+    bulkApply: true
+    element:
+      uris: [ 'date_field.dart', 'package:date_field/date_field.dart' ]
+      constructor: 'time'
+      inClass: 'DateTimeField'
+    changes:
+      - kind: 'renameParameter'
+        oldName: 'selectedDate'
+        newName: 'value'
+
+  - title: Rename to style
+    date: 2023-12-23
+    bulkApply: true
+    element:
+      uris: [ 'date_field.dart', 'package:date_field/date_field.dart' ]
+      constructor: 'time'
+      inClass: 'DateTimeField'
+    changes:
+      - kind: 'renameParameter'
+        oldName: 'dateTextStyle'
+        newName: 'style'
+
+  - title: Rename to initialPickerDateTime
+    date: 2023-12-23
+    bulkApply: true
+    element:
+      uris: [ 'date_field.dart', 'package:date_field/date_field.dart' ]
+      constructor: 'time'
+      inClass: 'DateTimeField'
+    changes:
+      - kind: 'renameParameter'
+        oldName: 'initialDate'
+        newName: 'initialPickerDateTime'
+
+  - title: Remove
+    date: 2023-12-23
+    bulkApply: true
+    element:
+      uris: [ 'date_field.dart', 'package:date_field/date_field.dart' ]
+      constructor: 'time'
+      inClass: 'DateTimeField'
+    changes:
+      - kind: 'removeParameter'
+        name: 'enabled'
+
+  - title: Remove
+    date: 2023-12-23
+    bulkApply: true
+    element:
+      uris: [ 'date_field.dart', 'package:date_field/date_field.dart' ]
+      constructor: 'time'
+      inClass: 'DateTimeField'
+    changes:
+      - kind: 'removeParameter'
+        name: 'use24hFormat'
+
+  - title: Remove
+    date: 2023-12-23
+    bulkApply: true
+    element:
+      uris: [ 'date_field.dart', 'package:date_field/date_field.dart' ]
+      constructor: 'time'
+      inClass: 'DateTimeField'
+    changes:
+      - kind: 'removeParameter'
+        name: 'initialEntryMode'
+
+  - title: Migrate to materialTimePickerOptions
+    date: 2023-12-23
+    bulkApply: true
+    variables:
+      initialTimePickerEntryMode:
+        kind: 'fragment'
+        value: 'arguments[initialTimePickerEntryMode]'
+    oneOf:
+      - if: "initialTimePickerEntryMode != ''"
+        changes:
+          - kind: 'addParameter'
+            index: 2
+            name: 'materialTimePickerOptions'
+            style: 'optional_named'
+            argumentValue:
+              expression: "const MaterialTimePickerOptions(initialEntryMode: {% initialTimePickerEntryMode %},)"
+              requiredIf: "initialTimePickerEntryMode != ''"
+          - kind: 'removeParameter'
+            name: 'initialTimePickerEntryMode'
+    element:
+      uris: [ 'date_field.dart', 'package:date_field/date_field.dart' ]
+      constructor: 'time'
+      inClass: 'DateTimeField'
+
+  ### DateTimeFormField
+
+  - title: Rename to onChanged
+    date: 2023-12-23
+    bulkApply: true
+    element:
+      uris: [ 'date_field.dart', 'package:date_field/date_field.dart' ]
+      constructor: ''
+      inClass: 'DateTimeFormField'
+    changes:
+      - kind: 'renameParameter'
+        oldName: 'onDateSelected'
+        newName: 'onChanged'
+
+  - title: Rename to style
+    date: 2023-12-23
+    bulkApply: true
+    element:
+      uris: [ 'date_field.dart', 'package:date_field/date_field.dart' ]
+      constructor: ''
+      inClass: 'DateTimeFormField'
+    changes:
+      - kind: 'renameParameter'
+        oldName: 'dateTextStyle'
+        newName: 'style'
+
+  - title: Rename to initialPickerDateTime
+    date: 2023-12-23
+    bulkApply: true
+    element:
+      uris: [ 'date_field.dart', 'package:date_field/date_field.dart' ]
+      constructor: ''
+      inClass: 'DateTimeFormField'
+    changes:
+      - kind: 'renameParameter'
+        oldName: 'initialDate'
+        newName: 'initialPickerDateTime'
+
+  - title: Remove
+    date: 2023-12-23
+    bulkApply: true
+    element:
+      uris: [ 'date_field.dart', 'package:date_field/date_field.dart' ]
+      constructor: ''
+      inClass: 'DateTimeFormField'
+    changes:
+      - kind: 'removeParameter'
+        name: 'enabled'
+
+  - title: Remove
+    date: 2023-12-23
+    bulkApply: true
+    element:
+      uris: [ 'date_field.dart', 'package:date_field/date_field.dart' ]
+      constructor: ''
+      inClass: 'DateTimeFormField'
+    changes:
+      - kind: 'removeParameter'
+        name: 'use24hFormat'
+
+  - title: Migrate to materialDatePickerOptions
+    date: 2023-12-23
+    bulkApply: true
+    variables:
+      initialDatePickerMode:
+        kind: 'fragment'
+        value: 'arguments[initialDatePickerMode]'
+      initialEntryMode:
+        kind: 'fragment'
+        value: 'arguments[initialEntryMode]'
+    oneOf:
+      - if: "initialDatePickerMode != '' && initialEntryMode == ''"
+        changes:
+          - kind: 'addParameter'
+            index: 2
+            name: 'materialDatePickerOptions'
+            style: 'optional_named'
+            argumentValue:
+              expression: "const MaterialDatePickerOptions(initialDatePickerMode: {% initialDatePickerMode %},)"
+              requiredIf: "initialDatePickerMode != '' && initialEntryMode == ''"
+          - kind: 'removeParameter'
+            name: 'initialDatePickerMode'
+      - if: "initialDatePickerMode == '' && initialEntryMode != ''"
+        changes:
+          - kind: 'addParameter'
+            index: 2
+            name: 'materialDatePickerOptions'
+            style: 'optional_named'
+            argumentValue:
+              expression: "const MaterialDatePickerOptions(initialEntryMode: {% initialEntryMode %},)"
+              requiredIf: "initialDatePickerMode == '' && initialEntryMode != ''"
+          - kind: 'removeParameter'
+            name: 'initialEntryMode'
+      - if: "initialDatePickerMode != '' && initialEntryMode != ''"
+        changes:
+          - kind: 'addParameter'
+            index: 2
+            name: 'materialDatePickerOptions'
+            style: 'optional_named'
+            argumentValue:
+              expression: "const MaterialDatePickerOptions(initialDatePickerMode: {% initialDatePickerMode %},initialEntryMode: {% initialEntryMode %},)"
+              requiredIf: "initialDatePickerMode != '' && initialEntryMode != ''"
+          - kind: 'removeParameter'
+            name: 'initialEntryMode'
+          - kind: 'removeParameter'
+            name: 'initialDatePickerMode'
+    element:
+      uris: [ 'date_field.dart', 'package:date_field/date_field.dart' ]
+      constructor: ''
+      inClass: 'DateTimeFormField'
+
+  - title: Migrate to materialTimePickerOptions
+    date: 2023-12-23
+    bulkApply: true
+    variables:
+      initialTimePickerEntryMode:
+        kind: 'fragment'
+        value: 'arguments[initialTimePickerEntryMode]'
+    oneOf:
+      - if: "initialTimePickerEntryMode != ''"
+        changes:
+          - kind: 'addParameter'
+            index: 2
+            name: 'materialTimePickerOptions'
+            style: 'optional_named'
+            argumentValue:
+              expression: "const MaterialTimePickerOptions(initialEntryMode: {% initialTimePickerEntryMode %},)"
+              requiredIf: "initialTimePickerEntryMode != ''"
+          - kind: 'removeParameter'
+            name: 'initialTimePickerEntryMode'
+    element:
+      uris: [ 'date_field.dart', 'package:date_field/date_field.dart' ]
+      constructor: ''
+      inClass: 'DateTimeFormField'
