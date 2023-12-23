@@ -35,22 +35,21 @@ parameter.
 5. Use the Widget. Example:
 
 ```dart
-   DateTimeField
-(
-decoration: const InputDecoration(
-hintStyle: TextStyle(color: Colors.black45),
-errorStyle: TextStyle(color: Colors.redAccent),
-border: OutlineInputBorder(),
-suffixIcon: Icon(Icons.event_note),
-labelText: 'Only time',
-),
-mode: DateTimeFieldPickerMode.time,
-autovalidateMode: AutovalidateMode.always,
-validator: (e) => (e?.day ?? 0) == 1 ? 'Please not the first day' : null,
-onDateSelected: (DateTime value) {
-print(value);
-},
-)
+   DateTimeField(
+    decoration: const InputDecoration(
+    hintStyle: TextStyle(color: Colors.black45),
+    errorStyle: TextStyle(color: Colors.redAccent),
+    border: OutlineInputBorder(),
+    suffixIcon: Icon(Icons.event_note),
+    labelText: 'Only time',
+    ),
+    mode: DateTimeFieldPickerMode.time,
+    autovalidateMode: AutovalidateMode.always,
+    validator: (e) => (e?.day ?? 0) == 1 ? 'Please not the first day' : null,
+    onDateSelected: (DateTime value) {
+    print(value);
+    },
+   )
    ```
 
 Use the DateTimeField or DateTimeFormField widget in your code, and customize it using the available
@@ -59,27 +58,6 @@ parameters.
 ## Migration to 4.0.0 🚀
 
 Version 4.0.0 contains breaking changes. Use `dart fix` to migrate to the latest version.
-
-## Available Parameters 📝
-
-- <b>onSaved</b>: a callback that is called when the form is saved.
-- <b>validator</b>: a callback that is called to validate the value.
-- <b>initialValue</b>: the initial value of the field.
-- <b>autovalidateMode</b>: when to validate the field.
-- <b>enabled</b>: whether the field is enabled or disabled.
-- <b>use24hFormat</b>: whether to use a 24-hour format for the time picker.
-- <b>dateTextStyle</b>: the text style for the date.
-- <b>dateFormat</b>: the format of the date.
-- <b>firstDate</b>: the earliest date that can be selected.
-- <b>lastDate</b>: the latest date that can be selected.
-- <b>initialDate</b>: the initial date that is selected.
-- <b>onDateSelected</b>: a callback that is called when a date is selected.
-- <b>decoration</b>: the decoration for the field.
-- <b>initialEntryMode</b>: the initial entry mode of the date picker.
-- <b>initialDatePickerMode</b>: the initial date picker mode.
-- <b>mode</b>: the mode of the date and time picker.
-- <b>initialTimePickerEntryMode</b>: the initial entry mode of the time picker.
-- <b>fieldCreator</b>: the creator of the DateTimeField.
 
 ## Known Issues 🐛
 
