@@ -13,7 +13,7 @@ parameter.
    ```yaml
    dependencies:
      ...
-   date_field: ^3.0.5
+   date_field: ^4.0.0
    ```
 2. Run `flutter pub get` to install the package.
 3. Initialize your systems locale. If not, users might see AM/PM even when
@@ -81,18 +81,11 @@ Version 4.0.0 contains breaking changes. Use `dart fix` to migrate to the latest
 - <b>initialTimePickerEntryMode</b>: the initial entry mode of the time picker.
 - <b>fieldCreator</b>: the creator of the DateTimeField.
 
-## Example Usage 📖
-
-Here's an example usage of <b>DateTimeFormField</b>:
-
-You can find more examples and a complete example on the GitHub repository. We hope this package is
-helpful to you!
-
 ## Known Issues 🐛
 
 - The pickers and formatted DateTimes adjust only on iOS and Android to the Device Systems Region.
   On all other platforms, the pickers adjust to the locale.
-  See [32006](https://github.com/flutter/flutter/issues/32006) and
+  See [32006](https://github.com/flutter/flutter/issues/32006)
 
 ## License 📜
 
