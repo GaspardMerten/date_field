@@ -67,7 +67,7 @@ class DateTimeFormField extends FormField<DateTime> {
     @Deprecated('''
     Uses now by default MediaQuery.of(context).alwaysUse24HourFormat.
     Will be removed in v5.0.0.
-    ''') @Kept bool? use24hFormat,
+    ''') bool? use24hFormat,
   }) : super(
           enabled: enabled ?? decoration?.enabled ?? true, // @Kept
           builder: (FormFieldState<DateTime> field) {

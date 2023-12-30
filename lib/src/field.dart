@@ -17,8 +17,6 @@ final DateTime _kDefaultLastSelectableDate = DateTime(2100);
 const double _kCupertinoDatePickerHeight = 216;
 const double _kDenseButtonHeight = 24.0;
 
-const Kept = 1;
-
 /// The mode of the [DateTimeField].
 ///
 /// Depending on the mode, [DateTimeField] will show:
@@ -538,11 +536,13 @@ class _DateTimeFieldState extends State<DateTimeField> {
   }
 
   Future<DateTime?> _showCupertinoPicker() async {
+    // TODO(torbenkeller): use DateUtils.onlyDate depending on mode for first, last and initialDate.
+
     return showCupertinoModalPopup<DateTime?>(
       useRootNavigator: widget.cupertinoDatePickerOptions.useRootNavigator,
       context: context,
       builder: (BuildContext context) {
-        final modal = _CupertinoDatePickerModalSheet(
+        final Widget modal = _CupertinoDatePickerModalSheet(
           initialPickerDateTime: _initialPickerDateTime,
           options: widget.cupertinoDatePickerOptions,
           use24hFormat: _use24HourFormat,
@@ -584,10 +584,10 @@ class _DateTimeFieldState extends State<DateTimeField> {
       return widget.use24hFormat!;
     }
 
-    final formatter = DateFormat.jm(Localizations.localeOf(context).toString());
-    final now = DateTime.parse('2000-01-01 17:00:00');
-    final formattedTime = formatter.format(now);
-    final localeBasedUse24HourFormat = !formattedTime.contains('PM');
+    final DateFormat formatter = DateFormat.jm(Localizations.localeOf(context).toString());
+    final DateTime now = DateTime.parse('2000-01-01 17:00:00');
+    final String formattedTime = formatter.format(now);
+    final bool localeBasedUse24HourFormat = !formattedTime.contains('PM');
 
     if (kIsWeb) {
       return localeBasedUse24HourFormat;
@@ -624,7 +624,6 @@ class _DateTimeFieldState extends State<DateTimeField> {
 
 class _CupertinoDatePickerModalSheet extends StatefulWidget {
   const _CupertinoDatePickerModalSheet({
-    super.key,
     required this.initialPickerDateTime,
     required this.options,
     required this.mode,
@@ -724,7 +723,7 @@ class _CupertinoDatePickerModalSheetState extends State<_CupertinoDatePickerModa
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              children: [
+              children: <Widget>[
                 // _kNavBarPersistentHeight equals kMinInteractiveDimensionCupertino
                 const SizedBox(height: kMinInteractiveDimensionCupertino),
                 SizedBox(
