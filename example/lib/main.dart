@@ -79,18 +79,18 @@ class _MyHomePageState extends State<MyHomePage> {
                 padding: EdgeInsets.symmetric(vertical: 20.0),
                 child: Text('DateTimeField'),
               ),
-// DateTimeField(
-//   decoration: const InputDecoration(
-//     hintText: 'Please select your birthday date and time',
-//     helperText: 'YYYY-MM-DD',
-//   ),
-//   value: selectedDate,
-//   onChanged: (DateTime? value) {
-//     setState(() {
-//       selectedDate = value;
-//     });
-//   },
-// ),
+              DateTimeField(
+                decoration: const InputDecoration(
+                  hintText: 'Please select your birthday date and time',
+                  helperText: 'YYYY-MM-DD',
+                ),
+                value: selectedDate,
+                onChanged: (DateTime? value) {
+                  setState(() {
+                    selectedDate = value;
+                  });
+                },
+              ),
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 20.0),
                 child: Text('DateTimeFormField'),
@@ -98,70 +98,61 @@ class _MyHomePageState extends State<MyHomePage> {
               Form(
                 child: Column(
                   children: <Widget>[
-// DateTimeFormField(
-//   onChanged: null,
-//   decoration: InputDecoration(
-//     hintText: 'Disabled',
-//   ),
-// ),
-// const SizedBox(height: 16),
-// DateTimeFormField(
-//   decoration: const InputDecoration(
-//     hintText: 'My Super Date Time Field',
-//     labelText: 'My Super Date Time Field',
-//   ),
-//   firstDate: DateTime.now().add(const Duration(days: 10)),
-//   lastDate: DateTime.now().add(const Duration(days: 40)),
-//   initialDate: DateTime.now().add(const Duration(days: 20)),
-//   autovalidateMode: AutovalidateMode.always,
-//   validator: (DateTime? e) =>
-//       (e?.day ?? 0) == 1 ? 'Please not the first day' : null,
-//   onChanged: (DateTime? value) {
-//     print(value);
-//   },
-// ),
-                    DateTimeField.time(
-                      // initialDate: selectedDate,
-                      decoration: const InputDecoration(
-                        labelText: 'My Super Date',
+                    DateTimeFormField(
+                      onChanged: null,
+                      decoration: InputDecoration(
+                        hintText: 'Disabled',
                       ),
-                      initialEntryMode: DatePickerEntryMode.calendar,
-                      initialTimePickerEntryMode: TimePickerEntryMode.dial,
+                    ),
+                    const SizedBox(height: 16),
+                    DateTimeFormField(
+                      decoration: const InputDecoration(
+                        hintText: 'My Super Date Time Field',
+                        labelText: 'My Super Date Time Field',
+                      ),
+                      firstDate: DateTime.now().add(const Duration(days: 10)),
+                      lastDate: DateTime.now().add(const Duration(days: 40)),
+                      initialDate: DateTime.now().add(const Duration(days: 20)),
+                      autovalidateMode: AutovalidateMode.always,
+                      validator: (DateTime? e) =>
+                          (e?.day ?? 0) == 1 ? 'Please not the first day' : null,
+                      onChanged: (DateTime? value) {
+                        print(value);
+                      },
+                    ),
+                    DateTimeFormField(
+                      decoration: const InputDecoration(
+                        labelText: 'Enter Date',
+                      ),
                       firstDate: DateTime.now().add(const Duration(days: 10)),
                       lastDate: DateTime.now().add(const Duration(days: 40)),
                       initialPickerDateTime: DateTime.now().add(const Duration(days: 20)),
-// autovalidateMode: AutovalidateMode.always,
-// validator: (DateTime? e) =>
-//     (e?.day ?? 0) == 1 ? 'Please not the first day' : null,
                       onChanged: (DateTime? value) {
-                        print(value);
-                        setState(() {
-                          selectedDate = value;
-                        });
+                        selectedDate = value;
                       },
                     ),
                   ],
                 ),
               ),
-// const SizedBox(height: 50),
-// DateTimeFormField(
-//   decoration: const InputDecoration(
-//     alignLabelWithHint: false,
-//     labelText: 'label',
-//     hintText: 'Only time',
-//   ),
-//   canClear: true,
-//   initialValue: DateTime.parse('2020-10-15'),
-//   initialPickerDateTime: DateTime.parse('2020-10-15'),
-//   mode: DateTimeFieldPickerMode.dateAndTime,
-//   autovalidateMode: AutovalidateMode.always,
-//   validator: (DateTime? e) {
-//     return (e?.day ?? 0) == 1 ? 'Please not the first day' : null;
-//   },
-//   onChanged: (DateTime? value) {
-//     print(value);
-//   },
-// ),
+              const SizedBox(height: 50),
+              DateTimeFormField(
+                decoration: const InputDecoration(
+                  alignLabelWithHint: false,
+                  labelText: 'label',
+                  hintText: 'Only time',
+                ),
+                canClear: true,
+                initialValue: DateTime.parse('2020-10-15'),
+                initialPickerDateTime: DateTime.parse('2020-10-15'),
+                mode: DateTimeFieldPickerMode.dateAndTime,
+                autovalidateMode: AutovalidateMode.always,
+                validator: (DateTime? e) {
+                  return (e?.day ?? 0) == 1 ? 'Please not the first day' : null;
+                },
+                onChanged: (DateTime? value) {
+                  print(value);
+                },
+              ),
             ],
           ),
         ),
