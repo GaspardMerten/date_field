@@ -1,6 +1,7 @@
 import 'package:date_field/date_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:intl/intl.dart';
 import 'package:intl/intl_standalone.dart' if (dart.library.html) 'package:intl/intl_browser.dart';
 
 Future<void> main() async {
@@ -12,7 +13,6 @@ Future<void> main() async {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-// This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -22,26 +22,15 @@ class MyApp extends StatelessWidget {
         colorScheme: const ColorScheme.light(
           primary: Colors.blue,
         ),
+        useMaterial3: true,
       ),
       darkTheme: ThemeData.from(
         colorScheme: const ColorScheme.dark(
           primary: Colors.blue,
         ),
+        useMaterial3: true,
       ),
-      locale: const Locale('en'),
-      supportedLocales: const [
-        Locale('en'),
-        Locale('fr'),
-        Locale('de'),
-        Locale('es'),
-        Locale('it'),
-        Locale('ja'),
-        Locale('ko'),
-        Locale('pt'),
-        Locale('ru'),
-        Locale('zh'),
-      ],
-      localizationsDelegates: const [
+      localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
         GlobalWidgetsLocalizations.delegate,
         ...GlobalMaterialLocalizations.delegates,
         ...GlobalCupertinoLocalizations.delegates,
@@ -50,105 +39,136 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatefulWidget {
+class MyHomePage extends StatelessWidget {
   const MyHomePage({Key? key}) : super(key: key);
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(
+          title: const Text('date_field Showcase'),
+        ),
+        body: const SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            child: Column(
+              children: <Widget>[
+                SizedBox(height: 16.0),
+                Fields(),
+                SizedBox(height: 32.0),
+                FormFields(),
+              ],
+            ),
+          ),
+        ),
+      );
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class Fields extends StatefulWidget {
+  const Fields({super.key});
+
+  @override
+  State<Fields> createState() => _FieldsState();
+}
+
+class _FieldsState extends State<Fields> {
   DateTime? selectedDate;
-  int? dropdownValue;
+  DateTime? selectedTime;
+  DateTime? selectedDateTime;
 
   @override
   Widget build(BuildContext context) {
-    print(Localizations.localeOf(context).toString());
-    return Scaffold(
-      body: SingleChildScrollView(
-        padding: MediaQuery.of(context).padding,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          'DateTimeField',
+          style: Theme.of(context).textTheme.headlineSmall,
+        ),
+        DateTimeField(
+          onChanged: null,
+          decoration: const InputDecoration(labelText: 'Disabled'),
+        ),
+        const SizedBox(height: 16),
+        DateTimeField(
+          decoration: const InputDecoration(
+            labelText: 'Enter Date',
+            helperText: 'YYYY/MM/DD',
+          ),
+          value: selectedDate,
+          dateFormat: DateFormat.yMd(),
+          mode: DateTimeFieldPickerMode.date,
+          onChanged: (DateTime? value) {
+            setState(() {
+              selectedDate = value;
+            });
+          },
+        ),
+        const SizedBox(height: 16),
+        DateTimeField(
+          value: selectedTime,
+          decoration: const InputDecoration(labelText: 'Enter Time'),
+          mode: DateTimeFieldPickerMode.time,
+          onChanged: (DateTime? value) {
+            print(value);
+            setState(() {
+              selectedTime = value;
+            });
+          },
+        ),
+        const SizedBox(height: 16),
+        DateTimeField(
+          value: selectedDateTime,
+          decoration: const InputDecoration(labelText: 'Enter DateTime'),
+          onChanged: (DateTime? value) {
+            print(value);
+            setState(() {
+              selectedDateTime = value;
+            });
+          },
+        ),
+      ],
+    );
+  }
+}
+
+class FormFields extends StatelessWidget {
+  const FormFields({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          'DateTimeFormField',
+          style: Theme.of(context).textTheme.headlineSmall,
+        ),
+        Form(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              const FlutterLogo(size: 100),
-              const SizedBox(height: 20),
-              const Text('DateField package showcase'),
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 20.0),
-                child: Text('DateTimeField'),
-              ),
-              DateTimeField(
-                decoration: const InputDecoration(
-                  hintText: 'Please select your birthday date and time',
-                  helperText: 'YYYY-MM-DD',
-                ),
-                value: selectedDate,
-                onChanged: (DateTime? value) {
-                  setState(() {
-                    selectedDate = value;
-                  });
-                },
-              ),
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 20.0),
-                child: Text('DateTimeFormField'),
-              ),
-              Form(
-                child: Column(
-                  children: <Widget>[
-                    DateTimeFormField(
-                      onChanged: null,
-                      decoration: InputDecoration(
-                        hintText: 'Disabled',
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    DateTimeFormField(
-                      decoration: const InputDecoration(
-                        hintText: 'My Super Date Time Field',
-                        labelText: 'My Super Date Time Field',
-                      ),
-                      firstDate: DateTime.now().add(const Duration(days: 10)),
-                      lastDate: DateTime.now().add(const Duration(days: 40)),
-                      initialDate: DateTime.now().add(const Duration(days: 20)),
-                      autovalidateMode: AutovalidateMode.always,
-                      validator: (DateTime? e) =>
-                          (e?.day ?? 0) == 1 ? 'Please not the first day' : null,
-                      onChanged: (DateTime? value) {
-                        print(value);
-                      },
-                    ),
-                    DateTimeFormField(
-                      decoration: const InputDecoration(
-                        labelText: 'Enter Date',
-                      ),
-                      firstDate: DateTime.now().add(const Duration(days: 10)),
-                      lastDate: DateTime.now().add(const Duration(days: 40)),
-                      initialPickerDateTime: DateTime.now().add(const Duration(days: 20)),
-                      onChanged: (DateTime? value) {
-                        selectedDate = value;
-                      },
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 50),
               DateTimeFormField(
-                decoration: const InputDecoration(
-                  alignLabelWithHint: false,
-                  labelText: 'label',
-                  hintText: 'Only time',
-                ),
-                canClear: true,
-                initialValue: DateTime.parse('2020-10-15'),
-                initialPickerDateTime: DateTime.parse('2020-10-15'),
-                mode: DateTimeFieldPickerMode.dateAndTime,
-                autovalidateMode: AutovalidateMode.always,
-                validator: (DateTime? e) {
-                  return (e?.day ?? 0) == 1 ? 'Please not the first day' : null;
+                onChanged: null,
+                decoration: const InputDecoration(labelText: 'Disabled'),
+              ),
+              const SizedBox(height: 16),
+              DateTimeFormField(
+                decoration: const InputDecoration(labelText: 'Enter Date'),
+                mode: DateTimeFieldPickerMode.date,
+                onChanged: (DateTime? value) {
+                  print(value);
                 },
+              ),
+              const SizedBox(height: 16),
+              DateTimeFormField(
+                decoration: const InputDecoration(labelText: 'Enter Time'),
+                mode: DateTimeFieldPickerMode.time,
+                onChanged: (DateTime? value) {
+                  print(value);
+                },
+              ),
+              const SizedBox(height: 16),
+              DateTimeFormField(
+                decoration: const InputDecoration(labelText: 'Enter DateTime'),
                 onChanged: (DateTime? value) {
                   print(value);
                 },
@@ -156,7 +176,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
           ),
         ),
-      ),
+      ],
     );
   }
 }
