@@ -47,10 +47,7 @@ parameter.
      },
    ),
    ```
-
-Use the DateTimeField or DateTimeFormField widget in your code, and customize it using the available
-parameters.
-
+   
 ## Migration to 4.0.0 🚀
 
 Version 4.0.0 contains breaking changes. Use `dart fix` to migrate to the latest version.
