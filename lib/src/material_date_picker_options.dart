@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// Options to configure the [DatePickerDialog].
 @immutable
 class MaterialDatePickerOptions {
   const MaterialDatePickerOptions({
@@ -23,23 +24,62 @@ class MaterialDatePickerOptions {
     this.switchToCalendarEntryModeIcon,
   });
 
+  /// See [DatePickerDialog.currentDate].
   final DateTime? currentDate;
+
+  /// See [DatePickerDialog.initialEntryMode].
+  ///
+  /// Defaults to [DatePickerEntryMode.calendar].
   final DatePickerEntryMode initialEntryMode;
+
+  /// See [DatePickerDialog.selectableDayPredicate].
   final SelectableDayPredicate? selectableDayPredicate;
+
+  /// See [DatePickerDialog.helpText].
   final String? helpText;
+
+  /// See [DatePickerDialog.cancelText].
   final String? cancelText;
+
+  /// See [DatePickerDialog.confirmText].
   final String? confirmText;
+
+  /// See parameter `locale` in [showDatePicker].
   final Locale? locale;
+
+  /// See parameter `useRootNavigator` in [showDatePicker].
+  ///
+  /// Defaults to `true`.
   final bool useRootNavigator;
+
+  /// See parameter `textDirection` in [showDatePicker].
   final TextDirection? textDirection;
+
+  /// See parameter `builder` in [showDatePicker].
   final TransitionBuilder? builder;
+
+  /// See [DatePickerDialog.initialCalendarMode].
   final DatePickerMode initialDatePickerMode;
+
+  /// See [DatePickerDialog.errorFormatText].
   final String? errorFormatText;
+
+  /// See [DatePickerDialog.errorInvalidText].
   final String? errorInvalidText;
+
+  /// See [DatePickerDialog.fieldHintText].
   final String? fieldHintText;
+
+  /// See [DatePickerDialog.fieldLabelText].
   final String? fieldLabelText;
+
+  /// See [DatePickerDialog.keyboardType].
   final TextInputType? keyboardType;
+
+  /// See [DatePickerDialog.switchToInputEntryModeIcon].
   final Icon? switchToInputEntryModeIcon;
+
+  /// See [DatePickerDialog.switchToCalendarEntryModeIcon].
   final Icon? switchToCalendarEntryModeIcon;
 
   @override

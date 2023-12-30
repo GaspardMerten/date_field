@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 
+/// Options to customize the [CupertinoDatePicker].
 @immutable
 class CupertinoDatePickerOptions {
   const CupertinoDatePickerOptions({
@@ -16,15 +17,29 @@ class CupertinoDatePickerOptions {
   /// it to override e.g. Localizations.
   final TransitionBuilder? builder;
 
+  /// Whether to use the root navigator or not when pushing the dialog.
+  ///
+  /// Defaults to `true`.
   final bool useRootNavigator;
 
+  /// See [CupertinoDatePicker.minuteInterval].
   final int minuteInterval;
 
+  /// See [CupertinoDatePicker.showDayOfWeek].
   final bool showDayOfWeek;
 
+  /// The text to display on the save button.
+  ///
+  /// Defaults to [MaterialLocalizations.saveButtonLabel].
   final String? saveText;
 
+  /// The text to display on the cancel button.
+  ///
+  /// Defaults to [CupertinoLocalizations.modalBarrierDismissLabel].
   final String? cancelText;
 
+  /// The text to display on the modal title.
+  ///
+  /// Defaults to [MaterialLocalizations.dateInputLabel].
   final String? modalTitleText;
 }

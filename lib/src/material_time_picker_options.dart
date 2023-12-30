@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// Options to configure the [TimePickerDialog].
 @immutable
 class MaterialTimePickerOptions {
   const MaterialTimePickerOptions({
@@ -15,15 +16,38 @@ class MaterialTimePickerOptions {
     this.orientation,
   });
 
+  /// See parameter `builder` in [showTimePicker].
   final TransitionBuilder? builder;
+
+  /// See parameter `useRootNavigator` in [showTimePicker].
+  ///
+  /// Defaults to `true`.
   final bool useRootNavigator;
+
+  /// See [TimePickerDialog.initialEntryMode].
+  ///
+  /// Defaults to [TimePickerEntryMode.dial].
   final TimePickerEntryMode initialEntryMode;
+
+  /// See [TimePickerDialog.cancelText].
   final String? cancelText;
+
+  /// See [TimePickerDialog.confirmText].
   final String? confirmText;
+
+  /// See [TimePickerDialog.helpText].
   final String? helpText;
+
+  /// See [TimePickerDialog.errorInvalidText].
   final String? errorInvalidText;
+
+  /// See [TimePickerDialog.hourLabelText].
   final String? hourLabelText;
+
+  /// See [TimePickerDialog.minuteLabelText].
   final String? minuteLabelText;
+
+  /// See [TimePickerDialog.orientation].
   final Orientation? orientation;
 
   @override
