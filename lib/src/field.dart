@@ -536,18 +536,34 @@ class _DateTimeFieldState extends State<DateTimeField> {
   }
 
   Future<DateTime?> _showCupertinoPicker() async {
-    // TODO(torbenkeller): use DateUtils.onlyDate depending on mode for first, last and initialDate.
+    final DateTime initialDateTime = switch (widget.mode) {
+      DateTimeFieldPickerMode.time => _initialPickerDateTime,
+      DateTimeFieldPickerMode.date => DateUtils.dateOnly(_initialPickerDateTime),
+      DateTimeFieldPickerMode.dateAndTime => _initialPickerDateTime,
+    };
+
+    final DateTime firstDate = switch (widget.mode) {
+      DateTimeFieldPickerMode.time => widget.firstDate,
+      DateTimeFieldPickerMode.date => DateUtils.dateOnly(widget.firstDate),
+      DateTimeFieldPickerMode.dateAndTime => widget.firstDate,
+    };
+
+    final DateTime lastDate = switch (widget.mode) {
+      DateTimeFieldPickerMode.time => widget.lastDate,
+      DateTimeFieldPickerMode.date => DateUtils.dateOnly(widget.lastDate),
+      DateTimeFieldPickerMode.dateAndTime => widget.lastDate,
+    };
 
     return showCupertinoModalPopup<DateTime?>(
       useRootNavigator: widget.cupertinoDatePickerOptions.useRootNavigator,
       context: context,
       builder: (BuildContext context) {
         final Widget modal = _CupertinoDatePickerModalSheet(
-          initialPickerDateTime: _initialPickerDateTime,
+          initialPickerDateTime: initialDateTime,
           options: widget.cupertinoDatePickerOptions,
           use24hFormat: _use24HourFormat,
-          firstDate: widget.firstDate,
-          lastDate: widget.lastDate,
+          firstDate: firstDate,
+          lastDate: lastDate,
           mode: widget.mode,
         );
 
