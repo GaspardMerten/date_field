@@ -7,6 +7,17 @@ date and/or time from an input field. You can customize the appearance of the wi
 decoration argument, and specify whether to ask for a date, a time, or both using the mode
 parameter.
 
+<table>
+  <tr>
+    <th>iOS</th>
+    <th>Android</th>
+  </tr>
+  <tr>
+    <td><img src="./assets/date_field_ios.gif"></td>
+    <td><img src="./assets/date_field_ios.gif"></td>
+  </tr>
+</table>
+
 ## Getting Started 🚀
 
 1. Add date_field package to your dependencies in pubspec.yaml.
@@ -47,7 +58,7 @@ parameter.
      },
    ),
    ```
-   
+
 ## Migration to 4.0.0 🚀
 
 Version 4.0.0 contains breaking changes. Use `dart fix` to migrate to the latest version.
