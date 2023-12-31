@@ -694,72 +694,83 @@ class _CupertinoDatePickerModalSheetState extends State<_CupertinoDatePickerModa
   }
 
   @override
-  Widget build(BuildContext context) => SafeArea(
-        child: CupertinoPopupSurface(
-          isSurfacePainted: true,
-          child: CupertinoPageScaffold(
-            navigationBar: CupertinoNavigationBar(
-              backgroundColor: CupertinoDynamicColor.resolve(
-                CupertinoTheme.of(context).barBackgroundColor,
-                context,
-              ),
-              brightness: Theme.of(context).brightness,
-              middle: Text(
-                widget.options.modalTitleText ?? MaterialLocalizations.of(context).dateInputLabel,
-                style: TextStyle(
-                  color: CupertinoDynamicColor.resolve(
-                    CupertinoTheme.of(context).textTheme.navTitleTextStyle.color!,
-                    context,
-                  ),
+  Widget build(BuildContext context) {
+    final MediaQueryData mediaQueryData = MediaQuery.of(context).removePadding(
+      removeTop: true,
+      removeBottom: false,
+      removeLeft: false,
+      removeRight: false,
+    );
+
+    return MediaQuery(
+      data: mediaQueryData,
+      child: CupertinoPopupSurface(
+        isSurfacePainted: true,
+        child: CupertinoPageScaffold(
+          navigationBar: CupertinoNavigationBar(
+            backgroundColor: CupertinoDynamicColor.resolve(
+              CupertinoTheme.of(context).barBackgroundColor,
+              context,
+            ),
+            brightness: Theme.of(context).brightness,
+            middle: Text(
+              widget.options.modalTitleText ?? MaterialLocalizations.of(context).dateInputLabel,
+              style: TextStyle(
+                color: CupertinoDynamicColor.resolve(
+                  CupertinoTheme.of(context).textTheme.navTitleTextStyle.color!,
+                  context,
                 ),
               ),
-              leading: FocusableActionDetector(
-                actions: _cancelActionMap,
-                child: CupertinoButton(
-                    padding: EdgeInsets.zero,
-                    child: Text(
-                      widget.options.cancelText ??
-                          CupertinoLocalizations.of(context).modalBarrierDismissLabel,
-                      style: const TextStyle(
-                        color: CupertinoColors.destructiveRed,
-                      ),
-                    ),
-                    onPressed: _cancel),
-              ),
-              trailing: FocusableActionDetector(
-                actions: _saveActionMap,
-                child: CupertinoButton(
+            ),
+            leading: FocusableActionDetector(
+              actions: _cancelActionMap,
+              child: CupertinoButton(
                   padding: EdgeInsets.zero,
                   child: Text(
-                    widget.options.saveText ?? MaterialLocalizations.of(context).saveButtonLabel,
+                    widget.options.cancelText ??
+                        CupertinoLocalizations.of(context).modalBarrierDismissLabel,
+                    style: const TextStyle(
+                      color: CupertinoColors.destructiveRed,
+                    ),
                   ),
-                  onPressed: _save,
+                  onPressed: _cancel),
+            ),
+            trailing: FocusableActionDetector(
+              actions: _saveActionMap,
+              child: CupertinoButton(
+                padding: EdgeInsets.zero,
+                child: Text(
+                  widget.options.saveText ?? MaterialLocalizations.of(context).saveButtonLabel,
                 ),
+                onPressed: _save,
               ),
             ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                // _kNavBarPersistentHeight equals kMinInteractiveDimensionCupertino
-                const SizedBox(height: kMinInteractiveDimensionCupertino),
-                SizedBox(
-                  height: _kCupertinoDatePickerHeight,
-                  child: CupertinoDatePicker(
-                    mode: widget.mode.toCupertinoDatePickerMode(),
-                    onDateTimeChanged: (DateTime dt) => _pickedDate = dt,
-                    initialDateTime: widget.initialPickerDateTime,
-                    minimumDate: widget.firstDate,
-                    maximumDate: widget.lastDate,
-                    use24hFormat: widget.use24hFormat,
-                    showDayOfWeek: widget.options.showDayOfWeek,
-                    minuteInterval: widget.options.minuteInterval,
-                  ),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              // _kNavBarPersistentHeight equals kMinInteractiveDimensionCupertino
+              const SizedBox(height: kMinInteractiveDimensionCupertino),
+              SizedBox(
+                height: _kCupertinoDatePickerHeight,
+                child: CupertinoDatePicker(
+                  mode: widget.mode.toCupertinoDatePickerMode(),
+                  onDateTimeChanged: (DateTime dt) => _pickedDate = dt,
+                  initialDateTime: widget.initialPickerDateTime,
+                  minimumDate: widget.firstDate,
+                  maximumDate: widget.lastDate,
+                  use24hFormat: widget.use24hFormat,
+                  showDayOfWeek: widget.options.showDayOfWeek,
+                  minuteInterval: widget.options.minuteInterval,
                 ),
-              ],
-            ),
+              ),
+              SizedBox(height: MediaQuery.of(context).padding.bottom),
+            ],
           ),
         ),
-      );
+      ),
+    );
+  }
 
   void _save() {
     Navigator.of(context).pop(_pickedDate);
