@@ -14,7 +14,7 @@ parameter.
   </tr>
   <tr>
     <td><img src="./assets/date_field_ios.gif"></td>
-    <td><img src="./assets/date_field_ios.gif"></td>
+    <td><img src="./assets/date_field_android.gif"></td>
   </tr>
 </table>
 
