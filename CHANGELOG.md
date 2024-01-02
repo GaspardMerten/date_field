@@ -1,3 +1,7 @@
+# 5.0.0
+
+- Removing deprecated parameters. Use `dart fix` to migrate.
+
 # 4.0.0
 
 - Removing override of MediaQuery.alwaysUse24HourFormat from the time picker dialog

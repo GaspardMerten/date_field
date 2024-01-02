@@ -29,47 +29,15 @@ class DateTimeFormField extends FormField<DateTime> {
     bool hideDefaultSuffixIcon = false,
     DateTime? initialPickerDateTime,
     CupertinoDatePickerOptions cupertinoDatePickerOptions = const CupertinoDatePickerOptions(),
-    MaterialDatePickerOptions? materialDatePickerOptions,
-    MaterialTimePickerOptions? materialTimePickerOptions,
+    MaterialDatePickerOptions materialDatePickerOptions = const MaterialDatePickerOptions(),
+    MaterialTimePickerOptions materialTimePickerOptions = const MaterialTimePickerOptions(),
     InputDecoration? decoration,
     DateFormat? dateFormat,
     DateTime? firstDate,
     DateTime? lastDate,
     DateTimeFieldPickerMode mode = DateTimeFieldPickerMode.dateAndTime,
-    @Deprecated('''
-    enabled has no effect anymore. It gets evaluated from onChanged != null.
-    Will be removed in v5.0.0.
-    ''') bool? enabled,
-    @Deprecated('''
-    Use style instead.
-    Will be removed in v5.0.0.
-    ''') TextStyle? dateTextStyle,
-    @Deprecated('''
-    Use onChanged instead.
-    Will be removed in v5.0.0.
-    ''') ValueChanged<DateTime>? onDateSelected,
-    @Deprecated('''
-    Use materialDatePickerOptions.initialEntryMode instead.
-    Will be removed in v5.0.0
-    ''') DatePickerMode? initialDatePickerMode,
-    @Deprecated('''
-    Use materialDatePickerOptions.initialEntryMode instead.
-    Will be removed in v5.0.0
-    ''') DatePickerEntryMode? initialEntryMode,
-    @Deprecated('''
-    Use initialPickerDateTime instead.
-    Will be removed in v5.0.0
-    ''') DateTime? initialDate,
-    @Deprecated('''
-    Use materialTimePickerOptions.initialEntryMode instead.
-    Will be removed in v5.0.0
-    ''') TimePickerEntryMode? initialTimePickerEntryMode,
-    @Deprecated('''
-    Uses now by default MediaQuery.of(context).alwaysUse24HourFormat.
-    Will be removed in v5.0.0.
-    ''') bool? use24hFormat,
   }) : super(
-          enabled: enabled ?? decoration?.enabled ?? true, // @Kept
+          enabled: decoration?.enabled ?? true,
           builder: (FormFieldState<DateTime> field) {
             final _DateTimeFormFieldState state = field as _DateTimeFormFieldState;
 
@@ -105,22 +73,14 @@ class DateTimeFormField extends FormField<DateTime> {
                     decoration: decorationArg,
                     padding: padding,
                     firstDate: firstDate,
-                    initialPickerDateTime: initialPickerDateTime ?? initialDate,
+                    initialPickerDateTime: initialPickerDateTime,
                     lastDate: lastDate,
                     dateFormat: dateFormat,
-                    use24hFormat: use24hFormat,
                     mode: mode,
                     hideDefaultSuffixIcon: hideDefaultSuffixIcon,
                     cupertinoDatePickerOptions: cupertinoDatePickerOptions,
-                    materialDatePickerOptions: materialDatePickerOptions ??
-                        MaterialDatePickerOptions(
-                          initialEntryMode: initialEntryMode ?? DatePickerEntryMode.calendar,
-                          initialDatePickerMode: initialDatePickerMode ?? DatePickerMode.day,
-                        ),
-                    materialTimePickerOptions: materialTimePickerOptions ??
-                        MaterialTimePickerOptions(
-                          initialEntryMode: initialTimePickerEntryMode ?? TimePickerEntryMode.dial,
-                        ),
+                    materialDatePickerOptions: materialDatePickerOptions,
+                    materialTimePickerOptions: materialTimePickerOptions,
                   );
                 },
               ),
