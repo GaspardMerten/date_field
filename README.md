@@ -13,8 +13,8 @@ parameter.
     <th>Android</th>
   </tr>
   <tr>
-    <td><img src="./assets/date_field_ios.gif"></td>
-    <td><img src="./assets/date_field_android.gif"></td>
+    <td><img src="https://github.com/GaspardMerten/date_field/raw/master/assets/date_field_ios.gif" alt="Date field picker package gif on an iOS device"></td>
+    <td><img src="https://github.com/GaspardMerten/date_field/raw/master/assets/date_field_android.gif" alt="Date field picker package gif on an Android device"></td>
   </tr>
 </table>
 

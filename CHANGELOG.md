@@ -29,6 +29,8 @@
 - `onChanged` accepts now also `null` values. DateTimeFormField uses this to implement a clear button.
 - All texts and interesting settings of `DatePickerDialog`, `TimePickerDialog` and `CupertinoDatePicker` are now changeable
 
+_Thank you @torbenkeller for this well-needed PR._
+
 # 3.0.6
 
 - Fixing issue #42 dense empty form field
