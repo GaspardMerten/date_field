@@ -1,6 +1,4 @@
-import 'package:date_field/src/field.dart';
-import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+part of 'field.dart';
 
 /// A [FormField] that contains a [DateTimeField].
 ///
@@ -13,67 +11,151 @@ import 'package:intl/intl.dart';
 /// save or reset the form field.
 class DateTimeFormField extends FormField<DateTime> {
   DateTimeFormField({
-    Key? key,
-    FormFieldSetter<DateTime>? onSaved,
-    FormFieldValidator<DateTime>? validator,
-    DateTime? initialValue,
-    AutovalidateMode? autovalidateMode,
-    bool enabled = true,
-    bool use24hFormat = false,
-    TextStyle? dateTextStyle,
+    required this.onChanged,
+    super.key,
+    super.initialValue,
+    super.onSaved,
+    super.validator,
+    super.restorationId,
+    super.autovalidateMode = AutovalidateMode.disabled,
+    this.canClear = true,
+    this.clearIconData = Icons.clear,
+    TextStyle? style,
+    VoidCallback? onTap,
+    FocusNode? focusNode,
+    bool autofocus = false,
+    bool? enableFeedback,
+    EdgeInsetsGeometry? padding,
+    bool hideDefaultSuffixIcon = false,
+    DateTime? initialPickerDateTime,
+    CupertinoDatePickerOptions cupertinoDatePickerOptions = const CupertinoDatePickerOptions(),
+    MaterialDatePickerOptions? materialDatePickerOptions,
+    MaterialTimePickerOptions? materialTimePickerOptions,
+    InputDecoration? decoration,
     DateFormat? dateFormat,
     DateTime? firstDate,
     DateTime? lastDate,
-    DateTime? initialDate,
-    ValueChanged<DateTime>? onDateSelected,
-    InputDecoration? decoration,
-    DatePickerEntryMode initialEntryMode = DatePickerEntryMode.calendar,
-    DatePickerMode initialDatePickerMode = DatePickerMode.day,
     DateTimeFieldPickerMode mode = DateTimeFieldPickerMode.dateAndTime,
-    TimePickerEntryMode initialTimePickerEntryMode = TimePickerEntryMode.dial,
-    DateTimeFieldCreator fieldCreator = DateTimeField.new,
+    @Deprecated('''
+    enabled has no effect anymore. It gets evaluated from onChanged != null.
+    Will be removed in v5.0.0.
+    ''') bool? enabled,
+    @Deprecated('''
+    Use style instead.
+    Will be removed in v5.0.0.
+    ''') TextStyle? dateTextStyle,
+    @Deprecated('''
+    Use onChanged instead.
+    Will be removed in v5.0.0.
+    ''') ValueChanged<DateTime>? onDateSelected,
+    @Deprecated('''
+    Use materialDatePickerOptions.initialEntryMode instead.
+    Will be removed in v5.0.0
+    ''') DatePickerMode? initialDatePickerMode,
+    @Deprecated('''
+    Use materialDatePickerOptions.initialEntryMode instead.
+    Will be removed in v5.0.0
+    ''') DatePickerEntryMode? initialEntryMode,
+    @Deprecated('''
+    Use initialPickerDateTime instead.
+    Will be removed in v5.0.0
+    ''') DateTime? initialDate,
+    @Deprecated('''
+    Use materialTimePickerOptions.initialEntryMode instead.
+    Will be removed in v5.0.0
+    ''') TimePickerEntryMode? initialTimePickerEntryMode,
+    @Deprecated('''
+    Uses now by default MediaQuery.of(context).alwaysUse24HourFormat.
+    Will be removed in v5.0.0.
+    ''') bool? use24hFormat,
   }) : super(
-          key: key,
-          initialValue: initialValue,
-          onSaved: onSaved,
-          validator: validator,
-          autovalidateMode: autovalidateMode,
-          enabled: enabled,
+          enabled: enabled ?? decoration?.enabled ?? true, // @Kept
           builder: (FormFieldState<DateTime> field) {
-            // Theme defaults are applied inside the _InputDropdown widget
-            final InputDecoration _decorationWithThemeDefaults =
-                decoration ?? const InputDecoration();
+            final _DateTimeFormFieldState state = field as _DateTimeFormFieldState;
 
-            final InputDecoration effectiveDecoration =
-                _decorationWithThemeDefaults.copyWith(
-                    errorText: field.errorText);
+            final bool isEmpty = state.value == null;
 
-            void onChangedHandler(DateTime value) {
-              if (onDateSelected != null) {
-                onDateSelected(value);
-              }
-              field.didChange(value);
+            InputDecoration decorationArg =
+                (decoration ?? const InputDecoration()).copyWith(errorText: field.errorText);
+
+            if (canClear && !isEmpty && state.value != initialValue) {
+              decorationArg = decorationArg.copyWith(
+                suffixIcon: IconButton(
+                  icon: Icon(clearIconData),
+                  onPressed: () => field.didChange(null),
+                ),
+              );
             }
 
-            return fieldCreator(
-              firstDate: firstDate,
-              initialDate: initialDate,
-              lastDate: lastDate,
-              decoration: effectiveDecoration,
-              initialDatePickerMode: initialDatePickerMode,
-              dateFormat: dateFormat,
-              onDateSelected: onChangedHandler,
-              selectedDate: field.value,
-              enabled: enabled,
-              use24hFormat: use24hFormat,
-              mode: mode,
-              initialEntryMode: initialEntryMode,
-              dateTextStyle: dateTextStyle,
-              initialTimePickerEntryMode: initialTimePickerEntryMode,
+            // An unfocusable Focus widget so that this widget can detect if its
+            // descendants have focus or not.
+            return Focus(
+              canRequestFocus: false,
+              skipTraversal: true,
+              child: Builder(
+                builder: (BuildContext context) {
+                  return DateTimeField._formField(
+                    value: state.value,
+                    onChanged: onChanged == null ? null : state.didChange,
+                    onTap: onTap,
+                    style: style,
+                    focusNode: focusNode,
+                    autofocus: autofocus,
+                    enableFeedback: enableFeedback,
+                    decoration: decorationArg,
+                    padding: padding,
+                    firstDate: firstDate,
+                    initialPickerDateTime: initialPickerDateTime ?? initialDate,
+                    lastDate: lastDate,
+                    dateFormat: dateFormat,
+                    use24hFormat: use24hFormat,
+                    mode: mode,
+                    hideDefaultSuffixIcon: hideDefaultSuffixIcon,
+                    cupertinoDatePickerOptions: cupertinoDatePickerOptions,
+                    materialDatePickerOptions: materialDatePickerOptions ??
+                        MaterialDatePickerOptions(
+                          initialEntryMode: initialEntryMode ?? DatePickerEntryMode.calendar,
+                          initialDatePickerMode: initialDatePickerMode ?? DatePickerMode.day,
+                        ),
+                    materialTimePickerOptions: materialTimePickerOptions ??
+                        MaterialTimePickerOptions(
+                          initialEntryMode: initialTimePickerEntryMode ?? TimePickerEntryMode.dial,
+                        ),
+                  );
+                },
+              ),
             );
           },
         );
 
+  /// See [DateTimeField.onChanged].
+  final ValueChanged<DateTime?>? onChanged;
+
+  /// Whether to add an [IconButton] that clears the field or not.
+  ///
+  /// Defaults to true.
+  final bool canClear;
+
+  /// The icon to use for the clear button.
+  final IconData clearIconData;
+
   @override
-  FormFieldState<DateTime> createState() => FormFieldState<DateTime>();
+  FormFieldState<DateTime> createState() => _DateTimeFormFieldState();
+}
+
+class _DateTimeFormFieldState extends FormFieldState<DateTime> {
+  @override
+  void didChange(DateTime? value) {
+    super.didChange(value);
+    final DateTimeFormField dateTimeFormField = widget as DateTimeFormField;
+    dateTimeFormField.onChanged?.call(value);
+  }
+
+  @override
+  void didUpdateWidget(DateTimeFormField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.initialValue != widget.initialValue) {
+      setValue(widget.initialValue);
+    }
+  }
 }

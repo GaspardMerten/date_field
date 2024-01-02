@@ -1,3 +1,34 @@
+# 4.0.0
+
+- Removing override of MediaQuery.alwaysUse24HourFormat from the time picker dialog
+
+## Breaking changes
+
+### DateTimeField
+
+- `onDateSelected` got deprecated. Use `onChanged` instead. `onDateSelected` will be removed in v5.0.0.
+- `onChange` is required
+
+### DateTimeField.time
+- `onDateSelected` got deprecated. Use `onChanged` instead. `onDateSelected` will be removed in v5.0.0.
+- `onChange` is required
+
+### DateTimeFormField
+
+- `onDateSelected` got deprecated. Use `onChanged` instead. `onDateSelected` will be removed in v5.0.0.
+- `onChange` is required.
+- removed `fieldCreator`.
+
+## New features
+
+### DateTimeField
+
+- Parameter namings are now similar as in flutter widgets.
+- The widget is now fully accessible and controllable with a keyboard.
+- The iOS and MacOS modal sheet has now a save and cancel button
+- `onChanged` accepts now also `null` values. DateTimeFormField uses this to implement a clear button.
+- All texts and interesting settings of `DatePickerDialog`, `TimePickerDialog` and `CupertinoDatePicker` are now changeable
+
 # 3.0.6
 
 - Fixing issue #42 dense empty form field
