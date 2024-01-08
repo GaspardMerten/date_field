@@ -78,7 +78,7 @@ class DateTimeFormField extends FormField<DateTime> {
             InputDecoration decorationArg =
                 (decoration ?? const InputDecoration()).copyWith(errorText: field.errorText);
 
-            if (canClear && !isEmpty && state.value != initialValue) {
+            if (canClear && !isEmpty) {
               decorationArg = decorationArg.copyWith(
                 suffixIcon: IconButton(
                   icon: Icon(clearIconData),

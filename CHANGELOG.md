@@ -1,3 +1,7 @@
+# 4.0.1
+
+- Fix clear button disappearing on rebuild 
+
 # 4.0.0
 
 - Removing override of MediaQuery.alwaysUse24HourFormat from the time picker dialog
