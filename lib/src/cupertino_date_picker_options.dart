@@ -11,6 +11,9 @@ class CupertinoDatePickerOptions {
     this.saveText,
     this.cancelText,
     this.modalTitleText,
+    this.saveTextStyle,
+    this.cancelTextStyle,
+    this.modalTitleTextStyle,
   });
 
   /// The builder around the [CupertinoPageScaffold]. You can use
@@ -33,13 +36,22 @@ class CupertinoDatePickerOptions {
   /// Defaults to [MaterialLocalizations.saveButtonLabel].
   final String? saveText;
 
+  /// provides styling to text to display on the save button
+  final TextStyle? saveTextStyle;
+
   /// The text to display on the cancel button.
   ///
   /// Defaults to [CupertinoLocalizations.modalBarrierDismissLabel].
   final String? cancelText;
 
+  /// provides styling to text to display on the save button
+  final TextStyle? cancelTextStyle;
+
   /// The text to display on the modal title.
   ///
   /// Defaults to [MaterialLocalizations.dateInputLabel].
   final String? modalTitleText;
+
+  /// provides styling to text to display on the save button
+  final TextStyle? modalTitleTextStyle;
 }
