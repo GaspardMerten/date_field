@@ -1,6 +1,6 @@
 name: date_field
 description: A widget in the form of a field that lets people choose a date, a time or both.
-version: 4.0.1
+version: 4.0.2
 homepage: 'https://github.com/GaspardMerten/date_field'
 
 environment:
@@ -10,4 +10,4 @@ dependencies:
   flutter:
     sdk: flutter
 
-  intl: ^0.18.0
+  intl: '>=0.18.0 <0.20.0'
