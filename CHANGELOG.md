@@ -1,3 +1,7 @@
+# 4.1.0
+
+- Adding better styling options for the iOS and MacOS modal sheet. It is now possible to specify the text style of the save and cancel buttons, as well as the title of the modal sheet. Solution to issue #59
+
 # 4.0.2
 
 - Making the package compatible with Dart 3.3.3 (allowing intl to be between 0.18.0 and < 0.20.0) Solution for issue #61
