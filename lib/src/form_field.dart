@@ -28,7 +28,8 @@ class DateTimeFormField extends FormField<DateTime> {
     EdgeInsetsGeometry? padding,
     bool hideDefaultSuffixIcon = false,
     DateTime? initialPickerDateTime,
-    CupertinoDatePickerOptions cupertinoDatePickerOptions = const CupertinoDatePickerOptions(),
+    CupertinoDatePickerOptions cupertinoDatePickerOptions =
+        const CupertinoDatePickerOptions(),
     MaterialDatePickerOptions? materialDatePickerOptions,
     MaterialTimePickerOptions? materialTimePickerOptions,
     InputDecoration? decoration,
@@ -71,12 +72,14 @@ class DateTimeFormField extends FormField<DateTime> {
   }) : super(
           enabled: enabled ?? decoration?.enabled ?? true, // @Kept
           builder: (FormFieldState<DateTime> field) {
-            final _DateTimeFormFieldState state = field as _DateTimeFormFieldState;
+            final _DateTimeFormFieldState state =
+                field as _DateTimeFormFieldState;
 
             final bool isEmpty = state.value == null;
 
             InputDecoration decorationArg =
-                (decoration ?? const InputDecoration()).copyWith(errorText: field.errorText);
+                (decoration ?? const InputDecoration())
+                    .copyWith(errorText: field.errorText);
 
             if (canClear && !isEmpty) {
               decorationArg = decorationArg.copyWith(
@@ -87,7 +90,7 @@ class DateTimeFormField extends FormField<DateTime> {
               );
             }
 
-            // An unfocusable Focus widget so that this widget can detect if its
+            // An un-focusable Focus widget so that this widget can detect if its
             // descendants have focus or not.
             return Focus(
               canRequestFocus: false,
@@ -114,12 +117,15 @@ class DateTimeFormField extends FormField<DateTime> {
                     cupertinoDatePickerOptions: cupertinoDatePickerOptions,
                     materialDatePickerOptions: materialDatePickerOptions ??
                         MaterialDatePickerOptions(
-                          initialEntryMode: initialEntryMode ?? DatePickerEntryMode.calendar,
-                          initialDatePickerMode: initialDatePickerMode ?? DatePickerMode.day,
+                          initialEntryMode:
+                              initialEntryMode ?? DatePickerEntryMode.calendar,
+                          initialDatePickerMode:
+                              initialDatePickerMode ?? DatePickerMode.day,
                         ),
                     materialTimePickerOptions: materialTimePickerOptions ??
                         MaterialTimePickerOptions(
-                          initialEntryMode: initialTimePickerEntryMode ?? TimePickerEntryMode.dial,
+                          initialEntryMode: initialTimePickerEntryMode ??
+                              TimePickerEntryMode.dial,
                         ),
                   );
                 },
