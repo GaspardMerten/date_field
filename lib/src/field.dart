@@ -753,8 +753,7 @@ class _CupertinoDatePickerModalSheetState
                   widget.options.cancelText ??
                       CupertinoLocalizations.of(context)
                           .modalBarrierDismissLabel,
-                  style: widget.options.style.cancelButton ??
-                      kDefaultCancelStyle,
+                  style: widget.options.style.cancelButton,
                 ),
                 onPressed: _cancel,
               ),
