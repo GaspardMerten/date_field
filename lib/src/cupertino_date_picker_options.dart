@@ -1,5 +1,22 @@
 import 'package:flutter/cupertino.dart';
 
+const TextStyle kDefaultCancelStyle = TextStyle(
+  color: CupertinoColors.destructiveRed,
+);
+
+@immutable
+class CupertinoDatePickerOptionsStyle {
+  const CupertinoDatePickerOptionsStyle({
+    this.saveButton,
+    this.cancelButton = kDefaultCancelStyle,
+    this.modalTitle,
+  });
+
+  final TextStyle? saveButton;
+  final TextStyle cancelButton;
+  final TextStyle? modalTitle;
+}
+
 /// Options to customize the [CupertinoDatePicker].
 @immutable
 class CupertinoDatePickerOptions {
@@ -11,6 +28,7 @@ class CupertinoDatePickerOptions {
     this.saveText,
     this.cancelText,
     this.modalTitleText,
+    this.style = const CupertinoDatePickerOptionsStyle(),
   });
 
   /// The builder around the [CupertinoPageScaffold]. You can use
@@ -42,4 +60,7 @@ class CupertinoDatePickerOptions {
   ///
   /// Defaults to [MaterialLocalizations.dateInputLabel].
   final String? modalTitleText;
+
+  /// The style to use for the CupertinoDatePickerOptions.
+  final CupertinoDatePickerOptionsStyle style;
 }

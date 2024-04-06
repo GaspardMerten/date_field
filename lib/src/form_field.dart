@@ -28,25 +28,60 @@ class DateTimeFormField extends FormField<DateTime> {
     EdgeInsetsGeometry? padding,
     bool hideDefaultSuffixIcon = false,
     DateTime? initialPickerDateTime,
-    CupertinoDatePickerOptions cupertinoDatePickerOptions = const CupertinoDatePickerOptions(),
-    MaterialDatePickerOptions materialDatePickerOptions = const MaterialDatePickerOptions(),
-    MaterialTimePickerOptions materialTimePickerOptions = const MaterialTimePickerOptions(),
+    CupertinoDatePickerOptions cupertinoDatePickerOptions =
+        const CupertinoDatePickerOptions(),
+    MaterialDatePickerOptions? materialDatePickerOptions,
+    MaterialTimePickerOptions? materialTimePickerOptions,
     InputDecoration? decoration,
     DateFormat? dateFormat,
     DateTime? firstDate,
     DateTime? lastDate,
     DateTimeFieldPickerMode mode = DateTimeFieldPickerMode.dateAndTime,
+    @Deprecated('''
+    enabled has no effect anymore. It gets evaluated from onChanged != null.
+    Will be removed in v5.0.0.
+    ''') bool? enabled,
+    @Deprecated('''
+    Use style instead.
+    Will be removed in v5.0.0.
+    ''') TextStyle? dateTextStyle,
+    @Deprecated('''
+    Use onChanged instead.
+    Will be removed in v5.0.0.
+    ''') ValueChanged<DateTime>? onDateSelected,
+    @Deprecated('''
+    Use materialDatePickerOptions.initialEntryMode instead.
+    Will be removed in v5.0.0
+    ''') DatePickerMode? initialDatePickerMode,
+    @Deprecated('''
+    Use materialDatePickerOptions.initialEntryMode instead.
+    Will be removed in v5.0.0
+    ''') DatePickerEntryMode? initialEntryMode,
+    @Deprecated('''
+    Use initialPickerDateTime instead.
+    Will be removed in v5.0.0
+    ''') DateTime? initialDate,
+    @Deprecated('''
+    Use materialTimePickerOptions.initialEntryMode instead.
+    Will be removed in v5.0.0
+    ''') TimePickerEntryMode? initialTimePickerEntryMode,
+    @Deprecated('''
+    Uses now by default MediaQuery.of(context).alwaysUse24HourFormat.
+    Will be removed in v5.0.0.
+    ''') bool? use24hFormat,
   }) : super(
-          enabled: decoration?.enabled ?? true,
+          enabled: enabled ?? decoration?.enabled ?? true, // @Kept
           builder: (FormFieldState<DateTime> field) {
-            final _DateTimeFormFieldState state = field as _DateTimeFormFieldState;
+            final _DateTimeFormFieldState state =
+                field as _DateTimeFormFieldState;
 
             final bool isEmpty = state.value == null;
 
             InputDecoration decorationArg =
-                (decoration ?? const InputDecoration()).copyWith(errorText: field.errorText);
+                (decoration ?? const InputDecoration())
+                    .copyWith(errorText: field.errorText);
 
-            if (canClear && !isEmpty && state.value != initialValue) {
+            if (canClear && !isEmpty) {
               decorationArg = decorationArg.copyWith(
                 suffixIcon: IconButton(
                   icon: Icon(clearIconData),
@@ -55,7 +90,7 @@ class DateTimeFormField extends FormField<DateTime> {
               );
             }
 
-            // An unfocusable Focus widget so that this widget can detect if its
+            // An un-focusable Focus widget so that this widget can detect if its
             // descendants have focus or not.
             return Focus(
               canRequestFocus: false,
@@ -73,14 +108,25 @@ class DateTimeFormField extends FormField<DateTime> {
                     decoration: decorationArg,
                     padding: padding,
                     firstDate: firstDate,
-                    initialPickerDateTime: initialPickerDateTime,
+                    initialPickerDateTime: initialPickerDateTime ?? initialDate,
                     lastDate: lastDate,
                     dateFormat: dateFormat,
+                    use24hFormat: use24hFormat,
                     mode: mode,
                     hideDefaultSuffixIcon: hideDefaultSuffixIcon,
                     cupertinoDatePickerOptions: cupertinoDatePickerOptions,
-                    materialDatePickerOptions: materialDatePickerOptions,
-                    materialTimePickerOptions: materialTimePickerOptions,
+                    materialDatePickerOptions: materialDatePickerOptions ??
+                        MaterialDatePickerOptions(
+                          initialEntryMode:
+                              initialEntryMode ?? DatePickerEntryMode.calendar,
+                          initialDatePickerMode:
+                              initialDatePickerMode ?? DatePickerMode.day,
+                        ),
+                    materialTimePickerOptions: materialTimePickerOptions ??
+                        MaterialTimePickerOptions(
+                          initialEntryMode: initialTimePickerEntryMode ??
+                              TimePickerEntryMode.dial,
+                        ),
                   );
                 },
               ),

@@ -1,6 +1,14 @@
-# 5.0.0
+# 4.1.0
 
-- Removing deprecated parameters. Use `dart fix` to migrate.
+- Adding better styling options for the iOS and MacOS modal sheet. It is now possible to specify the text style of the save and cancel buttons, as well as the title of the modal sheet. Solution to issue #59
+
+# 4.0.2
+
+- Making the package compatible with Dart 3.3.3 (allowing intl to be between 0.18.0 and < 0.20.0) Solution for issue #61
+
+# 4.0.1
+
+- Fix clear button disappearing on rebuild
 
 # 4.0.0
 
@@ -14,6 +22,7 @@
 - `onChange` is required
 
 ### DateTimeField.time
+
 - `onDateSelected` got deprecated. Use `onChanged` instead. `onDateSelected` will be removed in v5.0.0.
 - `onChange` is required
 
@@ -31,7 +40,8 @@
 - The widget is now fully accessible and controllable with a keyboard.
 - The iOS and MacOS modal sheet has now a save and cancel button
 - `onChanged` accepts now also `null` values. DateTimeFormField uses this to implement a clear button.
-- All texts and interesting settings of `DatePickerDialog`, `TimePickerDialog` and `CupertinoDatePicker` are now changeable
+- All texts and interesting settings of `DatePickerDialog`, `TimePickerDialog` and `CupertinoDatePicker` are now
+  changeable
 
 _Thank you @torbenkeller for this well-needed PR._
 
@@ -63,8 +73,10 @@ Fixed issue #29 by adding 24-hour format support for the material time picker di
 # 3.0.0
 
 Upgraded the minimum Dart version to 2.15 for constructor tear-off support, which is a breaking change.
-Added an optional DateTimeFieldCreator argument to DateTimeFormField for specifying custom implementations of DateTimeField.
-Refactored DateTimeField to expose showMaterialTimePicker, showMaterialDatePicker, and showMaterialTimePicker as separate overrideable methods.
+Added an optional DateTimeFieldCreator argument to DateTimeFormField for specifying custom implementations of
+DateTimeField.
+Refactored DateTimeField to expose showMaterialTimePicker, showMaterialDatePicker, and showMaterialTimePicker as
+separate overrideable methods.
 Made kCupertinoDatePickerHeight and cupertinoModeFromPickerMode public for convenience.
 Removed DateTimeFormFieldState and replaced it with an instance of FormFieldState<DateTime>.
 Fixed the behavior of the initialDate parameter.

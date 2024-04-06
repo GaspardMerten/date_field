@@ -36,7 +36,8 @@ enum DateTimeFieldPickerMode {
   CupertinoDatePickerMode toCupertinoDatePickerMode() => switch (this) {
         DateTimeFieldPickerMode.time => CupertinoDatePickerMode.time,
         DateTimeFieldPickerMode.date => CupertinoDatePickerMode.date,
-        DateTimeFieldPickerMode.dateAndTime => CupertinoDatePickerMode.dateAndTime,
+        DateTimeFieldPickerMode.dateAndTime =>
+          CupertinoDatePickerMode.dateAndTime,
       };
 }
 
@@ -48,26 +49,76 @@ class DateTimeField extends StatefulWidget {
   DateTimeField({
     required this.onChanged,
     super.key,
-    this.value,
+    DateTime? value,
     this.onTap,
-    this.style,
+    TextStyle? style,
     this.focusNode,
     this.autofocus = false,
     this.enableFeedback,
     this.padding,
     this.hideDefaultSuffixIcon = false,
     this.decoration,
-    this.initialPickerDateTime,
+    DateTime? initialPickerDateTime,
     this.cupertinoDatePickerOptions = const CupertinoDatePickerOptions(),
-    this.materialDatePickerOptions = const MaterialDatePickerOptions(),
-    this.materialTimePickerOptions = const MaterialTimePickerOptions(),
+    MaterialDatePickerOptions? materialDatePickerOptions,
+    MaterialTimePickerOptions? materialTimePickerOptions,
     this.mode = DateTimeFieldPickerMode.dateAndTime,
     DateTime? firstDate,
     DateTime? lastDate,
     DateFormat? dateFormat,
-  })  : dateFormat = dateFormat ?? mode.toDateFormat(),
+    this.use24hFormat,
+    @Deprecated('''
+    enabled has no effect anymore. It gets evaluated from onChanged != null.
+    Will be removed in v5.0.0.
+    ''') bool? enabled,
+    @Deprecated('''
+    Use value instead.
+    Will be removed in v5.0.0.
+    ''') DateTime? selectedDate,
+    @Deprecated('''
+    Use style instead.
+    Will be removed in v5.0.0.
+    ''') TextStyle? dateTextStyle,
+    @Deprecated('''
+    Use onChanged instead.
+    Will be removed in v5.0.0.
+    ''') ValueChanged<DateTime>? onDateSelected,
+    @Deprecated('''
+    Use materialDatePickerOptions.initialDatePickerMode instead.
+    Will be removed in v5.0.0
+    ''') DatePickerMode? initialDatePickerMode,
+    @Deprecated('''
+    Use materialDatePickerOptions.initialEntryMode instead.
+    Will be removed in v5.0.0
+    ''') DatePickerEntryMode? initialEntryMode,
+    @Deprecated('''
+    Use initialPickerDateTime instead.
+    Will be removed in v5.0.0
+    ''') DateTime? initialDate,
+    @Deprecated('''
+    Use materialTimePickerOptions.initialEntryMode instead.
+    Will be removed in v5.0.0
+    ''') TimePickerEntryMode? initialTimePickerEntryMode,
+  })  : assert(enabled == null || enabled == (onChanged != null),
+            'enabled got deprecated. The new behavior uses `onChanged != null`'),
+        dateFormat = dateFormat ?? mode.toDateFormat(),
+        style = style ?? dateTextStyle,
         firstDate = firstDate ?? _kDefaultFirstSelectableDate,
-        lastDate = lastDate ?? _kDefaultLastSelectableDate;
+        lastDate = lastDate ?? _kDefaultLastSelectableDate,
+        initialPickerDateTime = initialPickerDateTime ?? initialDate,
+        value = value ?? selectedDate,
+        materialDatePickerOptions = materialDatePickerOptions ??
+            MaterialDatePickerOptions(
+              initialEntryMode:
+                  initialEntryMode ?? DatePickerEntryMode.calendar,
+              initialDatePickerMode:
+                  initialDatePickerMode ?? DatePickerMode.day,
+            ),
+        materialTimePickerOptions = materialTimePickerOptions ??
+            MaterialTimePickerOptions(
+              initialEntryMode:
+                  initialTimePickerEntryMode ?? TimePickerEntryMode.dial,
+            );
 
   factory DateTimeField.time({
     Key? key,
@@ -78,8 +129,9 @@ class DateTimeField extends StatefulWidget {
     DateTime? lastDate,
     DateTime? initialPickerDateTime,
     TextStyle? style,
-    CupertinoDatePickerOptions cupertinoDatePickerOptions = const CupertinoDatePickerOptions(),
-    MaterialTimePickerOptions materialTimePickerOptions = const MaterialTimePickerOptions(),
+    CupertinoDatePickerOptions cupertinoDatePickerOptions =
+        const CupertinoDatePickerOptions(),
+    MaterialTimePickerOptions? materialTimePickerOptions,
     bool autofocus = false,
     DateFormat? dateFormat,
     EdgeInsetsGeometry? padding,
@@ -87,6 +139,37 @@ class DateTimeField extends StatefulWidget {
     FocusNode? focusNode,
     bool hideDefaultSuffixIcon = false,
     bool? enableFeedback,
+    @Deprecated('''
+    Use onChanged instead.
+    Will be removed in v5.0.0.
+    ''') ValueChanged<DateTime>? onDateSelected,
+    @Deprecated('''
+    Use value instead.
+    Will be removed in v5.0.0.
+    ''') DateTime? selectedDate,
+    @Deprecated('''
+    enabled has no effect anymore. It gets evaluated from onChanged != null.
+    Will be removed in v5.0.0.''') bool? enabled,
+    @Deprecated('''
+    Use initialPickerDateTime instead.
+    Will be removed in v5.0.0
+    ''') DateTime? initialDate,
+    @Deprecated('''
+    Uses now by default MediaQuery.of(context).alwaysUse24HourFormat.
+    Will be removed in v5.0.0.
+    ''') bool? use24hFormat,
+    @Deprecated('''
+    Use style instead.
+    Will be removed in v5.0.0.
+    ''') TextStyle? dateTextStyle,
+    @Deprecated('''
+    Has no effect anymore.
+    Will be removed in v5.0.0
+    ''') DatePickerEntryMode? initialEntryMode,
+    @Deprecated('''
+    Use materialTimePickerOptions.initialEntryMode instead.
+    Will be removed in v5.0.0
+    ''') TimePickerEntryMode? initialTimePickerEntryMode,
   }) =>
       DateTimeField(
         key: key,
@@ -94,10 +177,11 @@ class DateTimeField extends StatefulWidget {
         firstDate: firstDate ?? DateTime(2000),
         lastDate: lastDate ?? DateTime(2001),
         onChanged: onChanged,
-        value: value,
+        value: value ?? selectedDate,
         decoration: decoration,
-        initialPickerDateTime: initialPickerDateTime,
-        style: style,
+        initialPickerDateTime: initialPickerDateTime ?? initialDate,
+        use24hFormat: use24hFormat,
+        style: style ?? dateTextStyle,
         autofocus: autofocus,
         dateFormat: dateFormat,
         padding: padding,
@@ -107,6 +191,7 @@ class DateTimeField extends StatefulWidget {
         enableFeedback: enableFeedback,
         cupertinoDatePickerOptions: cupertinoDatePickerOptions,
         materialTimePickerOptions: materialTimePickerOptions,
+        initialTimePickerEntryMode: initialTimePickerEntryMode,
       );
 
   DateTimeField._formField({
@@ -125,6 +210,7 @@ class DateTimeField extends StatefulWidget {
     DateTime? lastDate,
     DateFormat? dateFormat,
     this.hideDefaultSuffixIcon = false,
+    this.use24hFormat,
     this.cupertinoDatePickerOptions = const CupertinoDatePickerOptions(),
     this.materialDatePickerOptions = const MaterialDatePickerOptions(),
     this.materialTimePickerOptions = const MaterialTimePickerOptions(),
@@ -213,6 +299,12 @@ class DateTimeField extends StatefulWidget {
   /// - Else => a [MaterialDatePicker], a [MaterialTimePicker] or both.
   final DateTimeFieldPickerMode mode;
 
+  @Deprecated('''
+  Uses now by default MediaQuery.of(context).alwaysUse24HourFormat.
+  Will be removed in v5.0.0.
+  ''')
+  final bool? use24hFormat;
+
   @override
   State<DateTimeField> createState() => _DateTimeFieldState();
 }
@@ -282,10 +374,12 @@ class _DateTimeFieldState extends State<DateTimeField> {
     final bool isDense = decoration.isDense ?? false;
 
     Widget result = MediaQuery(
-      data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: _use24HourFormat),
+      data: MediaQuery.of(context)
+          .copyWith(alwaysUse24HourFormat: _use24HourFormat),
       child: DefaultTextStyle(
-        style:
-            _enabled ? _textStyle! : _textStyle!.copyWith(color: Theme.of(context).disabledColor),
+        style: _enabled
+            ? _textStyle!
+            : _textStyle!.copyWith(color: Theme.of(context).disabledColor),
         child: ConstrainedBox(
           constraints: BoxConstraints(
             minHeight: _denseButtonHeight,
@@ -298,7 +392,8 @@ class _DateTimeFieldState extends State<DateTimeField> {
       ),
     );
 
-    final MouseCursor effectiveMouseCursor = MaterialStateProperty.resolveAs<MouseCursor>(
+    final MouseCursor effectiveMouseCursor =
+        MaterialStateProperty.resolveAs<MouseCursor>(
       MaterialStateMouseCursor.clickable,
       <MaterialState>{
         if (!_enabled) MaterialState.disabled,
@@ -400,8 +495,11 @@ class _DateTimeFieldState extends State<DateTimeField> {
       initialTime: TimeOfDay.fromDateTime(_initialPickerDateTime),
       builder: (BuildContext context, Widget? child) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: _use24HourFormat),
-          child: widget.materialTimePickerOptions.builder?.call(context, child) ?? child!,
+          data: MediaQuery.of(context)
+              .copyWith(alwaysUse24HourFormat: _use24HourFormat),
+          child:
+              widget.materialTimePickerOptions.builder?.call(context, child) ??
+                  child!,
         );
       },
       initialEntryMode: widget.materialTimePickerOptions.initialEntryMode,
@@ -424,11 +522,15 @@ class _DateTimeFieldState extends State<DateTimeField> {
       lastDate: widget.lastDate,
       builder: (BuildContext context, Widget? child) {
         return MediaQuery(
-          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: _use24HourFormat),
-          child: widget.materialDatePickerOptions.builder?.call(context, child) ?? child!,
+          data: MediaQuery.of(context)
+              .copyWith(alwaysUse24HourFormat: _use24HourFormat),
+          child:
+              widget.materialDatePickerOptions.builder?.call(context, child) ??
+                  child!,
         );
       },
-      initialDatePickerMode: widget.materialDatePickerOptions.initialDatePickerMode,
+      initialDatePickerMode:
+          widget.materialDatePickerOptions.initialDatePickerMode,
       initialEntryMode: widget.materialDatePickerOptions.initialEntryMode,
       currentDate: widget.materialDatePickerOptions.currentDate,
       locale: widget.materialDatePickerOptions.locale,
@@ -440,9 +542,12 @@ class _DateTimeFieldState extends State<DateTimeField> {
       fieldLabelText: widget.materialDatePickerOptions.fieldLabelText,
       helpText: widget.materialDatePickerOptions.helpText,
       keyboardType: widget.materialDatePickerOptions.keyboardType,
-      selectableDayPredicate: widget.materialDatePickerOptions.selectableDayPredicate,
-      switchToCalendarEntryModeIcon: widget.materialDatePickerOptions.switchToCalendarEntryModeIcon,
-      switchToInputEntryModeIcon: widget.materialDatePickerOptions.switchToInputEntryModeIcon,
+      selectableDayPredicate:
+          widget.materialDatePickerOptions.selectableDayPredicate,
+      switchToCalendarEntryModeIcon:
+          widget.materialDatePickerOptions.switchToCalendarEntryModeIcon,
+      switchToInputEntryModeIcon:
+          widget.materialDatePickerOptions.switchToInputEntryModeIcon,
       textDirection: widget.materialDatePickerOptions.textDirection,
       useRootNavigator: widget.materialDatePickerOptions.useRootNavigator,
     );
@@ -451,7 +556,8 @@ class _DateTimeFieldState extends State<DateTimeField> {
   Future<DateTime?> _showCupertinoPicker() async {
     final DateTime initialDateTime = switch (widget.mode) {
       DateTimeFieldPickerMode.time => _initialPickerDateTime,
-      DateTimeFieldPickerMode.date => DateUtils.dateOnly(_initialPickerDateTime),
+      DateTimeFieldPickerMode.date =>
+        DateUtils.dateOnly(_initialPickerDateTime),
       DateTimeFieldPickerMode.dateAndTime => _initialPickerDateTime,
     };
 
@@ -480,7 +586,9 @@ class _DateTimeFieldState extends State<DateTimeField> {
           mode: widget.mode,
         );
 
-        return widget.cupertinoDatePickerOptions.builder?.call(context, modal) ?? modal;
+        return widget.cupertinoDatePickerOptions.builder
+                ?.call(context, modal) ??
+            modal;
       },
     );
   }
@@ -509,7 +617,12 @@ class _DateTimeFieldState extends State<DateTimeField> {
   }
 
   bool get _use24HourFormat {
-    final DateFormat formatter = DateFormat.jm(Localizations.localeOf(context).toString());
+    if (widget.use24hFormat != null) {
+      return widget.use24hFormat!;
+    }
+
+    final DateFormat formatter =
+        DateFormat.jm(Localizations.localeOf(context).toString());
     final DateTime now = DateTime.parse('2000-01-01 17:00:00');
     final String formattedTime = formatter.format(now);
     final bool localeBasedUse24HourFormat = !formattedTime.contains('PM');
@@ -529,15 +642,17 @@ class _DateTimeFieldState extends State<DateTimeField> {
   // but don't make it smaller than the text that it contains. Similarly, we don't
   // reduce the height of the button so much that its icon would be clipped.
   double get _denseButtonHeight {
-    final double fontSize =
-        _textStyle!.fontSize ?? Theme.of(context).textTheme.titleMedium!.fontSize!;
-    final double scaledFontSize = MediaQuery.textScalerOf(context).scale(fontSize);
+    final double fontSize = _textStyle!.fontSize ??
+        Theme.of(context).textTheme.titleMedium!.fontSize!;
+    final double scaledFontSize =
+        MediaQuery.textScalerOf(context).scale(fontSize);
     return math.max(scaledFontSize, _kDenseButtonHeight);
   }
 
   bool get _enabled => widget.onChanged != null;
 
-  TextStyle? get _textStyle => widget.style ?? Theme.of(context).textTheme.titleMedium;
+  TextStyle? get _textStyle =>
+      widget.style ?? Theme.of(context).textTheme.titleMedium;
 
   FocusNode? get _focusNode => widget.focusNode ?? _internalNode;
 
@@ -570,10 +685,12 @@ class _CupertinoDatePickerModalSheet extends StatefulWidget {
   final DateTime lastDate;
 
   @override
-  State<_CupertinoDatePickerModalSheet> createState() => _CupertinoDatePickerModalSheetState();
+  State<_CupertinoDatePickerModalSheet> createState() =>
+      _CupertinoDatePickerModalSheetState();
 }
 
-class _CupertinoDatePickerModalSheetState extends State<_CupertinoDatePickerModalSheet> {
+class _CupertinoDatePickerModalSheetState
+    extends State<_CupertinoDatePickerModalSheet> {
   DateTime? _pickedDate;
 
   late Map<Type, Action<Intent>> _cancelActionMap;
@@ -623,33 +740,32 @@ class _CupertinoDatePickerModalSheetState extends State<_CupertinoDatePickerModa
             ),
             brightness: Theme.of(context).brightness,
             middle: Text(
-              widget.options.modalTitleText ?? MaterialLocalizations.of(context).dateInputLabel,
-              style: TextStyle(
-                color: CupertinoDynamicColor.resolve(
-                  CupertinoTheme.of(context).textTheme.navTitleTextStyle.color!,
-                  context,
-                ),
-              ),
+              widget.options.modalTitleText ??
+                  MaterialLocalizations.of(context).dateInputLabel,
+              style: widget.options.style.modalTitle ??
+                  CupertinoTheme.of(context).textTheme.navTitleTextStyle,
             ),
             leading: FocusableActionDetector(
               actions: _cancelActionMap,
               child: CupertinoButton(
-                  padding: EdgeInsets.zero,
-                  child: Text(
-                    widget.options.cancelText ??
-                        CupertinoLocalizations.of(context).modalBarrierDismissLabel,
-                    style: const TextStyle(
-                      color: CupertinoColors.destructiveRed,
-                    ),
-                  ),
-                  onPressed: _cancel),
+                padding: EdgeInsets.zero,
+                child: Text(
+                  widget.options.cancelText ??
+                      CupertinoLocalizations.of(context)
+                          .modalBarrierDismissLabel,
+                  style: widget.options.style.cancelButton,
+                ),
+                onPressed: _cancel,
+              ),
             ),
             trailing: FocusableActionDetector(
               actions: _saveActionMap,
               child: CupertinoButton(
                 padding: EdgeInsets.zero,
                 child: Text(
-                  widget.options.saveText ?? MaterialLocalizations.of(context).saveButtonLabel,
+                  widget.options.saveText ??
+                      MaterialLocalizations.of(context).saveButtonLabel,
+                  style: widget.options.style.saveButton,
                 ),
                 onPressed: _save,
               ),
