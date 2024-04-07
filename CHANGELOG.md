@@ -1,10 +1,15 @@
+# 5.0.1
+
+- DartFmt the code
+
 # 5.0.0
 
-- Removed deprecated parameters 
+- Removed deprecated parameters
 
 # 4.1.0
 
-- Adding better styling options for the iOS and MacOS modal sheet. It is now possible to specify the text style of the save and cancel buttons, as well as the title of the modal sheet. Solution to issue #59
+- Adding better styling options for the iOS and MacOS modal sheet. It is now possible to specify the text style of the
+  save and cancel buttons, as well as the title of the modal sheet. Solution to issue #59
 
 # 4.0.2
 
