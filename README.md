@@ -24,7 +24,7 @@ parameter.
    ```yaml
    dependencies:
      ...
-     date_field: ^5.0.0
+     date_field: ^5.0.1
    ```
 2. Run `flutter pub get` to install the package.
 3. Initialize your systems locale. If not, users might see AM/PM even when

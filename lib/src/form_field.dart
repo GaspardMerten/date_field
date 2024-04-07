@@ -28,9 +28,12 @@ class DateTimeFormField extends FormField<DateTime> {
     EdgeInsetsGeometry? padding,
     bool hideDefaultSuffixIcon = false,
     DateTime? initialPickerDateTime,
-    CupertinoDatePickerOptions cupertinoDatePickerOptions = const CupertinoDatePickerOptions(),
-    MaterialDatePickerOptions materialDatePickerOptions = const MaterialDatePickerOptions(),
-    MaterialTimePickerOptions materialTimePickerOptions = const MaterialTimePickerOptions(),
+    CupertinoDatePickerOptions cupertinoDatePickerOptions =
+        const CupertinoDatePickerOptions(),
+    MaterialDatePickerOptions materialDatePickerOptions =
+        const MaterialDatePickerOptions(),
+    MaterialTimePickerOptions materialTimePickerOptions =
+        const MaterialTimePickerOptions(),
     InputDecoration? decoration,
     DateFormat? dateFormat,
     DateTime? firstDate,
@@ -39,12 +42,14 @@ class DateTimeFormField extends FormField<DateTime> {
   }) : super(
           enabled: decoration?.enabled ?? true,
           builder: (FormFieldState<DateTime> field) {
-            final _DateTimeFormFieldState state = field as _DateTimeFormFieldState;
+            final _DateTimeFormFieldState state =
+                field as _DateTimeFormFieldState;
 
             final bool isEmpty = state.value == null;
 
             InputDecoration decorationArg =
-                (decoration ?? const InputDecoration()).copyWith(errorText: field.errorText);
+                (decoration ?? const InputDecoration())
+                    .copyWith(errorText: field.errorText);
 
             if (canClear && !isEmpty) {
               decorationArg = decorationArg.copyWith(
