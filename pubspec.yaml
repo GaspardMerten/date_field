@@ -1,5 +1,5 @@
 name: date_field
-description: A widget in the form of a field that lets people choose a date, a time or both.
+description: An Input, or FormField to choose DateTime values.
 version: 5.0.1
 homepage: 'https://github.com/GaspardMerten/date_field'
 
