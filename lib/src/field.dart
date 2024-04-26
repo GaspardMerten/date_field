@@ -298,7 +298,7 @@ class _DateTimeFieldState extends State<DateTimeField> {
           ),
           child: widget.value != null
               ? Text(widget.dateFormat.format(widget.value!))
-              : const SizedBox.shrink(),
+              : const Text(''),
         ),
       ),
     );
