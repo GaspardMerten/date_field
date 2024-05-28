@@ -1,3 +1,7 @@
+# 5.1.0
+
+- Added option pickerPlatform to fix the picker type to material, or cupertino, or keep it adaptive.
+
 # 5.0.1
 
 - DartFmt the code
