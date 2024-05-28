@@ -19,9 +19,9 @@ const double _kDenseButtonHeight = 24.0;
 
 /// The mode of the [DateTimeField].
 ///
-/// Depending on the mode, [DateTimeField] will show:
-/// On iOS & macOS: a CupertinoDatePicker with the according [CupertinoDatePickerMode].
-/// On all other platforms: a [MaterialDatePicker], a [MaterialTimePicker] or both.
+/// Depending on the mode and pickerPlatform, [DateTimeField] will show:
+/// A [CupertinoDatePicker] with the according [CupertinoDatePickerMode],
+/// or a [MaterialDatePicker], or a [MaterialTimePicker], or both.
 enum DateTimeFieldPickerMode {
   time,
   date,
@@ -38,6 +38,19 @@ enum DateTimeFieldPickerMode {
         DateTimeFieldPickerMode.date => CupertinoDatePickerMode.date,
         DateTimeFieldPickerMode.dateAndTime =>
           CupertinoDatePickerMode.dateAndTime,
+      };
+}
+
+/// The platform to use for the pickers.
+enum DateTimeFieldPickerPlatform {
+  material,
+  cupertino,
+  adaptive;
+
+  TargetPlatform toTargetPlatform(BuildContext context) => switch (this) {
+        DateTimeFieldPickerPlatform.material => TargetPlatform.android,
+        DateTimeFieldPickerPlatform.cupertino => TargetPlatform.iOS,
+        DateTimeFieldPickerPlatform.adaptive => Theme.of(context).platform,
       };
 }
 
@@ -63,6 +76,7 @@ class DateTimeField extends StatefulWidget {
     this.materialDatePickerOptions = const MaterialDatePickerOptions(),
     this.materialTimePickerOptions = const MaterialTimePickerOptions(),
     this.mode = DateTimeFieldPickerMode.dateAndTime,
+    this.pickerPlatform = DateTimeFieldPickerPlatform.adaptive,
     DateTime? firstDate,
     DateTime? lastDate,
     DateFormat? dateFormat,
@@ -90,6 +104,8 @@ class DateTimeField extends StatefulWidget {
     FocusNode? focusNode,
     bool hideDefaultSuffixIcon = false,
     bool? enableFeedback,
+    DateTimeFieldPickerPlatform pickerPlatform =
+        DateTimeFieldPickerPlatform.adaptive,
   }) =>
       DateTimeField(
         key: key,
@@ -110,6 +126,7 @@ class DateTimeField extends StatefulWidget {
         enableFeedback: enableFeedback,
         cupertinoDatePickerOptions: cupertinoDatePickerOptions,
         materialTimePickerOptions: materialTimePickerOptions,
+        pickerPlatform: pickerPlatform,
       );
 
   DateTimeField._formField({
@@ -131,6 +148,7 @@ class DateTimeField extends StatefulWidget {
     this.cupertinoDatePickerOptions = const CupertinoDatePickerOptions(),
     this.materialDatePickerOptions = const MaterialDatePickerOptions(),
     this.materialTimePickerOptions = const MaterialTimePickerOptions(),
+    this.pickerPlatform = DateTimeFieldPickerPlatform.adaptive,
   })  : dateFormat = dateFormat ?? mode.toDateFormat(),
         firstDate = firstDate ?? _kDefaultFirstSelectableDate,
         lastDate = lastDate ?? _kDefaultLastSelectableDate;
@@ -215,6 +233,11 @@ class DateTimeField extends StatefulWidget {
   ///   [CupertinoDatePickerMode].
   /// - Else => a [MaterialDatePicker], a [MaterialTimePicker] or both.
   final DateTimeFieldPickerMode mode;
+
+  /// The platform to use for the pickers.
+  ///
+  /// Defaults to [DateTimeFieldPickerPlatform.adaptive].
+  final DateTimeFieldPickerPlatform pickerPlatform;
 
   @override
   State<DateTimeField> createState() => _DateTimeFieldState();
@@ -304,10 +327,10 @@ class _DateTimeFieldState extends State<DateTimeField> {
     );
 
     final MouseCursor effectiveMouseCursor =
-        MaterialStateProperty.resolveAs<MouseCursor>(
-      MaterialStateMouseCursor.clickable,
-      <MaterialState>{
-        if (!_enabled) MaterialState.disabled,
+        WidgetStateProperty.resolveAs<MouseCursor>(
+      WidgetStateMouseCursor.clickable,
+      <WidgetState>{
+        if (!_enabled) WidgetState.disabled,
       },
     );
 
@@ -350,7 +373,8 @@ class _DateTimeFieldState extends State<DateTimeField> {
 
     widget.onTap?.call();
 
-    final TargetPlatform platform = Theme.of(context).platform;
+    final TargetPlatform platform =
+        widget.pickerPlatform.toTargetPlatform(context);
 
     if (platform == TargetPlatform.iOS || platform == TargetPlatform.macOS) {
       final DateTime? newDateTime = await _showCupertinoPicker();

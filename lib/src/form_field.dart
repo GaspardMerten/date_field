@@ -39,6 +39,8 @@ class DateTimeFormField extends FormField<DateTime> {
     DateTime? firstDate,
     DateTime? lastDate,
     DateTimeFieldPickerMode mode = DateTimeFieldPickerMode.dateAndTime,
+    DateTimeFieldPickerPlatform pickerPlatform =
+        DateTimeFieldPickerPlatform.adaptive,
   }) : super(
           enabled: decoration?.enabled ?? true,
           builder: (FormFieldState<DateTime> field) {
@@ -86,6 +88,7 @@ class DateTimeFormField extends FormField<DateTime> {
                     cupertinoDatePickerOptions: cupertinoDatePickerOptions,
                     materialDatePickerOptions: materialDatePickerOptions,
                     materialTimePickerOptions: materialTimePickerOptions,
+                    pickerPlatform: pickerPlatform,
                   );
                 },
               ),
