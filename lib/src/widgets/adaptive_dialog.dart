@@ -4,6 +4,7 @@ import 'package:date_field/src/models/material_time_picker_options.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../constants.dart';
 import 'cupertino_date_picker.dart';
 import 'field.dart';
 
@@ -35,10 +36,10 @@ import 'field.dart';
 Future<DateTime?> showAdaptiveDateTimePickerDialog(
   BuildContext context, {
   required DateTimeFieldPickerMode mode,
-  required DateTimeFieldPickerPlatform pickerPlatform,
+  DateTimeFieldPickerPlatform? pickerPlatform,
   required DateTime initialPickerDateTime,
-  required DateTime firstDate,
-  required DateTime lastDate,
+  DateTime? firstDate,
+  DateTime? lastDate,
   CupertinoDatePickerOptions cupertinoDatePickerOptions =
       const CupertinoDatePickerOptions(),
   MaterialDatePickerOptions materialDatePickerOptions =
@@ -47,15 +48,16 @@ Future<DateTime?> showAdaptiveDateTimePickerDialog(
       const MaterialTimePickerOptions(),
 }) async {
   DateTime? selectedDateTime = initialPickerDateTime;
-  final TargetPlatform platform = pickerPlatform.toTargetPlatform(context);
+  final TargetPlatform platform =
+      pickerPlatform?.toTargetPlatform(context) ?? Theme.of(context).platform;
 
   if (platform == TargetPlatform.iOS || platform == TargetPlatform.macOS) {
     selectedDateTime = await _showCupertinoPicker(
       context: context,
       mode: mode,
       initialPickerDateTime: initialPickerDateTime,
-      firstDate: firstDate,
-      lastDate: lastDate,
+      firstDate: firstDate ?? kDefaultFirstSelectableDate,
+      lastDate: lastDate ?? kDefaultLastSelectableDate,
       cupertinoDatePickerOptions: cupertinoDatePickerOptions,
     );
   } else {
@@ -64,8 +66,8 @@ Future<DateTime?> showAdaptiveDateTimePickerDialog(
       final DateTime? newDate = await showMaterialDatePicker(
         context: context,
         initialPickerDateTime: initialPickerDateTime,
-        firstDate: firstDate,
-        lastDate: lastDate,
+        firstDate: firstDate ?? kDefaultFirstSelectableDate,
+        lastDate: lastDate ?? kDefaultLastSelectableDate,
         materialDatePickerOptions: materialDatePickerOptions,
       );
       if (newDate != null) {
