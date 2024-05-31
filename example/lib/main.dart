@@ -40,23 +40,112 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  DateTimeFieldPickerPlatform platform = DateTimeFieldPickerPlatform.material;
 
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
           title: const Text('date_field Showcase'),
         ),
-        body: const SingleChildScrollView(
+        body: SingleChildScrollView(
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Column(
               children: <Widget>[
-                SizedBox(height: 16.0),
-                Fields(),
-                SizedBox(height: 32.0),
-                FormFields(),
+                const SizedBox(height: 16.0),
+                Text(
+                  'DateTimeField',
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
+                const SizedBox(height: 16.0),
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Opacity(
+                        opacity:
+                            platform == DateTimeFieldPickerPlatform.material
+                                ? 1
+                                : 0.5,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              platform = DateTimeFieldPickerPlatform.material;
+                            });
+                          },
+                          child: const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text('Material'),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Opacity(
+                        opacity:
+                            platform == DateTimeFieldPickerPlatform.cupertino
+                                ? 1
+                                : 0.5,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              platform = DateTimeFieldPickerPlatform.cupertino;
+                            });
+                          },
+                          child: const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text('Cupertino'),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Fields(platform: platform),
+                const SizedBox(height: 32.0),
+                FilledButton(
+                  onPressed: () async {
+                    final DateTime? result = await showAdaptiveDateTimePickerDialog(
+                      context,
+                      mode: DateTimeFieldPickerMode.dateAndTime,
+                      pickerPlatform: platform,
+                      firstDate: DateTime.now().subtract(const Duration(days: 30)),
+                      lastDate: DateTime.now().add(const Duration(days: 1)),
+                      initialPickerDateTime: DateTime.now(),
+                    );
+
+                    if (result != null) {
+                      await showDialog<void>(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Selected Date and Time'),
+                            content: Text(result.toString()),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('OK'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    }
+                  },
+                  child: const Text('Show Adaptive Dialog'),
+                ),
+                const SizedBox(height: 32.0),
+                FormFields(dateTimePickerPlatform: platform),
               ],
             ),
           ),
@@ -65,7 +154,9 @@ class MyHomePage extends StatelessWidget {
 }
 
 class Fields extends StatefulWidget {
-  const Fields({super.key});
+  const Fields({super.key, required this.platform});
+
+  final DateTimeFieldPickerPlatform platform;
 
   @override
   State<Fields> createState() => _FieldsState();
@@ -81,11 +172,8 @@ class _FieldsState extends State<Fields> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text(
-          'DateTimeField',
-          style: Theme.of(context).textTheme.headlineSmall,
-        ),
         DateTimeField(
+          pickerPlatform: widget.platform,
           onChanged: null,
           decoration: const InputDecoration(labelText: 'Disabled'),
         ),
@@ -98,6 +186,7 @@ class _FieldsState extends State<Fields> {
           value: selectedDate,
           dateFormat: DateFormat.yMd(),
           mode: DateTimeFieldPickerMode.date,
+          pickerPlatform: widget.platform,
           onChanged: (DateTime? value) {
             setState(() {
               selectedDate = value;
@@ -109,6 +198,7 @@ class _FieldsState extends State<Fields> {
           value: selectedTime,
           decoration: const InputDecoration(labelText: 'Enter Time'),
           mode: DateTimeFieldPickerMode.time,
+          pickerPlatform: widget.platform,
           onChanged: (DateTime? value) {
             print(value);
             setState(() {
@@ -120,6 +210,7 @@ class _FieldsState extends State<Fields> {
         DateTimeField(
           value: selectedDateTime,
           decoration: const InputDecoration(labelText: 'Enter DateTime'),
+          pickerPlatform: widget.platform,
           onChanged: (DateTime? value) {
             print(value);
             setState(() {
@@ -133,7 +224,9 @@ class _FieldsState extends State<Fields> {
 }
 
 class FormFields extends StatelessWidget {
-  const FormFields({super.key});
+  const FormFields({super.key, required this.dateTimePickerPlatform});
+
+  final DateTimeFieldPickerPlatform dateTimePickerPlatform;
 
   @override
   Widget build(BuildContext context) {
@@ -148,6 +241,7 @@ class FormFields extends StatelessWidget {
           child: Column(
             children: <Widget>[
               DateTimeFormField(
+                pickerPlatform: dateTimePickerPlatform,
                 onChanged: null,
                 decoration: const InputDecoration(labelText: 'Disabled'),
               ),
@@ -155,6 +249,7 @@ class FormFields extends StatelessWidget {
               DateTimeFormField(
                 decoration: const InputDecoration(labelText: 'Enter Date'),
                 mode: DateTimeFieldPickerMode.date,
+                pickerPlatform: dateTimePickerPlatform,
                 onChanged: (DateTime? value) {
                   print(value);
                 },
@@ -163,6 +258,7 @@ class FormFields extends StatelessWidget {
               DateTimeFormField(
                 decoration: const InputDecoration(labelText: 'Enter Time'),
                 mode: DateTimeFieldPickerMode.time,
+                pickerPlatform: dateTimePickerPlatform,
                 onChanged: (DateTime? value) {
                   print(value);
                 },
@@ -170,6 +266,7 @@ class FormFields extends StatelessWidget {
               const SizedBox(height: 16),
               DateTimeFormField(
                 decoration: const InputDecoration(labelText: 'Enter DateTime'),
+                pickerPlatform: dateTimePickerPlatform,
                 onChanged: (DateTime? value) {
                   print(value);
                 },

@@ -1,20 +1,21 @@
 import 'dart:io';
 import 'dart:math' as math;
 
-import 'package:date_field/src/cupertino_date_picker_options.dart';
-import 'package:date_field/src/material_date_picker_options.dart';
-import 'package:date_field/src/material_time_picker_options.dart';
+import 'package:date_field/src/models/cupertino_date_picker_options.dart';
+import 'package:date_field/src/models/material_date_picker_options.dart';
+import 'package:date_field/src/models/material_time_picker_options.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
+import 'adaptive_dialog.dart';
 
 part 'form_field.dart';
 
 final DateTime _kDefaultFirstSelectableDate = DateTime(1900);
 final DateTime _kDefaultLastSelectableDate = DateTime(2100);
 
-const double _kCupertinoDatePickerHeight = 216;
 const double _kDenseButtonHeight = 24.0;
 
 /// The mode of the [DateTimeField].
@@ -220,7 +221,7 @@ class DateTimeField extends StatefulWidget {
 
   /// The format of the shown [DateTime].
   ///
-  /// Depending on the [mode] the [dateFormat] defaults to:
+  /// Depending on the [mod e] the [dateFormat] defaults to:
   /// - [DateTimeFieldPickerMode.time] => [DateFormat.jm]
   /// - [DateTimeFieldPickerMode.date] => [DateFormat.yMMMMd]
   /// - [DateTimeFieldPickerMode.dateAndTime] => [DateFormat.yMd].add_jm()
@@ -245,9 +246,7 @@ class DateTimeField extends StatefulWidget {
 
 class _DateTimeFieldState extends State<DateTimeField> {
   FocusNode? _internalNode;
-
   late Map<Type, Action<Intent>> _actionMap;
-
   bool _isSelecting = false;
 
   @override
@@ -368,164 +367,28 @@ class _DateTimeFieldState extends State<DateTimeField> {
 
   Future<void> _handleTap() async {
     _isSelecting = true;
-
     _focusNode?.requestFocus();
-
     widget.onTap?.call();
 
-    final TargetPlatform platform =
-        widget.pickerPlatform.toTargetPlatform(context);
-
-    if (platform == TargetPlatform.iOS || platform == TargetPlatform.macOS) {
-      final DateTime? newDateTime = await _showCupertinoPicker();
-      _isSelecting = false;
-
-      if (!mounted || newDateTime == null) {
-        return;
-      }
-
-      widget.onChanged?.call(newDateTime);
-
-      return;
-    }
-
-    DateTime? selectedDateTime = _initialPickerDateTime;
-
-    if (widget.mode == DateTimeFieldPickerMode.dateAndTime ||
-        widget.mode == DateTimeFieldPickerMode.date) {
-      final DateTime? newDate = await _showMaterialDatePicker();
-      if (!mounted || newDate == null) {
-        _isSelecting = false;
-        return;
-      }
-
-      selectedDateTime = newDate;
-    }
-
-    if (widget.mode == DateTimeFieldPickerMode.dateAndTime ||
-        widget.mode == DateTimeFieldPickerMode.time) {
-      final TimeOfDay? selectedTime = await _showMaterialTimePicker();
-
-      if (selectedTime != null) {
-        selectedDateTime = DateTime(
-          selectedDateTime.year,
-          selectedDateTime.month,
-          selectedDateTime.day,
-          selectedTime.hour,
-          selectedTime.minute,
-        );
-      }
-    }
+    final DateTime? newDateTime = await showAdaptiveDateTimePickerDialog(
+      context,
+      mode: widget.mode,
+      pickerPlatform: widget.pickerPlatform,
+      cupertinoDatePickerOptions: widget.cupertinoDatePickerOptions,
+      materialDatePickerOptions: widget.materialDatePickerOptions,
+      materialTimePickerOptions: widget.materialTimePickerOptions,
+      initialPickerDateTime: _initialPickerDateTime,
+      firstDate: widget.firstDate,
+      lastDate: widget.lastDate,
+    );
 
     if (mounted) {
       _isSelecting = false;
     }
 
-    widget.onChanged?.call(selectedDateTime);
-  }
-
-  Future<TimeOfDay?> _showMaterialTimePicker() async {
-    return showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.fromDateTime(_initialPickerDateTime),
-      builder: (BuildContext context, Widget? child) {
-        return MediaQuery(
-          data: MediaQuery.of(context)
-              .copyWith(alwaysUse24HourFormat: _use24HourFormat),
-          child:
-              widget.materialTimePickerOptions.builder?.call(context, child) ??
-                  child!,
-        );
-      },
-      initialEntryMode: widget.materialTimePickerOptions.initialEntryMode,
-      useRootNavigator: widget.materialTimePickerOptions.useRootNavigator,
-      helpText: widget.materialTimePickerOptions.helpText,
-      errorInvalidText: widget.materialTimePickerOptions.errorInvalidText,
-      cancelText: widget.materialTimePickerOptions.cancelText,
-      confirmText: widget.materialTimePickerOptions.confirmText,
-      hourLabelText: widget.materialTimePickerOptions.hourLabelText,
-      minuteLabelText: widget.materialTimePickerOptions.minuteLabelText,
-      orientation: widget.materialTimePickerOptions.orientation,
-    );
-  }
-
-  Future<DateTime?> _showMaterialDatePicker() {
-    return showDatePicker(
-      context: context,
-      initialDate: _initialPickerDateTime,
-      firstDate: widget.firstDate,
-      lastDate: widget.lastDate,
-      builder: (BuildContext context, Widget? child) {
-        return MediaQuery(
-          data: MediaQuery.of(context)
-              .copyWith(alwaysUse24HourFormat: _use24HourFormat),
-          child:
-              widget.materialDatePickerOptions.builder?.call(context, child) ??
-                  child!,
-        );
-      },
-      initialDatePickerMode:
-          widget.materialDatePickerOptions.initialDatePickerMode,
-      initialEntryMode: widget.materialDatePickerOptions.initialEntryMode,
-      currentDate: widget.materialDatePickerOptions.currentDate,
-      locale: widget.materialDatePickerOptions.locale,
-      cancelText: widget.materialDatePickerOptions.cancelText,
-      confirmText: widget.materialDatePickerOptions.confirmText,
-      errorFormatText: widget.materialDatePickerOptions.errorFormatText,
-      errorInvalidText: widget.materialDatePickerOptions.errorInvalidText,
-      fieldHintText: widget.materialDatePickerOptions.fieldHintText,
-      fieldLabelText: widget.materialDatePickerOptions.fieldLabelText,
-      helpText: widget.materialDatePickerOptions.helpText,
-      keyboardType: widget.materialDatePickerOptions.keyboardType,
-      selectableDayPredicate:
-          widget.materialDatePickerOptions.selectableDayPredicate,
-      switchToCalendarEntryModeIcon:
-          widget.materialDatePickerOptions.switchToCalendarEntryModeIcon,
-      switchToInputEntryModeIcon:
-          widget.materialDatePickerOptions.switchToInputEntryModeIcon,
-      textDirection: widget.materialDatePickerOptions.textDirection,
-      useRootNavigator: widget.materialDatePickerOptions.useRootNavigator,
-    );
-  }
-
-  Future<DateTime?> _showCupertinoPicker() async {
-    final DateTime initialDateTime = switch (widget.mode) {
-      DateTimeFieldPickerMode.time => _initialPickerDateTime,
-      DateTimeFieldPickerMode.date =>
-        DateUtils.dateOnly(_initialPickerDateTime),
-      DateTimeFieldPickerMode.dateAndTime => _initialPickerDateTime,
-    };
-
-    final DateTime firstDate = switch (widget.mode) {
-      DateTimeFieldPickerMode.time => widget.firstDate,
-      DateTimeFieldPickerMode.date => DateUtils.dateOnly(widget.firstDate),
-      DateTimeFieldPickerMode.dateAndTime => widget.firstDate,
-    };
-
-    final DateTime lastDate = switch (widget.mode) {
-      DateTimeFieldPickerMode.time => widget.lastDate,
-      DateTimeFieldPickerMode.date => DateUtils.dateOnly(widget.lastDate),
-      DateTimeFieldPickerMode.dateAndTime => widget.lastDate,
-    };
-
-    return showCupertinoModalPopup<DateTime?>(
-      useRootNavigator: widget.cupertinoDatePickerOptions.useRootNavigator,
-      context: context,
-      builder: (BuildContext context) {
-        final Widget modal = _CupertinoDatePickerModalSheet(
-          initialPickerDateTime: initialDateTime,
-          options: widget.cupertinoDatePickerOptions,
-          use24hFormat: _use24HourFormat,
-          firstDate: firstDate,
-          lastDate: lastDate,
-          mode: widget.mode,
-        );
-
-        return widget.cupertinoDatePickerOptions.builder
-                ?.call(context, modal) ??
-            modal;
-      },
-    );
+    if (newDateTime != null) {
+      widget.onChanged?.call(newDateTime);
+    }
   }
 
   DateTime get _initialPickerDateTime {
@@ -539,7 +402,6 @@ class _DateTimeFieldState extends State<DateTimeField> {
 
     final DateTime now = DateTime.now();
 
-    // when now is not between `firstDate` and `lastDate` return the closest to now.
     if (widget.firstDate.isAfter(now)) {
       return widget.firstDate;
     }
@@ -569,9 +431,6 @@ class _DateTimeFieldState extends State<DateTimeField> {
     return localeBasedUse24HourFormat;
   }
 
-  // When isDense is true, reduce the height of the content to _kDenseButtonHeight,
-  // but don't make it smaller than the text that it contains. Similarly, we don't
-  // reduce the height of the button so much that its icon would be clipped.
   double get _denseButtonHeight {
     final double fontSize = _textStyle!.fontSize ??
         Theme.of(context).textTheme.titleMedium!.fontSize!;
@@ -587,152 +446,7 @@ class _DateTimeFieldState extends State<DateTimeField> {
 
   FocusNode? get _focusNode => widget.focusNode ?? _internalNode;
 
-  /// Only used if needed to create _internalNode.
   FocusNode _createFocusNode() {
     return FocusNode(debugLabel: '${widget.runtimeType}');
-  }
-}
-
-class _CupertinoDatePickerModalSheet extends StatefulWidget {
-  const _CupertinoDatePickerModalSheet({
-    required this.initialPickerDateTime,
-    required this.options,
-    required this.mode,
-    required this.use24hFormat,
-    required this.firstDate,
-    required this.lastDate,
-  });
-
-  final DateTime initialPickerDateTime;
-
-  final CupertinoDatePickerOptions options;
-
-  final DateTimeFieldPickerMode mode;
-
-  final bool use24hFormat;
-
-  final DateTime firstDate;
-
-  final DateTime lastDate;
-
-  @override
-  State<_CupertinoDatePickerModalSheet> createState() =>
-      _CupertinoDatePickerModalSheetState();
-}
-
-class _CupertinoDatePickerModalSheetState
-    extends State<_CupertinoDatePickerModalSheet> {
-  DateTime? _pickedDate;
-
-  late Map<Type, Action<Intent>> _cancelActionMap;
-  late Map<Type, Action<Intent>> _saveActionMap;
-
-  @override
-  void initState() {
-    super.initState();
-    _pickedDate = widget.initialPickerDateTime;
-
-    _cancelActionMap = <Type, Action<Intent>>{
-      ActivateIntent: CallbackAction<ActivateIntent>(
-        onInvoke: (ActivateIntent intent) => _cancel(),
-      ),
-      ButtonActivateIntent: CallbackAction<ButtonActivateIntent>(
-        onInvoke: (ButtonActivateIntent intent) => _cancel(),
-      ),
-    };
-    _saveActionMap = <Type, Action<Intent>>{
-      ActivateIntent: CallbackAction<ActivateIntent>(
-        onInvoke: (ActivateIntent intent) => _save(),
-      ),
-      ButtonActivateIntent: CallbackAction<ButtonActivateIntent>(
-        onInvoke: (ButtonActivateIntent intent) => _save(),
-      ),
-    };
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final MediaQueryData mediaQueryData = MediaQuery.of(context).removePadding(
-      removeTop: true,
-      removeBottom: false,
-      removeLeft: false,
-      removeRight: false,
-    );
-
-    return MediaQuery(
-      data: mediaQueryData,
-      child: CupertinoPopupSurface(
-        isSurfacePainted: true,
-        child: CupertinoPageScaffold(
-          navigationBar: CupertinoNavigationBar(
-            backgroundColor: CupertinoDynamicColor.resolve(
-              CupertinoTheme.of(context).barBackgroundColor,
-              context,
-            ),
-            brightness: Theme.of(context).brightness,
-            middle: Text(
-              widget.options.modalTitleText ??
-                  MaterialLocalizations.of(context).dateInputLabel,
-              style: widget.options.style.modalTitle ??
-                  CupertinoTheme.of(context).textTheme.navTitleTextStyle,
-            ),
-            leading: FocusableActionDetector(
-              actions: _cancelActionMap,
-              child: CupertinoButton(
-                padding: EdgeInsets.zero,
-                child: Text(
-                  widget.options.cancelText ??
-                      CupertinoLocalizations.of(context)
-                          .modalBarrierDismissLabel,
-                  style: widget.options.style.cancelButton,
-                ),
-                onPressed: _cancel,
-              ),
-            ),
-            trailing: FocusableActionDetector(
-              actions: _saveActionMap,
-              child: CupertinoButton(
-                padding: EdgeInsets.zero,
-                child: Text(
-                  widget.options.saveText ??
-                      MaterialLocalizations.of(context).saveButtonLabel,
-                  style: widget.options.style.saveButton,
-                ),
-                onPressed: _save,
-              ),
-            ),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              // _kNavBarPersistentHeight equals kMinInteractiveDimensionCupertino
-              const SizedBox(height: kMinInteractiveDimensionCupertino),
-              SizedBox(
-                height: _kCupertinoDatePickerHeight,
-                child: CupertinoDatePicker(
-                  mode: widget.mode.toCupertinoDatePickerMode(),
-                  onDateTimeChanged: (DateTime dt) => _pickedDate = dt,
-                  initialDateTime: widget.initialPickerDateTime,
-                  minimumDate: widget.firstDate,
-                  maximumDate: widget.lastDate,
-                  use24hFormat: widget.use24hFormat,
-                  showDayOfWeek: widget.options.showDayOfWeek,
-                  minuteInterval: widget.options.minuteInterval,
-                ),
-              ),
-              SizedBox(height: MediaQuery.of(context).padding.bottom),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  void _save() {
-    Navigator.of(context).pop(_pickedDate);
-  }
-
-  void _cancel() {
-    Navigator.of(context).pop(null);
   }
 }
