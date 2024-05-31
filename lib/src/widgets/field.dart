@@ -9,12 +9,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+import '../constants.dart';
 import 'adaptive_dialog.dart';
 
 part 'form_field.dart';
-
-final DateTime _kDefaultFirstSelectableDate = DateTime(1900);
-final DateTime _kDefaultLastSelectableDate = DateTime(2100);
 
 const double _kDenseButtonHeight = 24.0;
 
@@ -82,8 +80,8 @@ class DateTimeField extends StatefulWidget {
     DateTime? lastDate,
     DateFormat? dateFormat,
   })  : dateFormat = dateFormat ?? mode.toDateFormat(),
-        firstDate = firstDate ?? _kDefaultFirstSelectableDate,
-        lastDate = lastDate ?? _kDefaultLastSelectableDate;
+        firstDate = firstDate ?? kDefaultFirstSelectableDate,
+        lastDate = lastDate ?? kDefaultLastSelectableDate;
 
   factory DateTimeField.time({
     Key? key,
@@ -151,8 +149,8 @@ class DateTimeField extends StatefulWidget {
     this.materialTimePickerOptions = const MaterialTimePickerOptions(),
     this.pickerPlatform = DateTimeFieldPickerPlatform.adaptive,
   })  : dateFormat = dateFormat ?? mode.toDateFormat(),
-        firstDate = firstDate ?? _kDefaultFirstSelectableDate,
-        lastDate = lastDate ?? _kDefaultLastSelectableDate;
+        firstDate = firstDate ?? kDefaultFirstSelectableDate,
+        lastDate = lastDate ?? kDefaultLastSelectableDate;
 
   /// The [DateTime] that represents the currently selected date.
   final DateTime? value;
