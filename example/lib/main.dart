@@ -113,11 +113,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 const SizedBox(height: 32.0),
                 FilledButton(
                   onPressed: () async {
-                    final DateTime? result = await showAdaptiveDateTimePickerDialog(
-                      context,
+                    final DateTime? result = await showAdaptiveDateTimePicker(
+                      context: context,
                       mode: DateTimeFieldPickerMode.dateAndTime,
                       pickerPlatform: platform,
-                      firstDate: DateTime.now().subtract(const Duration(days: 30)),
+                      firstDate:
+                          DateTime.now().subtract(const Duration(days: 30)),
                       lastDate: DateTime.now().add(const Duration(days: 1)),
                       initialPickerDateTime: DateTime.now(),
                     );
