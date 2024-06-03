@@ -1,16 +1,15 @@
 import 'dart:io';
 import 'dart:math' as math;
 
+import 'package:date_field/src/constants.dart';
 import 'package:date_field/src/models/cupertino_date_picker_options.dart';
 import 'package:date_field/src/models/material_date_picker_options.dart';
 import 'package:date_field/src/models/material_time_picker_options.dart';
+import 'package:date_field/src/widgets/adaptive_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
-import '../constants.dart';
-import 'adaptive_dialog.dart';
 
 part 'form_field.dart';
 
@@ -368,8 +367,8 @@ class _DateTimeFieldState extends State<DateTimeField> {
     _focusNode?.requestFocus();
     widget.onTap?.call();
 
-    final DateTime? newDateTime = await showAdaptiveDateTimePickerDialog(
-      context,
+    final DateTime? newDateTime = await showAdaptiveDateTimePicker(
+      context: context,
       mode: widget.mode,
       pickerPlatform: widget.pickerPlatform,
       cupertinoDatePickerOptions: widget.cupertinoDatePickerOptions,

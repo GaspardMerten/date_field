@@ -1,43 +1,74 @@
+import 'dart:io';
+
+import 'package:date_field/src/constants.dart';
 import 'package:date_field/src/models/cupertino_date_picker_options.dart';
 import 'package:date_field/src/models/material_date_picker_options.dart';
 import 'package:date_field/src/models/material_time_picker_options.dart';
+import 'package:date_field/src/widgets/cupertino_date_picker.dart';
+import 'package:date_field/src/widgets/field.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
-import '../constants.dart';
-import 'cupertino_date_picker.dart';
-import 'field.dart';
+bool _use24HourFormat(BuildContext context) {
+  final DateFormat formatter = DateFormat.jm(
+    Localizations.localeOf(context).toString(),
+  );
+  final DateTime now = DateTime.parse('2000-01-01 17:00:00');
+  final String formattedTime = formatter.format(now);
+  final bool localeBasedUse24HourFormat = !formattedTime.contains('PM');
 
-/// Shows an adaptive date and/or time picker dialog.
+  if (kIsWeb) {
+    return localeBasedUse24HourFormat;
+  }
+
+  if (Platform.isIOS || Platform.isAndroid) {
+    return MediaQuery.of(context).alwaysUse24HourFormat;
+  }
+
+  return localeBasedUse24HourFormat;
+}
+
+/// Displays an adaptive date and time picker based on the current platform.
 ///
-/// The dialog will be adaptive to the platform and will show a Cupertino or
-/// Material date and/or time picker.
+/// On iOS and macOS, it shows a Cupertino-style picker. On other platforms,
+/// it shows a Material-style picker.
 ///
-/// The [mode] parameter can be used to show only a date picker, only a time
-/// picker, or both.
+/// The [context] parameter is required to provide the necessary context for
+/// the picker. The [mode] parameter specifies whether to show a date, time,
+/// or both date and time picker. The [initialPickerDateTime] parameter sets
+/// the initial date and time to be displayed by the picker.
 ///
-/// The [pickerPlatform] parameter can be used to force the platform to show a
-/// Cupertino or Material picker.
+/// The [pickerPlatform] parameter allows overriding the platform detection to
+/// force a specific style of picker. If [pickerPlatform] is not specified,
+/// the platform is inferred from the current theme's platform.
 ///
-/// The [initialPickerDateTime] parameter is the initial date and time that will
-/// be shown in the picker.
+/// The [firstDate] and [lastDate] parameters set the selectable date range
+/// for the picker. If not provided, defaults are used.
 ///
-/// The [firstDate] and [lastDate] parameters are used to set the range of
-/// selectable dates.
+/// The [cupertinoDatePickerOptions] parameter allows customization of the
+/// Cupertino date picker. The  [materialDatePickerOptions] and
+/// [materialTimePickerOptions] parameters allow customization of the Material
+/// date and time pickers respectively.
 ///
-/// The [cupertinoDatePickerOptions] parameter can be used to customize the
-/// Cupertino date picker.
+/// Returns a `Future<DateTime?>` that completes with the selected date and time
+/// or null if the user cancels the picker.
 ///
-/// The [materialDatePickerOptions] parameter can be used to customize the
-/// Material date picker.
-///
-/// The [materialTimePickerOptions] parameter can be used to customize the
-/// Material time picker.
-Future<DateTime?> showAdaptiveDateTimePickerDialog(
-  BuildContext context, {
+/// ```dart
+/// final DateTime? selectedDateTime = await showAdaptiveDateTimePicker(
+///  context,
+///  mode: DateTimeFieldPickerMode.dateAndTime,
+///  initialPickerDateTime: DateTime.now(),
+///  firstDate: DateTime(2011),
+///  lastDate: DateTime(2125),
+/// );
+/// ```
+Future<DateTime?> showAdaptiveDateTimePicker({
+  required BuildContext context,
   required DateTimeFieldPickerMode mode,
   DateTimeFieldPickerPlatform? pickerPlatform,
-  required DateTime initialPickerDateTime,
+  DateTime? initialPickerDateTime,
   DateTime? firstDate,
   DateTime? lastDate,
   CupertinoDatePickerOptions cupertinoDatePickerOptions =
@@ -47,12 +78,11 @@ Future<DateTime?> showAdaptiveDateTimePickerDialog(
   MaterialTimePickerOptions materialTimePickerOptions =
       const MaterialTimePickerOptions(),
 }) async {
-  DateTime? selectedDateTime = initialPickerDateTime;
   final TargetPlatform platform =
       pickerPlatform?.toTargetPlatform(context) ?? Theme.of(context).platform;
 
   if (platform == TargetPlatform.iOS || platform == TargetPlatform.macOS) {
-    selectedDateTime = await _showCupertinoPicker(
+    return showCupertinoDateTimePicker(
       context: context,
       mode: mode,
       initialPickerDateTime: initialPickerDateTime,
@@ -60,38 +90,87 @@ Future<DateTime?> showAdaptiveDateTimePickerDialog(
       lastDate: lastDate ?? kDefaultLastSelectableDate,
       cupertinoDatePickerOptions: cupertinoDatePickerOptions,
     );
-  } else {
-    if (mode == DateTimeFieldPickerMode.dateAndTime ||
-        mode == DateTimeFieldPickerMode.date) {
-      final DateTime? newDate = await showMaterialDatePicker(
-        context: context,
-        initialPickerDateTime: initialPickerDateTime,
-        firstDate: firstDate ?? kDefaultFirstSelectableDate,
-        lastDate: lastDate ?? kDefaultLastSelectableDate,
-        materialDatePickerOptions: materialDatePickerOptions,
-      );
-      if (newDate != null) {
-        selectedDateTime = newDate;
-      }
-    }
-    if (mode == DateTimeFieldPickerMode.dateAndTime ||
-        mode == DateTimeFieldPickerMode.time) {
-      final TimeOfDay? selectedTime = await showMaterialTimePicker(
-        context: context,
-        initialPickerDateTime: initialPickerDateTime,
-        materialTimePickerOptions: materialTimePickerOptions,
-      );
-      if (selectedTime != null) {
-        selectedDateTime = DateTime(
-          selectedDateTime.year,
-          selectedDateTime.month,
-          selectedDateTime.day,
-          selectedTime.hour,
-          selectedTime.minute,
-        );
-      }
+  }
+
+  return showMaterialDateTimePicker(
+    context: context,
+    mode: mode,
+    initialPickerDateTime: initialPickerDateTime,
+    firstDate: firstDate,
+    lastDate: lastDate,
+    materialDatePickerOptions: materialDatePickerOptions,
+    materialTimePickerOptions: materialTimePickerOptions,
+  );
+}
+
+/// Displays a Material-style date and time picker in a modal popup.
+/// The [context] parameter is required to provide the necessary context for
+/// the picker. The [mode] parameter specifies whether to show a date, time,
+/// or both date and time picker. The [initialPickerDateTime] parameter sets
+/// the initial date and time to be displayed by the picker.
+///
+/// The [firstDate] and [lastDate] parameters set the selectable date range
+/// for the picker. If not provided, defaults are used.
+///
+/// The [materialDatePickerOptions] and [materialTimePickerOptions] parameters
+/// allow customization of the Material date and time pickers respectively.
+///
+/// Returns a Future<DateTime?> that completes with the selected date and time
+/// or null if the user cancels the picker.
+///
+/// ```dart
+/// final DateTime? selectedDateTime = await showMaterialDateTimePicker(
+///   context,
+///   mode: DateTimeFieldPickerMode.dateAndTime,
+///   initialPickerDateTime: DateTime.now(),
+///   firstDate: DateTime(2011),
+///   lastDate: DateTime(2125),
+/// );
+Future<DateTime?> showMaterialDateTimePicker({
+  required BuildContext context,
+  required DateTimeFieldPickerMode mode,
+  DateTime? initialPickerDateTime,
+  DateTime? firstDate,
+  DateTime? lastDate,
+  MaterialDatePickerOptions materialDatePickerOptions =
+      const MaterialDatePickerOptions(),
+  MaterialTimePickerOptions materialTimePickerOptions =
+      const MaterialTimePickerOptions(),
+}) async {
+  initialPickerDateTime = initialPickerDateTime ?? DateTime.now();
+  DateTime? selectedDateTime = initialPickerDateTime;
+
+  if (mode == DateTimeFieldPickerMode.dateAndTime ||
+      mode == DateTimeFieldPickerMode.date) {
+    final DateTime? newDate = await _showMaterialDatePicker(
+      context: context,
+      initialPickerDateTime: initialPickerDateTime,
+      firstDate: firstDate ?? kDefaultFirstSelectableDate,
+      lastDate: lastDate ?? kDefaultLastSelectableDate,
+      materialDatePickerOptions: materialDatePickerOptions,
+    );
+    if (newDate != null) {
+      selectedDateTime = newDate;
     }
   }
+  if (mode == DateTimeFieldPickerMode.dateAndTime ||
+      mode == DateTimeFieldPickerMode.time) {
+    final TimeOfDay? selectedTime = await showMaterialTimePicker(
+      context: context,
+      initialPickerDateTime: initialPickerDateTime,
+      materialTimePickerOptions: materialTimePickerOptions,
+    );
+    if (selectedTime != null) {
+      selectedDateTime = DateTime(
+        selectedDateTime.year,
+        selectedDateTime.month,
+        selectedDateTime.day,
+        selectedTime.hour,
+        selectedTime.minute,
+      );
+    }
+  }
+
   return selectedDateTime;
 }
 
@@ -105,7 +184,9 @@ Future<TimeOfDay?> showMaterialTimePicker({
     initialTime: TimeOfDay.fromDateTime(initialPickerDateTime),
     builder: (BuildContext context, Widget? child) {
       return MediaQuery(
-        data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+        data: MediaQuery.of(context).copyWith(
+          alwaysUse24HourFormat: _use24HourFormat(context),
+        ),
         child:
             materialTimePickerOptions.builder?.call(context, child) ?? child!,
       );
@@ -122,7 +203,7 @@ Future<TimeOfDay?> showMaterialTimePicker({
   );
 }
 
-Future<DateTime?> showMaterialDatePicker({
+Future<DateTime?> _showMaterialDatePicker({
   required BuildContext context,
   required DateTime initialPickerDateTime,
   required DateTime firstDate,
@@ -136,7 +217,9 @@ Future<DateTime?> showMaterialDatePicker({
     lastDate: lastDate,
     builder: (BuildContext context, Widget? child) {
       return MediaQuery(
-        data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),
+        data: MediaQuery.of(context).copyWith(
+          alwaysUse24HourFormat: _use24HourFormat(context),
+        ),
         child:
             materialDatePickerOptions.builder?.call(context, child) ?? child!,
       );
@@ -163,24 +246,52 @@ Future<DateTime?> showMaterialDatePicker({
   );
 }
 
-Future<DateTime?> _showCupertinoPicker({
+/// Displays a Cupertino-style date and time picker in a modal popup.
+///
+/// The [context] parameter is required to provide the necessary context for
+/// the picker. The [mode] parameter specifies whether to show a date, time,
+/// or both date and time picker. The [initialPickerDateTime] parameter sets
+/// the initial date and time to be displayed by the picker.
+///
+/// The [firstDate] and [lastDate] parameters set the selectable date range
+/// for the picker. If not provided, defaults are used.
+///
+/// The [cupertinoDatePickerOptions] parameter allows customization of the
+/// Cupertino date picker.
+///
+/// Returns a Future<DateTime?> that completes with the selected date and time
+/// or null if the user cancels the picker.
+///
+/// ```dart
+/// final DateTime? selectedDateTime = await showCupertinoDateTimePicker(
+///  context,
+///  mode: DateTimeFieldPickerMode.dateAndTime,
+///  initialPickerDateTime: DateTime.now(),
+///  firstDate: DateTime(2011),
+///  lastDate: DateTime(2125),
+///  cupertinoDatePickerOptions: CupertinoDatePickerOptions(
+///  minuteInterval: 2,
+///  ),
+///  );
+Future<DateTime?> showCupertinoDateTimePicker({
   required BuildContext context,
   required DateTimeFieldPickerMode mode,
-  required DateTime initialPickerDateTime,
-  required DateTime firstDate,
-  required DateTime lastDate,
-  required CupertinoDatePickerOptions cupertinoDatePickerOptions,
+  DateTime? initialPickerDateTime,
+  DateTime? firstDate,
+  DateTime? lastDate,
+  CupertinoDatePickerOptions cupertinoDatePickerOptions =
+      const CupertinoDatePickerOptions(),
 }) async {
   return showCupertinoModalPopup<DateTime?>(
     useRootNavigator: cupertinoDatePickerOptions.useRootNavigator,
     context: context,
     builder: (BuildContext context) {
       return CupertinoDatePickerModalSheet(
-        initialPickerDateTime: initialPickerDateTime,
+        initialPickerDateTime: initialPickerDateTime ?? DateTime.now(),
         options: cupertinoDatePickerOptions,
-        use24hFormat: true,
-        firstDate: firstDate,
-        lastDate: lastDate,
+        use24hFormat: _use24HourFormat(context),
+        firstDate: firstDate ?? kDefaultFirstSelectableDate,
+        lastDate: lastDate ?? kDefaultLastSelectableDate,
         mode: mode,
       );
     },

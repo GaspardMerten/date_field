@@ -1,7 +1,6 @@
+import 'package:date_field/date_field.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import '../../date_field.dart';
 
 const double _kCupertinoDatePickerHeight = 216;
 
