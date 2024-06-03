@@ -58,13 +58,25 @@ parameter. You can further customize the picker by configuring dialog properties
      },
    ),
    ```
+6. To display the adaptive dialog without the field widget, you can directly use the `showAdaptiveDateTimePicker`.
+   ```dart
+    final DateTime? result = await showAdaptiveDateTimePicker(
+      context: context,
+      mode: DateTimeFieldPickerMode.dateAndTime,
+    );
+   ```
+
+_Note that you can also use the `showMaterialDateTimePicker` and `showCupertinoDateTimePicker` functions to show
+the Material and Cupertino pickers directly._
 
 ## Features 🎨
 
 - **DateTimeField**: A widget that allows users to pick a date and/or time from an input field.
 - **DateTimeFormField**: A FormField that contains a DateTimeField.
-- **showAdaptiveDateTimePickerDialog**: A function that shows a date and/or time picker dialog based on the platform,
+- **showAdaptiveDateTimePicker**: A function that shows a date and/or time picker dialog based on the platform,
   with the ability to customize the dialog properties.
+- **showCupertinoDateTimePicker**: A function that shows a Cupertino date and/or time picker dialog.
+- **showMaterialDateTimePicker**: A function that shows a Material date picker dialog.
 
 ## Migration to 4.0.0 🚀
 
