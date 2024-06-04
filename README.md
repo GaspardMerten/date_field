@@ -5,7 +5,7 @@
 This package provides two widgets, DateTimeField and DateTimeFormField, which allow users to pick a
 date and/or time from an input field. You can customize the appearance of the widgets using the
 decoration argument, and specify whether to ask for a date, a time, or both using the mode
-parameter.
+parameter. You can further customize the picker by configuring dialog properties.
 
 <table>
   <tr>
@@ -24,7 +24,7 @@ parameter.
    ```yaml
    dependencies:
      ...
-     date_field: ^5.0.1
+     date_field: ^5.2.0
    ```
 2. Run `flutter pub get` to install the package.
 3. Initialize your systems locale. If not, users might see AM/PM even when
@@ -58,6 +58,25 @@ parameter.
      },
    ),
    ```
+6. To display the adaptive dialog without the field widget, you can directly use the `showAdaptiveDateTimePicker`.
+   ```dart
+    final DateTime? result = await showAdaptiveDateTimePicker(
+      context: context,
+      mode: DateTimeFieldPickerMode.dateAndTime,
+    );
+   ```
+
+_Note that you can also use the `showMaterialDateTimePicker` and `showCupertinoDateTimePicker` functions to show
+the Material and Cupertino pickers directly._
+
+## Features 🎨
+
+- **DateTimeField**: A widget that allows users to pick a date and/or time from an input field.
+- **DateTimeFormField**: A FormField that contains a DateTimeField.
+- **showAdaptiveDateTimePicker**: A function that shows a date and/or time picker dialog based on the platform,
+  with the ability to customize the dialog properties.
+- **showCupertinoDateTimePicker**: A function that shows a Cupertino date and/or time picker dialog.
+- **showMaterialDateTimePicker**: A function that shows a Material date picker dialog.
 
 ## Migration to 4.0.0 🚀
 

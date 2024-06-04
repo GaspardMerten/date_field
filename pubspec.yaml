@@ -1,6 +1,6 @@
 name: date_field
-description: A widget in the form of a field that lets people choose a date, a time or both.
-version: 5.1.0
+description: A Form Field widget to select DateTime values using adaptive Material and Cupertino DateTime Pickers. It also provides global functions to provide the pickers.
+version: 5.2.0
 homepage: 'https://github.com/GaspardMerten/date_field'
 
 environment:

@@ -1,3 +1,12 @@
+# 5.2.0
+
+- Extracting the display of the adaptive picker dialog to a separate public function `showAdaptiveDateTimePickerDialog`
+  to allow displaying the dialog without the need to use the `DateTimeField` widget.
+- Updating the example to demonstrate the usage of the new function, and adding a toggle button to switch between
+  cupertino
+  and material pickers.
+- Refactoring the structure of the library to make it more readable and maintainable.
+
 # 5.1.0
 
 - Added option pickerPlatform to fix the picker type to material, or cupertino, or keep it adaptive.
