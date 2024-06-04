@@ -311,18 +311,26 @@ class _DateTimeFieldState extends State<DateTimeField> {
 
     final bool isDense = decoration.isDense ?? false;
 
-    Widget result = DefaultTextStyle(
-      style: _enabled
-          ? _textStyle!
-          : _textStyle!.copyWith(color: Theme.of(context).disabledColor),
-      child: ConstrainedBox(
-        constraints: BoxConstraints(
-          minHeight: _denseButtonHeight,
-          maxHeight: isDense ? _denseButtonHeight : double.infinity,
+    Widget result = MediaQuery(
+      data: MediaQuery.of(context).copyWith(
+        alwaysUse24HourFormat: widget.use24HoursFormat ??
+            detect24HourFormat(
+              context,
+            ),
+      ),
+      child: DefaultTextStyle(
+        style: _enabled
+            ? _textStyle!
+            : _textStyle!.copyWith(color: Theme.of(context).disabledColor),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            minHeight: _denseButtonHeight,
+            maxHeight: isDense ? _denseButtonHeight : double.infinity,
+          ),
+          child: widget.value != null
+              ? Text(widget.dateFormat.format(widget.value!))
+              : const Text(''),
         ),
-        child: widget.value != null
-            ? Text(widget.dateFormat.format(widget.value!))
-            : const Text(''),
       ),
     );
 

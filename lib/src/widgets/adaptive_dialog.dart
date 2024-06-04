@@ -8,7 +8,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-bool _use24HourFormat(BuildContext context) {
+/// A function that returns a boolean value to determine if the 24-hour format
+/// should be used based on the current locale.
+///
+/// If the current platform is iOS or Android, the function returns the value
+/// of [MediaQueryData.alwaysUse24HourFormat].
+bool detect24HourFormat(BuildContext context) {
   if (Theme.of(context).platform == TargetPlatform.iOS ||
       Theme.of(context).platform == TargetPlatform.android) {
     return MediaQuery.of(context).alwaysUse24HourFormat;
@@ -190,7 +195,7 @@ Future<TimeOfDay?> _showMaterialTimePicker({
     builder: (BuildContext context, Widget? child) {
       return MediaQuery(
         data: MediaQuery.of(context).copyWith(
-          alwaysUse24HourFormat: use24HoursFormat ?? _use24HourFormat(context),
+          alwaysUse24HourFormat: use24HoursFormat ?? detect24HourFormat(context),
         ),
         child: materialTimePickerOptions.builder?.call(
               context,
@@ -227,7 +232,7 @@ Future<DateTime?> _showMaterialDatePicker({
     builder: (BuildContext context, Widget? child) {
       return MediaQuery(
         data: MediaQuery.of(context).copyWith(
-          alwaysUse24HourFormat: use24HoursFormat ?? _use24HourFormat(context),
+          alwaysUse24HourFormat: use24HoursFormat ?? detect24HourFormat(context),
         ),
         child:
             materialDatePickerOptions.builder?.call(context, child) ?? child!,
@@ -301,7 +306,7 @@ Future<DateTime?> showCupertinoDateTimePicker({
       return CupertinoDatePickerModalSheet(
         initialPickerDateTime: initialPickerDateTime ?? DateTime.now(),
         options: cupertinoDatePickerOptions,
-        use24hFormat: use24HoursFormat ?? _use24HourFormat(context),
+        use24hFormat: use24HoursFormat ?? detect24HourFormat(context),
         firstDate: firstDate ?? kDefaultFirstSelectableDate,
         lastDate: lastDate ?? kDefaultLastSelectableDate,
         mode: mode,
