@@ -41,6 +41,7 @@ class DateTimeFormField extends FormField<DateTime> {
     DateTimeFieldPickerMode mode = DateTimeFieldPickerMode.dateAndTime,
     DateTimeFieldPickerPlatform pickerPlatform =
         DateTimeFieldPickerPlatform.adaptive,
+    bool? use24HoursFormat,
   }) : super(
           enabled: decoration?.enabled ?? true,
           builder: (FormFieldState<DateTime> field) {
@@ -89,6 +90,7 @@ class DateTimeFormField extends FormField<DateTime> {
                     materialDatePickerOptions: materialDatePickerOptions,
                     materialTimePickerOptions: materialTimePickerOptions,
                     pickerPlatform: pickerPlatform,
+                    use24HoursFormat: use24HoursFormat,
                   );
                 },
               ),

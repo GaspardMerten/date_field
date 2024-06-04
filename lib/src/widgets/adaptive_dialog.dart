@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:date_field/src/constants.dart';
 import 'package:date_field/src/models/cupertino_date_picker_options.dart';
 import 'package:date_field/src/models/material_date_picker_options.dart';
@@ -7,25 +5,21 @@ import 'package:date_field/src/models/material_time_picker_options.dart';
 import 'package:date_field/src/widgets/cupertino_date_picker.dart';
 import 'package:date_field/src/widgets/field.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 bool _use24HourFormat(BuildContext context) {
+  if (Theme.of(context).platform == TargetPlatform.iOS ||
+      Theme.of(context).platform == TargetPlatform.android) {
+    return MediaQuery.of(context).alwaysUse24HourFormat;
+  }
+
   final DateFormat formatter = DateFormat.jm(
     Localizations.localeOf(context).toString(),
   );
   final DateTime now = DateTime.parse('2000-01-01 17:00:00');
   final String formattedTime = formatter.format(now);
   final bool localeBasedUse24HourFormat = !formattedTime.contains('PM');
-
-  if (kIsWeb) {
-    return localeBasedUse24HourFormat;
-  }
-
-  if (Platform.isIOS || Platform.isAndroid) {
-    return MediaQuery.of(context).alwaysUse24HourFormat;
-  }
 
   return localeBasedUse24HourFormat;
 }
@@ -52,6 +46,8 @@ bool _use24HourFormat(BuildContext context) {
 /// [materialTimePickerOptions] parameters allow customization of the Material
 /// date and time pickers respectively.
 ///
+/// The [use24HoursFormat] parameter allows overriding the 24-hour format.
+///
 /// Returns a `Future<DateTime?>` that completes with the selected date and time
 /// or null if the user cancels the picker.
 ///
@@ -77,6 +73,7 @@ Future<DateTime?> showAdaptiveDateTimePicker({
       const MaterialDatePickerOptions(),
   MaterialTimePickerOptions materialTimePickerOptions =
       const MaterialTimePickerOptions(),
+  bool? use24HoursFormat,
 }) async {
   final TargetPlatform platform =
       pickerPlatform?.toTargetPlatform(context) ?? Theme.of(context).platform;
@@ -89,6 +86,7 @@ Future<DateTime?> showAdaptiveDateTimePicker({
       firstDate: firstDate ?? kDefaultFirstSelectableDate,
       lastDate: lastDate ?? kDefaultLastSelectableDate,
       cupertinoDatePickerOptions: cupertinoDatePickerOptions,
+      use24HoursFormat: use24HoursFormat,
     );
   }
 
@@ -100,6 +98,7 @@ Future<DateTime?> showAdaptiveDateTimePicker({
     lastDate: lastDate,
     materialDatePickerOptions: materialDatePickerOptions,
     materialTimePickerOptions: materialTimePickerOptions,
+    use24HoursFormat: use24HoursFormat,
   );
 }
 
@@ -114,6 +113,8 @@ Future<DateTime?> showAdaptiveDateTimePicker({
 ///
 /// The [materialDatePickerOptions] and [materialTimePickerOptions] parameters
 /// allow customization of the Material date and time pickers respectively.
+///
+/// The [use24HoursFormat] parameter allows overriding the 24-hour format.
 ///
 /// Returns a Future<DateTime?> that completes with the selected date and time
 /// or null if the user cancels the picker.
@@ -136,6 +137,7 @@ Future<DateTime?> showMaterialDateTimePicker({
       const MaterialDatePickerOptions(),
   MaterialTimePickerOptions materialTimePickerOptions =
       const MaterialTimePickerOptions(),
+  bool? use24HoursFormat,
 }) async {
   initialPickerDateTime = initialPickerDateTime ?? DateTime.now();
   DateTime? selectedDateTime = initialPickerDateTime;
@@ -148,6 +150,7 @@ Future<DateTime?> showMaterialDateTimePicker({
       firstDate: firstDate ?? kDefaultFirstSelectableDate,
       lastDate: lastDate ?? kDefaultLastSelectableDate,
       materialDatePickerOptions: materialDatePickerOptions,
+      use24HoursFormat: use24HoursFormat,
     );
     if (newDate != null) {
       selectedDateTime = newDate;
@@ -155,10 +158,11 @@ Future<DateTime?> showMaterialDateTimePicker({
   }
   if (mode == DateTimeFieldPickerMode.dateAndTime ||
       mode == DateTimeFieldPickerMode.time) {
-    final TimeOfDay? selectedTime = await showMaterialTimePicker(
+    final TimeOfDay? selectedTime = await _showMaterialTimePicker(
       context: context,
       initialPickerDateTime: initialPickerDateTime,
       materialTimePickerOptions: materialTimePickerOptions,
+      use24HoursFormat: use24HoursFormat,
     );
     if (selectedTime != null) {
       selectedDateTime = DateTime(
@@ -174,10 +178,11 @@ Future<DateTime?> showMaterialDateTimePicker({
   return selectedDateTime;
 }
 
-Future<TimeOfDay?> showMaterialTimePicker({
+Future<TimeOfDay?> _showMaterialTimePicker({
   required BuildContext context,
   required DateTime initialPickerDateTime,
   required MaterialTimePickerOptions materialTimePickerOptions,
+  bool? use24HoursFormat,
 }) async {
   return showTimePicker(
     context: context,
@@ -185,10 +190,13 @@ Future<TimeOfDay?> showMaterialTimePicker({
     builder: (BuildContext context, Widget? child) {
       return MediaQuery(
         data: MediaQuery.of(context).copyWith(
-          alwaysUse24HourFormat: _use24HourFormat(context),
+          alwaysUse24HourFormat: use24HoursFormat ?? _use24HourFormat(context),
         ),
-        child:
-            materialTimePickerOptions.builder?.call(context, child) ?? child!,
+        child: materialTimePickerOptions.builder?.call(
+              context,
+              child,
+            ) ??
+            child!,
       );
     },
     initialEntryMode: materialTimePickerOptions.initialEntryMode,
@@ -209,6 +217,7 @@ Future<DateTime?> _showMaterialDatePicker({
   required DateTime firstDate,
   required DateTime lastDate,
   required MaterialDatePickerOptions materialDatePickerOptions,
+  bool? use24HoursFormat,
 }) {
   return showDatePicker(
     context: context,
@@ -218,7 +227,7 @@ Future<DateTime?> _showMaterialDatePicker({
     builder: (BuildContext context, Widget? child) {
       return MediaQuery(
         data: MediaQuery.of(context).copyWith(
-          alwaysUse24HourFormat: _use24HourFormat(context),
+          alwaysUse24HourFormat: use24HoursFormat ?? _use24HourFormat(context),
         ),
         child:
             materialDatePickerOptions.builder?.call(context, child) ?? child!,
@@ -259,6 +268,8 @@ Future<DateTime?> _showMaterialDatePicker({
 /// The [cupertinoDatePickerOptions] parameter allows customization of the
 /// Cupertino date picker.
 ///
+/// The [use24HoursFormat] parameter allows overriding the 24-hour format.
+///
 /// Returns a Future<DateTime?> that completes with the selected date and time
 /// or null if the user cancels the picker.
 ///
@@ -281,6 +292,7 @@ Future<DateTime?> showCupertinoDateTimePicker({
   DateTime? lastDate,
   CupertinoDatePickerOptions cupertinoDatePickerOptions =
       const CupertinoDatePickerOptions(),
+  bool? use24HoursFormat,
 }) async {
   return showCupertinoModalPopup<DateTime?>(
     useRootNavigator: cupertinoDatePickerOptions.useRootNavigator,
@@ -289,7 +301,7 @@ Future<DateTime?> showCupertinoDateTimePicker({
       return CupertinoDatePickerModalSheet(
         initialPickerDateTime: initialPickerDateTime ?? DateTime.now(),
         options: cupertinoDatePickerOptions,
-        use24hFormat: _use24HourFormat(context),
+        use24hFormat: use24HoursFormat ?? _use24HourFormat(context),
         firstDate: firstDate ?? kDefaultFirstSelectableDate,
         lastDate: lastDate ?? kDefaultLastSelectableDate,
         mode: mode,

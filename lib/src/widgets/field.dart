@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:date_field/src/constants.dart';
@@ -7,7 +6,6 @@ import 'package:date_field/src/models/material_date_picker_options.dart';
 import 'package:date_field/src/models/material_time_picker_options.dart';
 import 'package:date_field/src/widgets/adaptive_dialog.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -78,6 +76,7 @@ class DateTimeField extends StatefulWidget {
     DateTime? firstDate,
     DateTime? lastDate,
     DateFormat? dateFormat,
+    this.use24HoursFormat,
   })  : dateFormat = dateFormat ?? mode.toDateFormat(),
         firstDate = firstDate ?? kDefaultFirstSelectableDate,
         lastDate = lastDate ?? kDefaultLastSelectableDate;
@@ -104,6 +103,7 @@ class DateTimeField extends StatefulWidget {
     bool? enableFeedback,
     DateTimeFieldPickerPlatform pickerPlatform =
         DateTimeFieldPickerPlatform.adaptive,
+    bool? use24HoursFormat,
   }) =>
       DateTimeField(
         key: key,
@@ -125,6 +125,7 @@ class DateTimeField extends StatefulWidget {
         cupertinoDatePickerOptions: cupertinoDatePickerOptions,
         materialTimePickerOptions: materialTimePickerOptions,
         pickerPlatform: pickerPlatform,
+        use24HoursFormat: use24HoursFormat,
       );
 
   DateTimeField._formField({
@@ -147,6 +148,7 @@ class DateTimeField extends StatefulWidget {
     this.materialDatePickerOptions = const MaterialDatePickerOptions(),
     this.materialTimePickerOptions = const MaterialTimePickerOptions(),
     this.pickerPlatform = DateTimeFieldPickerPlatform.adaptive,
+    this.use24HoursFormat,
   })  : dateFormat = dateFormat ?? mode.toDateFormat(),
         firstDate = firstDate ?? kDefaultFirstSelectableDate,
         lastDate = lastDate ?? kDefaultLastSelectableDate;
@@ -237,6 +239,12 @@ class DateTimeField extends StatefulWidget {
   /// Defaults to [DateTimeFieldPickerPlatform.adaptive].
   final DateTimeFieldPickerPlatform pickerPlatform;
 
+  /// Whether to use the 24 hours format in the [MaterialTimePicker].
+  ///
+  /// Defaults to null, which means the package will attempt to use
+  /// the system's setting.
+  final bool? use24HoursFormat;
+
   @override
   State<DateTimeField> createState() => _DateTimeFieldState();
 }
@@ -303,22 +311,18 @@ class _DateTimeFieldState extends State<DateTimeField> {
 
     final bool isDense = decoration.isDense ?? false;
 
-    Widget result = MediaQuery(
-      data: MediaQuery.of(context)
-          .copyWith(alwaysUse24HourFormat: _use24HourFormat),
-      child: DefaultTextStyle(
-        style: _enabled
-            ? _textStyle!
-            : _textStyle!.copyWith(color: Theme.of(context).disabledColor),
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            minHeight: _denseButtonHeight,
-            maxHeight: isDense ? _denseButtonHeight : double.infinity,
-          ),
-          child: widget.value != null
-              ? Text(widget.dateFormat.format(widget.value!))
-              : const Text(''),
+    Widget result = DefaultTextStyle(
+      style: _enabled
+          ? _textStyle!
+          : _textStyle!.copyWith(color: Theme.of(context).disabledColor),
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          minHeight: _denseButtonHeight,
+          maxHeight: isDense ? _denseButtonHeight : double.infinity,
         ),
+        child: widget.value != null
+            ? Text(widget.dateFormat.format(widget.value!))
+            : const Text(''),
       ),
     );
 
@@ -377,6 +381,7 @@ class _DateTimeFieldState extends State<DateTimeField> {
       initialPickerDateTime: _initialPickerDateTime,
       firstDate: widget.firstDate,
       lastDate: widget.lastDate,
+      use24HoursFormat: widget.use24HoursFormat,
     );
 
     if (mounted) {
@@ -408,24 +413,6 @@ class _DateTimeFieldState extends State<DateTimeField> {
     }
 
     return now;
-  }
-
-  bool get _use24HourFormat {
-    final DateFormat formatter =
-        DateFormat.jm(Localizations.localeOf(context).toString());
-    final DateTime now = DateTime.parse('2000-01-01 17:00:00');
-    final String formattedTime = formatter.format(now);
-    final bool localeBasedUse24HourFormat = !formattedTime.contains('PM');
-
-    if (kIsWeb) {
-      return localeBasedUse24HourFormat;
-    }
-
-    if (Platform.isIOS || Platform.isAndroid) {
-      return MediaQuery.of(context).alwaysUse24HourFormat;
-    }
-
-    return localeBasedUse24HourFormat;
   }
 
   double get _denseButtonHeight {
