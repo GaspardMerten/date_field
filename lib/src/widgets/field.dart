@@ -76,7 +76,6 @@ class DateTimeField extends StatefulWidget {
     DateTime? firstDate,
     DateTime? lastDate,
     DateFormat? dateFormat,
-    this.use24HoursFormat,
   })  : dateFormat = dateFormat ?? mode.toDateFormat(),
         firstDate = firstDate ?? kDefaultFirstSelectableDate,
         lastDate = lastDate ?? kDefaultLastSelectableDate;
@@ -103,7 +102,6 @@ class DateTimeField extends StatefulWidget {
     bool? enableFeedback,
     DateTimeFieldPickerPlatform pickerPlatform =
         DateTimeFieldPickerPlatform.adaptive,
-    bool? use24HoursFormat,
   }) =>
       DateTimeField(
         key: key,
@@ -125,7 +123,6 @@ class DateTimeField extends StatefulWidget {
         cupertinoDatePickerOptions: cupertinoDatePickerOptions,
         materialTimePickerOptions: materialTimePickerOptions,
         pickerPlatform: pickerPlatform,
-        use24HoursFormat: use24HoursFormat,
       );
 
   DateTimeField._formField({
@@ -148,7 +145,6 @@ class DateTimeField extends StatefulWidget {
     this.materialDatePickerOptions = const MaterialDatePickerOptions(),
     this.materialTimePickerOptions = const MaterialTimePickerOptions(),
     this.pickerPlatform = DateTimeFieldPickerPlatform.adaptive,
-    this.use24HoursFormat,
   })  : dateFormat = dateFormat ?? mode.toDateFormat(),
         firstDate = firstDate ?? kDefaultFirstSelectableDate,
         lastDate = lastDate ?? kDefaultLastSelectableDate;
@@ -239,12 +235,6 @@ class DateTimeField extends StatefulWidget {
   /// Defaults to [DateTimeFieldPickerPlatform.adaptive].
   final DateTimeFieldPickerPlatform pickerPlatform;
 
-  /// Whether to use the 24 hours format in the [MaterialTimePicker].
-  ///
-  /// Defaults to null, which means the package will attempt to use
-  /// the system's setting.
-  final bool? use24HoursFormat;
-
   @override
   State<DateTimeField> createState() => _DateTimeFieldState();
 }
@@ -313,10 +303,9 @@ class _DateTimeFieldState extends State<DateTimeField> {
 
     Widget result = MediaQuery(
       data: MediaQuery.of(context).copyWith(
-        alwaysUse24HourFormat: widget.use24HoursFormat ??
-            detect24HourFormat(
-              context,
-            ),
+        alwaysUse24HourFormat: detect24HourFormat(
+          context,
+        ),
       ),
       child: DefaultTextStyle(
         style: _enabled
@@ -389,7 +378,6 @@ class _DateTimeFieldState extends State<DateTimeField> {
       initialPickerDateTime: _initialPickerDateTime,
       firstDate: widget.firstDate,
       lastDate: widget.lastDate,
-      use24HoursFormat: widget.use24HoursFormat,
     );
 
     if (mounted) {
