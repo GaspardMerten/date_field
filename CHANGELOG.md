@@ -1,3 +1,7 @@
+# 5.2.1
+
+- Fixing issue #72, some dependencies are not exported.
+
 # 5.2.0
 
 - Extracting the display of the adaptive picker dialog to a separate public function `showAdaptiveDateTimePickerDialog`
