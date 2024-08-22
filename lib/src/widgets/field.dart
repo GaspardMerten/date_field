@@ -274,12 +274,21 @@ class _DateTimeFieldState extends State<DateTimeField> {
     }
   }
 
+  void _assertPickerPlatform() {
+    if (widget.pickerPlatform != DateTimeFieldPickerPlatform.material) {
+      assert(debugCheckHasCupertinoLocalizations(context));
+    }
+
+    if (widget.pickerPlatform != DateTimeFieldPickerPlatform.cupertino) {
+      assert(debugCheckHasMaterialLocalizations(context));
+      assert(debugCheckHasMaterial(context));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    assert(debugCheckHasMaterial(context));
-    assert(debugCheckHasMaterialLocalizations(context));
-    assert(debugCheckHasCupertinoLocalizations(context));
-
+    _assertPickerPlatform();
+    
     InputDecoration decoration = widget.decoration ?? const InputDecoration();
 
     decoration = decoration.applyDefaults(
