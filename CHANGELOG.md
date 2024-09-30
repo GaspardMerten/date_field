@@ -1,12 +1,19 @@
+# 5.3.0
+
+- Fixing material dialogs returning the initial value on cancel instead of null. This caused updates
+  to the `DateTimeFormField` even if it should not. Solution to issue #79
+
 # 5.2.1
 
 - Fixing issue #72, some dependencies are not exported.
 
 # 5.2.0
 
-- Extracting the display of the adaptive picker dialog to a separate public function `showAdaptiveDateTimePickerDialog`
+- Extracting the display of the adaptive picker dialog to a separate public
+  function `showAdaptiveDateTimePickerDialog`
   to allow displaying the dialog without the need to use the `DateTimeField` widget.
-- Updating the example to demonstrate the usage of the new function, and adding a toggle button to switch between
+- Updating the example to demonstrate the usage of the new function, and adding a toggle button to
+  switch between
   cupertino
   and material pickers.
 - Refactoring the structure of the library to make it more readable and maintainable.
@@ -26,12 +33,14 @@
 
 # 4.1.0
 
-- Adding better styling options for the iOS and MacOS modal sheet. It is now possible to specify the text style of the
+- Adding better styling options for the iOS and MacOS modal sheet. It is now possible to specify the
+  text style of the
   save and cancel buttons, as well as the title of the modal sheet. Solution to issue #59
 
 # 4.0.2
 
-- Making the package compatible with Dart 3.3.3 (allowing intl to be between 0.18.0 and < 0.20.0) Solution for issue #61
+- Making the package compatible with Dart 3.3.3 (allowing intl to be between 0.18.0 and < 0.20.0)
+  Solution for issue #61
 
 # 4.0.1
 
@@ -45,17 +54,20 @@
 
 ### DateTimeField
 
-- `onDateSelected` got deprecated. Use `onChanged` instead. `onDateSelected` will be removed in v5.0.0.
+- `onDateSelected` got deprecated. Use `onChanged` instead. `onDateSelected` will be removed in
+  v5.0.0.
 - `onChange` is required
 
 ### DateTimeField.time
 
-- `onDateSelected` got deprecated. Use `onChanged` instead. `onDateSelected` will be removed in v5.0.0.
+- `onDateSelected` got deprecated. Use `onChanged` instead. `onDateSelected` will be removed in
+  v5.0.0.
 - `onChange` is required
 
 ### DateTimeFormField
 
-- `onDateSelected` got deprecated. Use `onChanged` instead. `onDateSelected` will be removed in v5.0.0.
+- `onDateSelected` got deprecated. Use `onChanged` instead. `onDateSelected` will be removed in
+  v5.0.0.
 - `onChange` is required.
 - removed `fieldCreator`.
 
@@ -66,8 +78,10 @@
 - Parameter namings are now similar as in flutter widgets.
 - The widget is now fully accessible and controllable with a keyboard.
 - The iOS and MacOS modal sheet has now a save and cancel button
-- `onChanged` accepts now also `null` values. DateTimeFormField uses this to implement a clear button.
-- All texts and interesting settings of `DatePickerDialog`, `TimePickerDialog` and `CupertinoDatePicker` are now
+- `onChanged` accepts now also `null` values. DateTimeFormField uses this to implement a clear
+  button.
+- All texts and interesting settings of `DatePickerDialog`, `TimePickerDialog`
+  and `CupertinoDatePicker` are now
   changeable
 
 _Thank you @torbenkeller for this well-needed PR._
@@ -86,8 +100,10 @@ _Thank you @torbenkeller for this well-needed PR._
 
 # 3.0.3
 
-- Updating the README.md file. Adding more information about the package, rewriting the text to make it more appealing.
-- Adding support for providing a different initial time mode for the material time picker dialog (thanks to @schalky).
+- Updating the README.md file. Adding more information about the package, rewriting the text to make
+  it more appealing.
+- Adding support for providing a different initial time mode for the material time picker dialog (
+  thanks to @schalky).
 
 # 3.0.2
 
@@ -99,10 +115,13 @@ Fixed issue #29 by adding 24-hour format support for the material time picker di
 
 # 3.0.0
 
-Upgraded the minimum Dart version to 2.15 for constructor tear-off support, which is a breaking change.
-Added an optional DateTimeFieldCreator argument to DateTimeFormField for specifying custom implementations of
+Upgraded the minimum Dart version to 2.15 for constructor tear-off support, which is a breaking
+change.
+Added an optional DateTimeFieldCreator argument to DateTimeFormField for specifying custom
+implementations of
 DateTimeField.
-Refactored DateTimeField to expose showMaterialTimePicker, showMaterialDatePicker, and showMaterialTimePicker as
+Refactored DateTimeField to expose showMaterialTimePicker, showMaterialDatePicker, and
+showMaterialTimePicker as
 separate overrideable methods.
 Made kCupertinoDatePickerHeight and cupertinoModeFromPickerMode public for convenience.
 Removed DateTimeFormFieldState and replaced it with an instance of FormFieldState<DateTime>.
@@ -189,7 +208,8 @@ Added support for Flutter web.
 
 # 0.2.0
 
-Changed DateFormField to extend FormField, and rigorously applied the style to match the theme or any customization.
+Changed DateFormField to extend FormField, and rigorously applied the style to match the theme or
+any customization.
 
 # 0.1.2
 

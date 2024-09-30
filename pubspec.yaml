@@ -1,6 +1,6 @@
 name: date_field
 description: A Form Field widget to select DateTime values using adaptive Material and Cupertino DateTime Pickers. It also provides global functions to provide the pickers.
-version: 5.2.1
+version: 5.3.0
 homepage: 'https://github.com/GaspardMerten/date_field'
 
 environment:
