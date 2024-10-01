@@ -1,3 +1,7 @@
+# 5.2.2
+
+- Localization assertions depend now on the picker platform. See #77
+ 
 # 5.2.1
 
 - Fixing issue #72, some dependencies are not exported.

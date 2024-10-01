@@ -274,11 +274,32 @@ class _DateTimeFieldState extends State<DateTimeField> {
     }
   }
 
+  bool debugCheckLocalizationsForPlatformAvailable(BuildContext context){
+    assert(() {
+      switch (widget.pickerPlatform) {
+        case DateTimeFieldPickerPlatform.material:
+          assert(debugCheckHasMaterial(context));
+          assert(debugCheckHasMaterialLocalizations(context));
+          return true;
+
+        case DateTimeFieldPickerPlatform.cupertino:
+          assert(debugCheckHasCupertinoLocalizations(context));
+          return true;
+
+        case DateTimeFieldPickerPlatform.adaptive:
+          assert(debugCheckHasMaterial(context));
+          assert(debugCheckHasMaterialLocalizations(context));
+          assert(debugCheckHasCupertinoLocalizations(context));
+          return true;
+      }
+    }());
+
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
-    assert(debugCheckHasMaterial(context));
-    assert(debugCheckHasMaterialLocalizations(context));
-    assert(debugCheckHasCupertinoLocalizations(context));
+    assert(debugCheckLocalizationsForPlatformAvailable(context));
 
     InputDecoration decoration = widget.decoration ?? const InputDecoration();
 
