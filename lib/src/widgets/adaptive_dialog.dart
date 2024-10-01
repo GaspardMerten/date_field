@@ -159,10 +159,14 @@ Future<DateTime?> showMaterialDateTimePicker({
       lastDate: lastDate ?? kDefaultLastSelectableDate,
       materialDatePickerOptions: materialDatePickerOptions,
     );
-    if (newDate != null) {
-      selectedDateTime = newDate;
+
+    if (newDate == null) {
+      return null;
     }
+
+    selectedDateTime = newDate;
   }
+
   if (mode == DateTimeFieldPickerMode.dateAndTime ||
       mode == DateTimeFieldPickerMode.time) {
     final TimeOfDay? selectedTime = await _showMaterialTimePicker(
@@ -170,15 +174,18 @@ Future<DateTime?> showMaterialDateTimePicker({
       initialPickerDateTime: initialPickerDateTime,
       materialTimePickerOptions: materialTimePickerOptions,
     );
-    if (selectedTime != null) {
-      selectedDateTime = DateTime(
-        selectedDateTime.year,
-        selectedDateTime.month,
-        selectedDateTime.day,
-        selectedTime.hour,
-        selectedTime.minute,
-      );
+
+    if (selectedTime == null) {
+      return null;
     }
+
+    selectedDateTime = DateTime(
+      selectedDateTime.year,
+      selectedDateTime.month,
+      selectedDateTime.day,
+      selectedTime.hour,
+      selectedTime.minute,
+    );
   }
 
   return selectedDateTime;
