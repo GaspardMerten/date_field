@@ -3,6 +3,11 @@
 - Fixing material dialogs returning the initial value on cancel instead of null. This caused updates
   to the `DateTimeFormField` even if it should not. Solution to issue #79
 
+
+# 5.2.2
+
+- Localization assertions depend now on the picker platform. See #77
+ 
 # 5.2.1
 
 - Fixing issue #72, some dependencies are not exported.
