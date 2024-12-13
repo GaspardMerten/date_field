@@ -274,7 +274,7 @@ class _DateTimeFieldState extends State<DateTimeField> {
     }
   }
 
-  bool debugCheckLocalizationsForPlatformAvailable(BuildContext context){
+  bool debugCheckLocalizationsForPlatformAvailable(BuildContext context) {
     assert(() {
       switch (widget.pickerPlatform) {
         case DateTimeFieldPickerPlatform.material:
@@ -372,7 +372,7 @@ class _DateTimeFieldState extends State<DateTimeField> {
           focusNode: _focusNode,
           autofocus: widget.autofocus,
           focusColor: decoration.focusColor,
-          enableFeedback: widget.enableFeedback,
+          enableFeedback: widget.enableFeedback ?? true,
           child: widget.padding == null
               ? result
               : Padding(
