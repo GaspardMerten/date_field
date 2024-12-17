@@ -1,4 +1,8 @@
-# 5.3.1 
+# 5.3.2
+
+- Bumping maximum intl version to `<0.21.0`.
+
+# 5.3.1
 
 - Adding support for *WASM* by removing dependency on `dart:io` package. This is a solution to issue #83
 
