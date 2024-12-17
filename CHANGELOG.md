@@ -1,3 +1,7 @@
+# 5.3.4
+
+* Fixing issue #85, time-only picker did not allow to select the time correctly.
+
 # 5.3.3+1
 
 * DartFmt the code

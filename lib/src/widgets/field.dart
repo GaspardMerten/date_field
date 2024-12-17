@@ -106,8 +106,8 @@ class DateTimeField extends StatefulWidget {
       DateTimeField(
         key: key,
         mode: DateTimeFieldPickerMode.time,
-        firstDate: firstDate ?? DateTime(2000),
-        lastDate: lastDate ?? DateTime(2001),
+        firstDate: firstDate ?? DateTime(2000, 1, 1, 0, 0),
+        lastDate: lastDate ?? DateTime(2000, 1, 1, 23, 59),
         onChanged: onChanged,
         value: value,
         decoration: decoration,
@@ -397,7 +397,6 @@ class _DateTimeFieldState extends State<DateTimeField> {
       cupertinoDatePickerOptions: widget.cupertinoDatePickerOptions,
       materialDatePickerOptions: widget.materialDatePickerOptions,
       materialTimePickerOptions: widget.materialTimePickerOptions,
-      initialPickerDateTime: _initialPickerDateTime,
       firstDate: widget.firstDate,
       lastDate: widget.lastDate,
     );
@@ -409,28 +408,6 @@ class _DateTimeFieldState extends State<DateTimeField> {
     if (newDateTime != null) {
       widget.onChanged?.call(newDateTime);
     }
-  }
-
-  DateTime get _initialPickerDateTime {
-    if (widget.value != null) {
-      return widget.value!;
-    }
-
-    if (widget.initialPickerDateTime != null) {
-      return widget.initialPickerDateTime!;
-    }
-
-    final DateTime now = DateTime.now();
-
-    if (widget.firstDate.isAfter(now)) {
-      return widget.firstDate;
-    }
-
-    if (widget.lastDate.isBefore(now)) {
-      return widget.lastDate;
-    }
-
-    return now;
   }
 
   double get _denseButtonHeight {

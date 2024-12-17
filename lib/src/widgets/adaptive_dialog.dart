@@ -9,6 +9,58 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+/// A function that returns the initial date to be displayed by the picker.
+/// If [initialPickerDateTime] is not provided, the function returns the current
+/// date if it is within the selectable date range. Otherwise, it returns the
+/// [firstDate] or [lastDate] depending on the current date.
+DateTime _getInitialDate(
+    DateTime? initialPickerDateTime, DateTime firstDate, DateTime lastDate) {
+  if (initialPickerDateTime != null) {
+    return initialPickerDateTime;
+  }
+
+  final DateTime now = DateTime.now();
+
+  if (now.isBefore(firstDate)) {
+    return firstDate;
+  }
+
+  if (now.isAfter(lastDate)) {
+    return lastDate;
+  }
+
+  return now;
+}
+
+/// A function that returns the initial time to be displayed by the picker.
+/// If [initialPickerDateTime] is not provided, the function returns the current
+/// time if it is within the selectable time range. Otherwise, it returns the
+/// [firstDate] or [lastDate] depending on the current time.
+DateTime _getInitialTime(
+    DateTime? initialPickerDateTime, DateTime firstDate, DateTime lastDate) {
+  if (initialPickerDateTime != null) {
+    return initialPickerDateTime;
+  }
+
+  final TimeOfDay now = TimeOfDay.now();
+
+  if (now.isBefore(TimeOfDay.fromDateTime(firstDate))) {
+    return firstDate;
+  }
+
+  if (now.isAfter(TimeOfDay.fromDateTime(lastDate))) {
+    return lastDate;
+  }
+
+  return DateTime(
+    firstDate.year,
+    firstDate.month,
+    firstDate.day,
+    now.hour,
+    now.minute,
+  );
+}
+
 /// A function that returns a boolean value to determine if the 24-hour format
 /// should be used based on the current locale.
 ///
@@ -137,14 +189,18 @@ Future<DateTime?> showMaterialDateTimePicker({
   MaterialTimePickerOptions materialTimePickerOptions =
       const MaterialTimePickerOptions(),
 }) async {
-  initialPickerDateTime = initialPickerDateTime ?? DateTime.now();
-  DateTime? selectedDateTime = initialPickerDateTime;
+  DateTime? selectedDateTime = initialPickerDateTime ?? DateTime.now();
 
-  if (mode == DateTimeFieldPickerMode.dateAndTime ||
-      mode == DateTimeFieldPickerMode.date) {
+  if (mode != DateTimeFieldPickerMode.time) {
+    selectedDateTime = _getInitialDate(
+      initialPickerDateTime,
+      firstDate ?? kDefaultFirstSelectableDate,
+      lastDate ?? kDefaultLastSelectableDate,
+    );
+
     final DateTime? newDate = await _showMaterialDatePicker(
       context: context,
-      initialPickerDateTime: initialPickerDateTime,
+      initialPickerDateTime: selectedDateTime,
       firstDate: firstDate ?? kDefaultFirstSelectableDate,
       lastDate: lastDate ?? kDefaultLastSelectableDate,
       materialDatePickerOptions: materialDatePickerOptions,
@@ -157,11 +213,14 @@ Future<DateTime?> showMaterialDateTimePicker({
     selectedDateTime = newDate;
   }
 
-  if (mode == DateTimeFieldPickerMode.dateAndTime ||
-      mode == DateTimeFieldPickerMode.time) {
+  if (mode != DateTimeFieldPickerMode.date) {
     final TimeOfDay? selectedTime = await _showMaterialTimePicker(
       context: context,
-      initialPickerDateTime: initialPickerDateTime,
+      initialPickerDateTime: _getInitialTime(
+        initialPickerDateTime,
+        firstDate ?? kDefaultFirstSelectableDate,
+        lastDate ?? kDefaultLastSelectableDate,
+      ),
       materialTimePickerOptions: materialTimePickerOptions,
     );
 
@@ -296,8 +355,24 @@ Future<DateTime?> showCupertinoDateTimePicker({
     useRootNavigator: cupertinoDatePickerOptions.useRootNavigator,
     context: context,
     builder: (BuildContext context) {
+      final DateTime dateTime;
+
+      if (mode == DateTimeFieldPickerMode.time) {
+        dateTime = _getInitialTime(
+          initialPickerDateTime,
+          firstDate ?? kDefaultFirstSelectableDate,
+          lastDate ?? kDefaultLastSelectableDate,
+        );
+      } else {
+        dateTime = _getInitialDate(
+          initialPickerDateTime,
+          firstDate ?? kDefaultFirstSelectableDate,
+          lastDate ?? kDefaultLastSelectableDate,
+        );
+      }
+
       return CupertinoDatePickerModalSheet(
-        initialPickerDateTime: initialPickerDateTime ?? DateTime.now(),
+        initialPickerDateTime: dateTime,
         options: cupertinoDatePickerOptions,
         use24hFormat: detect24HourFormat(context),
         firstDate: firstDate ?? kDefaultFirstSelectableDate,
