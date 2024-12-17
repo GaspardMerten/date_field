@@ -274,7 +274,7 @@ class _DateTimeFieldState extends State<DateTimeField> {
     }
   }
 
-  bool debugCheckLocalizationsForPlatformAvailable(BuildContext context){
+  bool debugCheckLocalizationsForPlatformAvailable(BuildContext context) {
     assert(() {
       switch (widget.pickerPlatform) {
         case DateTimeFieldPickerPlatform.material:

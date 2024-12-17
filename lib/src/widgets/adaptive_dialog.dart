@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:date_field/src/constants.dart';
 import 'package:date_field/src/models/cupertino_date_picker_options.dart';
 import 'package:date_field/src/models/material_date_picker_options.dart';
@@ -29,11 +27,8 @@ bool detect24HourFormat(BuildContext context) {
   final String formattedTime = formatter.format(now);
   final bool localeBasedUse24HourFormat = !formattedTime.contains('PM');
 
-  if (kIsWeb) {
-    return localeBasedUse24HourFormat;
-  }
-
-  if (Platform.isIOS || Platform.isAndroid) {
+  if (defaultTargetPlatform == TargetPlatform.iOS ||
+      defaultTargetPlatform == TargetPlatform.android) {
     return MediaQuery.of(context).alwaysUse24HourFormat;
   }
 
