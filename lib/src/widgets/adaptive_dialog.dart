@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:date_field/src/constants.dart';
 import 'package:date_field/src/models/cupertino_date_picker_options.dart';
 import 'package:date_field/src/models/material_date_picker_options.dart';
@@ -17,27 +15,19 @@ import 'package:intl/intl.dart';
 /// If the current platform is iOS or Android, the function returns the value
 /// of [MediaQueryData.alwaysUse24HourFormat].
 bool detect24HourFormat(BuildContext context) {
-  if (Theme.of(context).platform == TargetPlatform.iOS ||
-      Theme.of(context).platform == TargetPlatform.android) {
+  if (defaultTargetPlatform == TargetPlatform.iOS ||
+      defaultTargetPlatform == TargetPlatform.android) {
     return MediaQuery.of(context).alwaysUse24HourFormat;
   }
 
   final DateFormat formatter = DateFormat.jm(
     Localizations.localeOf(context).toString(),
   );
+
   final DateTime now = DateTime.parse('2000-01-01 17:00:00');
   final String formattedTime = formatter.format(now);
-  final bool localeBasedUse24HourFormat = !formattedTime.contains('PM');
 
-  if (kIsWeb) {
-    return localeBasedUse24HourFormat;
-  }
-
-  if (Platform.isIOS || Platform.isAndroid) {
-    return MediaQuery.of(context).alwaysUse24HourFormat;
-  }
-
-  return localeBasedUse24HourFormat;
+  return !formattedTime.contains('PM');
 }
 
 /// Displays an adaptive date and time picker based on the current platform.

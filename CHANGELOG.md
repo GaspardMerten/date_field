@@ -1,3 +1,7 @@
+# 5.3.1 
+
+- Adding support for *WASM* by removing dependency on `dart:io` package. This is a solution to issue #83
+
 # 5.3.0
 
 - Fixing material dialogs returning the initial value on cancel instead of null. This caused updates
