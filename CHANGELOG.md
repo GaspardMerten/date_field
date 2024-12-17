@@ -1,3 +1,7 @@
+# 5.3.3
+
+- Fixing issue #84, clipping Inkwell to its border radius.
+
 # 5.3.2
 
 - Bumping maximum intl version to `<0.21.0`.
