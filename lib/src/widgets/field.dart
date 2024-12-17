@@ -23,19 +23,17 @@ enum DateTimeFieldPickerMode {
   date,
   dateAndTime;
 
-  DateFormat toDateFormat() =>
-      switch (this) {
+  DateFormat toDateFormat() => switch (this) {
         DateTimeFieldPickerMode.time => DateFormat.jm(),
         DateTimeFieldPickerMode.date => DateFormat.yMMMMd(),
         DateTimeFieldPickerMode.dateAndTime => DateFormat.yMd().add_jm(),
       };
 
-  CupertinoDatePickerMode toCupertinoDatePickerMode() =>
-      switch (this) {
+  CupertinoDatePickerMode toCupertinoDatePickerMode() => switch (this) {
         DateTimeFieldPickerMode.time => CupertinoDatePickerMode.time,
         DateTimeFieldPickerMode.date => CupertinoDatePickerMode.date,
         DateTimeFieldPickerMode.dateAndTime =>
-        CupertinoDatePickerMode.dateAndTime,
+          CupertinoDatePickerMode.dateAndTime,
       };
 }
 
@@ -45,14 +43,10 @@ enum DateTimeFieldPickerPlatform {
   cupertino,
   adaptive;
 
-  TargetPlatform toTargetPlatform(BuildContext context) =>
-      switch (this) {
+  TargetPlatform toTargetPlatform(BuildContext context) => switch (this) {
         DateTimeFieldPickerPlatform.material => TargetPlatform.android,
         DateTimeFieldPickerPlatform.cupertino => TargetPlatform.iOS,
-        DateTimeFieldPickerPlatform.adaptive =>
-        Theme
-            .of(context)
-            .platform,
+        DateTimeFieldPickerPlatform.adaptive => Theme.of(context).platform,
       };
 }
 
@@ -82,8 +76,7 @@ class DateTimeField extends StatefulWidget {
     DateTime? firstDate,
     DateTime? lastDate,
     DateFormat? dateFormat,
-  })
-      : dateFormat = dateFormat ?? mode.toDateFormat(),
+  })  : dateFormat = dateFormat ?? mode.toDateFormat(),
         firstDate = firstDate ?? kDefaultFirstSelectableDate,
         lastDate = lastDate ?? kDefaultLastSelectableDate;
 
@@ -97,9 +90,9 @@ class DateTimeField extends StatefulWidget {
     DateTime? initialPickerDateTime,
     TextStyle? style,
     CupertinoDatePickerOptions cupertinoDatePickerOptions =
-    const CupertinoDatePickerOptions(),
+        const CupertinoDatePickerOptions(),
     MaterialTimePickerOptions materialTimePickerOptions =
-    const MaterialTimePickerOptions(),
+        const MaterialTimePickerOptions(),
     bool autofocus = false,
     DateFormat? dateFormat,
     EdgeInsetsGeometry? padding,
@@ -152,8 +145,7 @@ class DateTimeField extends StatefulWidget {
     this.materialDatePickerOptions = const MaterialDatePickerOptions(),
     this.materialTimePickerOptions = const MaterialTimePickerOptions(),
     this.pickerPlatform = DateTimeFieldPickerPlatform.adaptive,
-  })
-      : dateFormat = dateFormat ?? mode.toDateFormat(),
+  })  : dateFormat = dateFormat ?? mode.toDateFormat(),
         firstDate = firstDate ?? kDefaultFirstSelectableDate,
         lastDate = lastDate ?? kDefaultLastSelectableDate;
 
@@ -312,9 +304,7 @@ class _DateTimeFieldState extends State<DateTimeField> {
     InputDecoration decoration = widget.decoration ?? const InputDecoration();
 
     decoration = decoration.applyDefaults(
-      Theme
-          .of(context)
-          .inputDecorationTheme,
+      Theme.of(context).inputDecorationTheme,
     );
 
     if (!widget.hideDefaultSuffixIcon && decoration.suffixIcon == null) {
@@ -325,12 +315,8 @@ class _DateTimeFieldState extends State<DateTimeField> {
 
     if (!_enabled) {
       decoration = decoration.copyWith(
-        prefixIconColor: Theme
-            .of(context)
-            .disabledColor,
-        suffixIconColor: Theme
-            .of(context)
-            .disabledColor,
+        prefixIconColor: Theme.of(context).disabledColor,
+        suffixIconColor: Theme.of(context).disabledColor,
       );
     }
 
@@ -345,9 +331,7 @@ class _DateTimeFieldState extends State<DateTimeField> {
       child: DefaultTextStyle(
         style: _enabled
             ? _textStyle!
-            : _textStyle!.copyWith(color: Theme
-            .of(context)
-            .disabledColor),
+            : _textStyle!.copyWith(color: Theme.of(context).disabledColor),
         child: ConstrainedBox(
           constraints: BoxConstraints(
             minHeight: _denseButtonHeight,
@@ -361,16 +345,14 @@ class _DateTimeFieldState extends State<DateTimeField> {
     );
 
     final MouseCursor effectiveMouseCursor =
-    WidgetStateProperty.resolveAs<MouseCursor>(
+        WidgetStateProperty.resolveAs<MouseCursor>(
       WidgetStateMouseCursor.clickable,
       <WidgetState>{
         if (!_enabled) WidgetState.disabled,
       },
     );
 
-    final bool isFocused = Focus
-        .maybeOf(context)
-        ?.hasFocus ?? false;
+    final bool isFocused = Focus.maybeOf(context)?.hasFocus ?? false;
 
     result = InputDecorator(
       decoration: decoration,
@@ -395,9 +377,9 @@ class _DateTimeFieldState extends State<DateTimeField> {
           child: widget.padding == null
               ? result
               : Padding(
-            padding: widget.padding!,
-            child: result,
-          ),
+                  padding: widget.padding!,
+                  child: result,
+                ),
         ),
       ),
     );
@@ -453,23 +435,16 @@ class _DateTimeFieldState extends State<DateTimeField> {
 
   double get _denseButtonHeight {
     final double fontSize = _textStyle!.fontSize ??
-        Theme
-            .of(context)
-            .textTheme
-            .titleMedium!
-            .fontSize!;
+        Theme.of(context).textTheme.titleMedium!.fontSize!;
     final double scaledFontSize =
-    MediaQuery.textScalerOf(context).scale(fontSize);
+        MediaQuery.textScalerOf(context).scale(fontSize);
     return math.max(scaledFontSize, _kDenseButtonHeight);
   }
 
   bool get _enabled => widget.onChanged != null;
 
   TextStyle? get _textStyle =>
-      widget.style ?? Theme
-          .of(context)
-          .textTheme
-          .titleMedium;
+      widget.style ?? Theme.of(context).textTheme.titleMedium;
 
   FocusNode? get _focusNode => widget.focusNode ?? _internalNode;
 
