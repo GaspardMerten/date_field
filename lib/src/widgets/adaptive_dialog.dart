@@ -32,6 +32,17 @@ DateTime _getInitialDate(
   return now;
 }
 
+/// [TimeOfDay] Extensions
+extension on TimeOfDay {
+  bool isBefore(TimeOfDay other) {
+    return (hour * 60 + minute) < (other.hour * 60 + other.minute);
+  }
+
+  bool isAfter(TimeOfDay other) {
+    return (hour * 60 + minute) > (other.hour * 60 + other.minute);
+  }
+}
+
 /// A function that returns the initial time to be displayed by the picker.
 /// If [initialPickerDateTime] is not provided, the function returns the current
 /// time if it is within the selectable time range. Otherwise, it returns the
