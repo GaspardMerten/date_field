@@ -32,6 +32,18 @@ DateTime _getInitialDate(
   return now;
 }
 
+/// A function that compares two [TimeOfDay] objects, should be
+/// replaced by the [TimeOfDay.compareTo] method when available in more
+/// stable Flutter versions.
+int _compareTimeOfDayTo(TimeOfDay current, TimeOfDay other) {
+  final int hourComparison = current.hour.compareTo(other.hour);
+  if (hourComparison == 0) {
+    return current.minute.compareTo(other.minute);
+  } else {
+    return hourComparison;
+  }
+}
+
 /// A function that returns the initial time to be displayed by the picker.
 /// If [initialPickerDateTime] is not provided, the function returns the current
 /// time if it is within the selectable time range. Otherwise, it returns the
@@ -44,11 +56,11 @@ DateTime _getInitialTime(
 
   final TimeOfDay now = TimeOfDay.now();
 
-  if (now.isBefore(TimeOfDay.fromDateTime(firstDate))) {
+  if (_compareTimeOfDayTo(now, TimeOfDay.fromDateTime(firstDate)) < 0) {
     return firstDate;
   }
 
-  if (now.isAfter(TimeOfDay.fromDateTime(lastDate))) {
+  if (_compareTimeOfDayTo(now, TimeOfDay.fromDateTime(lastDate)) > 0) {
     return lastDate;
   }
 

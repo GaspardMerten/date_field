@@ -1,3 +1,8 @@
+# 5.3.4+1
+
+* Fixing issue #89, time of day isAfter isBefore is only recently implemented, so we need to use the
+  old way to compare the time.
+
 # 5.3.4
 
 * Fixing issue #85, time-only picker did not allow to select the time correctly.
