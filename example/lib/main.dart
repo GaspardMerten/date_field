@@ -175,7 +175,7 @@ class _FieldsState extends State<Fields> {
       children: <Widget>[
         DateTimeField(
           pickerPlatform: widget.platform,
-          onChanged: null,
+          enabled: false,
           decoration: const InputDecoration(labelText: 'Disabled'),
         ),
         const SizedBox(height: 16),
@@ -243,7 +243,7 @@ class FormFields extends StatelessWidget {
             children: <Widget>[
               DateTimeFormField(
                 pickerPlatform: dateTimePickerPlatform,
-                onChanged: null,
+                enabled: false,
                 decoration: const InputDecoration(labelText: 'Disabled'),
               ),
               const SizedBox(height: 16),

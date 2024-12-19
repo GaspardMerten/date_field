@@ -24,7 +24,7 @@ parameter. You can further customize the picker by configuring dialog properties
    ```yaml
    dependencies:
      ...
-     date_field: ^5.2.0
+     date_field: ^6.0.0
    ```
 2. Run `flutter pub get` to install the package.
 3. Initialize your systems locale. If not, users might see AM/PM even when
@@ -102,3 +102,8 @@ Before submitting a pull request, please make sure to run the tests and ensure t
 Additionally, please follow the existing coding style and make sure your code is well-documented.
 
 Thank you for your contributions!
+
+## Maintainers 👷
+
+- [Gaspard Merten](https://github.com/GaspardMerten/): Creator and maintainer
+- [Torben Keller](https://github.com/torbenkeller): Maintainer

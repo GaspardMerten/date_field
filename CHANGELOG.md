@@ -1,3 +1,9 @@
+# 6.0.0
+
+* Adding unit tests for widgets and helper functions.
+* Adding \*enabled\* parameter to the `DateTimeField` and `DateTimeFormField` widgets. Previously, a null `onChanged`
+  callback was required to disable the widget. Now, the `enabled` parameter can be used to disable the widget.
+
 # 5.3.4+1
 
 * Fixing issue #89, time of day isAfter isBefore is only recently implemented, so we need to use the
