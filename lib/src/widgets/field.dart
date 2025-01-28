@@ -414,6 +414,7 @@ class _DateTimeFieldState extends State<DateTimeField> {
       materialTimePickerOptions: widget.materialTimePickerOptions,
       firstDate: widget.firstDate,
       lastDate: widget.lastDate,
+      initialPickerDateTime: widget.value ?? widget.initialPickerDateTime,
     );
 
     if (mounted) {
