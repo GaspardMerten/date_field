@@ -1,3 +1,7 @@
+# 6.0.3+1
+
+* Removing angle brackets from the documentation to prevent HTML rendering issues.
+
 # 6.0.3
 
 * Fixing issue #95, when isDense was set to false, there was a minimum height imposed for no apparent reason. This
