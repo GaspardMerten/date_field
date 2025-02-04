@@ -81,7 +81,6 @@ class DateTimeField extends StatefulWidget {
         firstDate = firstDate ?? kDefaultFirstSelectableDate,
         lastDate = lastDate ?? kDefaultLastSelectableDate;
 
-
   factory DateTimeField.time({
     Key? key,
     required ValueChanged<DateTime?>? onChanged,
@@ -324,11 +323,8 @@ class _DateTimeFieldState extends State<DateTimeField> {
         style: _enabled
             ? _textStyle!
             : _textStyle!.copyWith(color: Theme.of(context).disabledColor),
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            minHeight: _denseButtonHeight,
-            maxHeight: isDense ? _denseButtonHeight : double.infinity,
-          ),
+        child: SizedBox(
+          height: isDense ? _denseButtonHeight : null,
           child: widget.value != null
               ? Text(widget.dateFormat.format(widget.value!))
               : const Text(''),
@@ -407,16 +403,15 @@ class _DateTimeFieldState extends State<DateTimeField> {
     widget.onTap?.call();
 
     final DateTime? newDateTime = await showAdaptiveDateTimePicker(
-      context: context,
-      mode: widget.mode,
-      pickerPlatform: widget.pickerPlatform,
-      cupertinoDatePickerOptions: widget.cupertinoDatePickerOptions,
-      materialDatePickerOptions: widget.materialDatePickerOptions,
-      materialTimePickerOptions: widget.materialTimePickerOptions,
-      firstDate: widget.firstDate,
-      lastDate: widget.lastDate,
-      initialPickerDateTime: widget.value ?? widget.initialPickerDateTime
-    );
+        context: context,
+        mode: widget.mode,
+        pickerPlatform: widget.pickerPlatform,
+        cupertinoDatePickerOptions: widget.cupertinoDatePickerOptions,
+        materialDatePickerOptions: widget.materialDatePickerOptions,
+        materialTimePickerOptions: widget.materialTimePickerOptions,
+        firstDate: widget.firstDate,
+        lastDate: widget.lastDate,
+        initialPickerDateTime: widget.value ?? widget.initialPickerDateTime);
 
     if (mounted) {
       _isSelecting = false;
