@@ -1,6 +1,11 @@
+# 6.0.3
+
+* Fixing issue #95, when isDense was set to false, there was a minimum height imposed for no apparent reason. This
+  was removed. The widget tree is now closer to similar widgets in the Flutter framework.
+
 # 6.0.2
 
-* enableFeedback is now set to true by default.  
+* enableFeedback is now set to true by default.
 
 # 6.0.1
 
