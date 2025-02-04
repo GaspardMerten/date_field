@@ -179,9 +179,6 @@ Future<DateTime?> showAdaptiveDateTimePicker({
 /// The [materialDatePickerOptions] and [materialTimePickerOptions] parameters
 /// allow customization of the Material date and time pickers respectively.
 ///
-/// Returns a Future<DateTime?> that completes with the selected date and time
-/// or null if the user cancels the picker.
-///
 /// ```dart
 /// final DateTime? selectedDateTime = await showMaterialDateTimePicker(
 ///   context,
@@ -339,9 +336,6 @@ Future<DateTime?> _showMaterialDatePicker({
 ///
 /// The [cupertinoDatePickerOptions] parameter allows customization of the
 /// Cupertino date picker.
-///
-/// Returns a Future<DateTime?> that completes with the selected date and time
-/// or null if the user cancels the picker.
 ///
 /// ```dart
 /// final DateTime? selectedDateTime = await showCupertinoDateTimePicker(
