@@ -1,3 +1,7 @@
+# 6.0.2
+
+* enableFeedback is now set to true by default.  
+
 # 6.0.1
 
 * Fixing issue #92, the time picker dialog was not showing the correct initial selected time on both dialogs. Added
