@@ -188,6 +188,7 @@ class _FieldsState extends State<Fields> {
           dateFormat: DateFormat.yMd(),
           mode: DateTimeFieldPickerMode.date,
           pickerPlatform: widget.platform,
+          initialPickerDateTime: DateTime(2001,11,20),
           onChanged: (DateTime? value) {
             setState(() {
               selectedDate = value;

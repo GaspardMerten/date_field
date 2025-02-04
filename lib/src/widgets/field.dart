@@ -81,6 +81,7 @@ class DateTimeField extends StatefulWidget {
         firstDate = firstDate ?? kDefaultFirstSelectableDate,
         lastDate = lastDate ?? kDefaultLastSelectableDate;
 
+
   factory DateTimeField.time({
     Key? key,
     required ValueChanged<DateTime?>? onChanged,
@@ -244,10 +245,10 @@ class DateTimeField extends StatefulWidget {
   final DateTimeFieldPickerPlatform pickerPlatform;
 
   @override
-  State<DateTimeField> createState() => _DateTimeFieldState();
+  State<DateTimeField> createState() => DateTimeFieldState();
 }
 
-class _DateTimeFieldState extends State<DateTimeField> {
+class DateTimeFieldState extends State<DateTimeField> {
   FocusNode? _internalNode;
   late Map<Type, Action<Intent>> _actionMap;
   bool _isSelecting = false;
@@ -414,6 +415,7 @@ class _DateTimeFieldState extends State<DateTimeField> {
       materialTimePickerOptions: widget.materialTimePickerOptions,
       firstDate: widget.firstDate,
       lastDate: widget.lastDate,
+      initialPickerDateTime: widget.value ?? widget.initialPickerDateTime
     );
 
     if (mounted) {

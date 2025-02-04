@@ -1,3 +1,8 @@
+# 6.0.1
+
+* Fixing issue #92, the time picker dialog was not showing the correct initial selected time on both dialogs. Added
+  regression tests to prevent this from happening again.
+
 # 6.0.0
 
 * Adding unit tests for widgets and helper functions.
