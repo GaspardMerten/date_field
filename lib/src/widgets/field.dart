@@ -245,10 +245,10 @@ class DateTimeField extends StatefulWidget {
   final DateTimeFieldPickerPlatform pickerPlatform;
 
   @override
-  State<DateTimeField> createState() => DateTimeFieldState();
+  State<DateTimeField> createState() => _DateTimeFieldState();
 }
 
-class DateTimeFieldState extends State<DateTimeField> {
+class _DateTimeFieldState extends State<DateTimeField> {
   FocusNode? _internalNode;
   late Map<Type, Action<Intent>> _actionMap;
   bool _isSelecting = false;
