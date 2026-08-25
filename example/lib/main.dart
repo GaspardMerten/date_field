@@ -1,9 +1,8 @@
 import 'package:date_field/date_field.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/intl_standalone.dart'
     if (dart.library.html) 'package:intl/intl_browser.dart';
+import 'package:material_ui/material_ui.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,11 +30,7 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      localizationsDelegates: const <LocalizationsDelegate<dynamic>>[
-        GlobalWidgetsLocalizations.delegate,
-        ...GlobalMaterialLocalizations.delegates,
-        ...GlobalCupertinoLocalizations.delegates,
-      ],
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
     );
   }
 }
@@ -188,7 +183,7 @@ class _FieldsState extends State<Fields> {
           dateFormat: DateFormat.yMd(),
           mode: DateTimeFieldPickerMode.date,
           pickerPlatform: widget.platform,
-          initialPickerDateTime: DateTime(2001,11,20),
+          initialPickerDateTime: DateTime(2001, 11, 20),
           onChanged: (DateTime? value) {
             setState(() {
               selectedDate = value;

@@ -1,7 +1,7 @@
 import 'package:date_field/date_field.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/intl.dart';
+import 'package:material_ui/material_ui.dart';
 
 void main() {
   group('DateTimeField', () {
@@ -197,63 +197,60 @@ void main() {
     // Ensure the initial date is set in the picker
     final DateTime initialDate = DateTime(2001, 11, 20);
     await tester.pumpWidget(MaterialApp(
-      home: Scaffold(
-        body: DateTimeField(
-          decoration: const InputDecoration(
-            labelText: 'Enter Date',
-            helperText: 'YYYY/MM/DD',
-          ),
-          initialPickerDateTime: initialDate,
-          dateFormat: DateFormat.yMd(),
-          mode: DateTimeFieldPickerMode.date,
-          onChanged: (_) {},
+        home: Scaffold(
+      body: DateTimeField(
+        decoration: const InputDecoration(
+          labelText: 'Enter Date',
+          helperText: 'YYYY/MM/DD',
+        ),
+        initialPickerDateTime: initialDate,
+        dateFormat: DateFormat.yMd(),
+        mode: DateTimeFieldPickerMode.date,
+        onChanged: (_) {},
       ),
     )));
 
-
     // Ensure that the initial date is displayed in the picker
-    expect(find.text("November 2001"), findsNothing);
+    expect(find.text('November 2001'), findsNothing);
 
     // Tap the field to open the picker
     await tester.tap(find.byType(DateTimeField));
     await tester.pumpAndSettle();
 
-
     // Ensure that the initial date is displayed in the picker
-    expect(find.text("November 2001"), findsOneWidget);
+    expect(find.text('November 2001'), findsOneWidget);
   });
 
-  testWidgets('Ensures initialPickerDateTime is not used when value is provided',
-          (WidgetTester tester) async {
-        // Ensure the initial date is set in the picker
-        final DateTime initialDate = DateTime(2001, 11, 20);
-        final DateTime value = DateTime(2002, 12, 25);
-        await tester.pumpWidget(MaterialApp(
-            home: Scaffold(
-              body: DateTimeField(
-                value: value,
-                decoration: const InputDecoration(
-                  labelText: 'Enter Date',
-                  helperText: 'YYYY/MM/DD',
-                ),
-                initialPickerDateTime: initialDate,
-                dateFormat: DateFormat.yMd(),
-                mode: DateTimeFieldPickerMode.date,
-                onChanged: (_) {},
-              ),
-            )));
+  testWidgets(
+      'Ensures initialPickerDateTime is not used when value is provided',
+      (WidgetTester tester) async {
+    // Ensure the initial date is set in the picker
+    final DateTime initialDate = DateTime(2001, 11, 20);
+    final DateTime value = DateTime(2002, 12, 25);
+    await tester.pumpWidget(MaterialApp(
+        home: Scaffold(
+      body: DateTimeField(
+        value: value,
+        decoration: const InputDecoration(
+          labelText: 'Enter Date',
+          helperText: 'YYYY/MM/DD',
+        ),
+        initialPickerDateTime: initialDate,
+        dateFormat: DateFormat.yMd(),
+        mode: DateTimeFieldPickerMode.date,
+        onChanged: (_) {},
+      ),
+    )));
 
+    // Ensure that the initial date is displayed in the picker
+    expect(find.text("December 2002"), findsNothing);
 
-        // Ensure that the initial date is displayed in the picker
-        expect(find.text("December 2002"), findsNothing);
+    // Tap the field to open the picker
+    await tester.tap(find.byType(DateTimeField));
+    await tester.pumpAndSettle();
 
-        // Tap the field to open the picker
-        await tester.tap(find.byType(DateTimeField));
-        await tester.pumpAndSettle();
-
-
-        // Ensure that the initial date is displayed in the picker
-        expect(find.text("December 2002"), findsOneWidget);
-        expect(find.text("November 2001"), findsNothing);
-      });
+    // Ensure that the initial date is displayed in the picker
+    expect(find.text("December 2002"), findsOneWidget);
+    expect(find.text("November 2001"), findsNothing);
+  });
 }
