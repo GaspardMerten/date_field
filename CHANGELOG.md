@@ -1,3 +1,6 @@
+# 7.0.0
+
+* Updating dependecies to match Flutter 
 # 6.0.3+1
 
 * Removing angle brackets from the documentation to prevent HTML rendering issues.
